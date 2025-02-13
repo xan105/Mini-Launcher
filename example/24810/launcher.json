@@ -1,0 +1,17 @@
+{
+  "bin": "RetailExe\\1.2\\cnc3ep1.dat",
+  "args": "-config \"%CURRENTDIR%\\CNC3EP1_english_1.2.SkuDef\"",
+  "keygen": "keygen.lua",
+  "splash": {
+    "show": true,
+    "image": [
+      "Launcher/splash.bmp"
+    ]
+  },
+  "integrity": [
+    { 
+      "sri": "sha384-DmnzXx8cJldEX+zlfSgw6WZ/8JLTTz+xN1LIah9/I7VOj+1kw8ueTby51cf069QI",
+      "size": 8865840
+    }
+  ]
+}

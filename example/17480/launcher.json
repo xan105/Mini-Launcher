@@ -1,0 +1,19 @@
+{
+  "bin": "Data\\ra3_1.12.game",
+  "args": "-config \"%CURRENTDIR%\\RA3_english_1.12.SkuDef\"",
+  "keygen": "keygen.lua",
+  "splash": {
+    "show": true,
+    "image": [
+      "Launcher/ally_splash.bmp",
+      "Launcher/empire_splash.bmp",
+      "Launcher/soviet_splash.bmp"
+    ]
+  },
+  "integrity": [
+    { 
+      "sri": "sha384-v/yq054Nio/bx9xpEn/FAjQNbIf0oXhL1xxig1cf3SKNzaUvaQxXCQyZyXOwwxuA",
+      "size": 9402416
+    }
+  ]
+}
