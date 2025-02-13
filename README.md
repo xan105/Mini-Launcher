@@ -5,25 +5,25 @@ Mini-Launcher is an application launcher with the following features:
 
   - DLL Injection
   - LUA Scripting
-  - Expanding Variable
-  - File integrity check
-  - Setting Environnement Variables
-  - Verbatim Arguments
   - Optional Splash screen
+  - File integrity check
+  - Expanding Variable
+  - Verbatim Arguments
+  - Setting Environnement Variables
 
 🐧 This software has an emphasis on being compatible with Linux/Proton.
   
 💻 This software is for my own personal use but feel free to use it. 
   
-CommandLine
-===========
+Command Line
+============
 
-## `-config string` (launcher.json)
+### `-config string` (launcher.json)
 
 File path to the json configuration file to use. Defaults to `launcher.json`.<br />
 Path can be absolute or relative (to the current working dir)
 
-## `-help`
+### `-help`
 
 Display a message box with all the command line arguments and a short description.
 
@@ -55,14 +55,14 @@ Config file
 }
 ```
 
-## `bin: string`
+### `bin: string`
 
 File path to the executable to launch.<br />
 Path can be absolute or relative (to the current working dir).
 
 `%VAR%` are expanded if any (see Expanding Variable for more details)
 
-## `cwd?: string` (parent directory)
+### `cwd?: string` (parent directory)
 
 An option to override the current working dir of the executable to be launched.<br />
 This is equivalent to the "Start In" option of a Windows shortcut.
@@ -70,14 +70,14 @@ This is equivalent to the "Start In" option of a Windows shortcut.
 By default the parent directory of the executable is used.<br />
 Example: `G:\METAPHOR\METAPHOR.exe` => `G:\METAPHOR\`
 
-## `args?: string` (none)
+### `args?: string` (none)
 
 Optional argument(s) to pass to the executable.<br />
 Argument(s) are passed "verbatim" ie: no quoting or escaping is done.
 
 `%VAR%` are expanded if any (see Expanding Variable for more details)
 
-## `env?: object` (none)
+### `env?: object` (none)
 
 Add additional environment key-value pairs to the executable process.
 
@@ -91,16 +91,17 @@ Example:
 }
 ```
 
-## `hide?: bool` (false)
+### `hide?: bool` (false)
 
-When enabled, the executable will run without displaying a window, making it invisible to the user. This is useful for background tasks or command-line utilities that do not require user interaction.
+When enabled, the executable will run without displaying a window, making it invisible to the user.<br /> 
+This is useful for background tasks or command-line utilities that do not require user interaction.
 
-## `keygen?: string` (none)
+### `keygen?: string` (none)
 
-File path to a LUA script which role is to handle CD Key generation (see LUA Scripting for more details).
+File path to a LUA script which role is to handle CD Key generation (see LUA Scripting for more details).<br />
 Path can be absolute or relative (to the current working dir).
 
-## `addons?: []{ path: string, required?: boolean }` (none)
+### `addons?: []{ path: string, required?: boolean }` (none)
 
 List of addons to inject to the executable process.<br />
 When `required` is set to `true` and if the injection failed, alert the user and kill the process.
@@ -116,7 +117,7 @@ Example:
 }
 ```
 
-## `integrity?: []{sri: string, file?: string, size?: number}`
+### `integrity?: []{sri: string, file?: string, size?: number}`
 
 Check file(s) integrity before starting the executable.
 
@@ -130,7 +131,7 @@ Check file(s) integrity before starting the executable.
 - `size?: number`
   optional file size (in bytes), to accelerate sum comparison.
   
-## `splash?: { show: bool, image: []string, timeout?: number }`
+### `splash?: { show: bool, image: []string, timeout?: number }`
 
 Display a splash screen until the executable process change the cursor or display a window. The splash screen should be a BMP file. 
 
@@ -186,7 +187,7 @@ Very simple scripting engine powered by LUA to handle CD key for old games.
 Some standard libraries are not enabled by design.<br />
 The followings modules are exposed to the LUA VM, I might add more later on.
 
-## Regedit
+### 📦 Regedit
 
 This is a module to read and write to the registry.
 
@@ -194,17 +195,17 @@ This is a module to read and write to the registry.
 local regedit = require("regedit")
 ```
 
-### QueryStringValue(root string, path string, key string) string
+#### `QueryStringValue(root string, path string, key string) string`
 
-`REG_SZ & REG_EXPAND_SZ`
+> REG_SZ & REG_EXPAND_SZ
 
 Return string value of given path/key.
 
 ✔️ root key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
 
-### WriteStringValue(root string, path string, key string, value string)
+#### `WriteStringValue(root string, path string, key string, value string)`
 
-`REG_SZ & REG_EXPAND_SZ`
+> REG_SZ & REG_EXPAND_SZ
 
 Write string value in given path/key (subkeys are created if necessary).
 
