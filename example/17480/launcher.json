@@ -10,6 +10,9 @@
       "Launcher/soviet_splash.bmp"
     ]
   },
+  "addons": [
+    { "path": "Launcher/opencnconline.dll", "required": true }
+  ],
   "integrity": [
     { 
       "sri": "sha384-v/yq054Nio/bx9xpEn/FAjQNbIf0oXhL1xxig1cf3SKNzaUvaQxXCQyZyXOwwxuA",

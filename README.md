@@ -174,7 +174,8 @@ List of variables that will get expanded:
 LUA Scripting
 =============
 
-Very simple scripting engine powered by LUA to handle CD key for old games.
+Very simple scripting engine to handle CD key for old games.<br />
+Powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
 
 - LUA 5.1
 - Libraries:

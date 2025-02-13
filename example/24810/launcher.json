@@ -8,6 +8,9 @@
       "Launcher/splash.bmp"
     ]
   },
+  "addons": [
+    { "path": "Launcher/opencnconline.dll", "required": true }
+  ],
   "integrity": [
     { 
       "sri": "sha384-DmnzXx8cJldEX+zlfSgw6WZ/8JLTTz+xN1LIah9/I7VOj+1kw8ueTby51cf069QI",
