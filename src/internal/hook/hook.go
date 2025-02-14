@@ -13,10 +13,11 @@ import (
 )
 
 var (
-    kernel32 = syscall.NewLazyDLL("kernel32.dll")
+  kernel32 = syscall.NewLazyDLL("kernel32.dll")
     
-    pVirtualAllocEx = kernel32.NewProc("VirtualAllocEx")
-    pCreateRemoteThread = kernel32.NewProc("CreateRemoteThread")
+  pVirtualAllocEx = kernel32.NewProc("VirtualAllocEx")
+  pVirtualFreeEx = kernel32.NewProc("VirtualFreeEx")
+  pCreateRemoteThread = kernel32.NewProc("CreateRemoteThread")
 )
 
 func CreateRemoteThread(pid uintptr, path string) error {
@@ -34,7 +35,6 @@ func CreateRemoteThread(pid uintptr, path string) error {
   if err != nil {
     return err
   }
-
   defer syscall.CloseHandle(syscall.Handle(hProcess))
 
  //Allocates virtual memory for the file path
@@ -87,8 +87,16 @@ func CreateRemoteThread(pid uintptr, path string) error {
   if hThread == 0 {
     return err
   }
-
   defer syscall.CloseHandle(syscall.Handle(hThread))
-  
+
+  windows.WaitForSingleObject(windows.Handle(hThread), windows.INFINITE)
+
+  pVirtualFreeEx.Call(
+    uintptr(hProcess), 
+    lpBaseAddress, 
+    0,
+    windows.MEM_RELEASE,
+  )
+
   return nil
 }
