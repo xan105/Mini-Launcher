@@ -293,13 +293,6 @@ func translateMessage(msg *tMSG) {
 func CreateWindow(exit chan bool, pid int, splashImage string) {
   
   slog.Info("splash")
-  
-  _, err := os.FindProcess(pid)
-  if err != nil { 
-    slog.Error(err.Error())
-    exit <- true
-    return
-  }
 
   className := "D2FF2B71-7532-4BA6-8025-4D044372B710" //Random GUID
   instance, err := getModuleHandle()
@@ -395,6 +388,13 @@ func CreateWindow(exit chan bool, pid int, splashImage string) {
   //Get Image dimension
   image, err:= getObject(hbm)
   if err != nil {
+    slog.Error(err.Error())
+    exit <- true
+    return
+  }
+
+  //check process hasn't crashed since we started it
+  if _, err = os.FindProcess(pid); err != nil { 
     slog.Error(err.Error())
     exit <- true
     return
