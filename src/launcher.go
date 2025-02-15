@@ -131,7 +131,7 @@ func main(){
   cmd.Env = os.Environ()
   if len(config.Env) > 0 {
     for key, value := range config.Env {
-      cmd.Env = append(cmd.Env, key + "=" + value)
+      cmd.Env = append(cmd.Env, key + "=" + expand.ExpandVariables(value))
     }
   }
 

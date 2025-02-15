@@ -4,7 +4,7 @@ About
 Mini-Launcher is an application launcher with the following features:
 
   - DLL Injection
-  - LUA Scripting
+  - Lua Scripting
   - Optional Splash screen
   - File integrity check
   - Expanding Variable
@@ -91,6 +91,8 @@ Example:
 }
 ```
 
+`%VAR%` in value are expanded if any (see Expanding Variable for more details)
+
 ### `hide?: bool` (false)
 
 When enabled, the executable will run without displaying a window, making it invisible to the user.<br /> 
@@ -98,7 +100,7 @@ This is useful for background tasks or command-line utilities that do not requir
 
 ### `keygen?: string` (none)
 
-File path to a LUA script which role is to handle CD Key generation (see LUA Scripting for more details).<br />
+File path to a Lua script which role is to handle CD Key generation (see Lua Scripting for more details).<br />
 Path can be absolute or relative (to the current working dir).
 
 ### `addons?: []{ path: string, required?: boolean }` (none)
@@ -171,13 +173,13 @@ List of variables that will get expanded:
 - `%CURRENTDIR%`: Current working dir of the mini-launcher
 - `%BINDIR%`: Dir where the mini-launcher is located at
 
-LUA Scripting
+Lua Scripting
 =============
 
 Very simple scripting engine to handle CD key for old games.<br />
 Powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
 
-- LUA 5.1
+- Lua 5.1
 - Libraries:
   + Package
   + Basic
@@ -186,7 +188,7 @@ Powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
   + Math
   
 Some standard libraries are not enabled by design.<br />
-The followings modules are exposed to the LUA VM, I might add more later on.
+The followings modules are exposed to the Lua VM, I might add more later on.
 
 ### 📦 Regedit
 
