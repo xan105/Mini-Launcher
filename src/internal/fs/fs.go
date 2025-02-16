@@ -4,20 +4,26 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package main
+package fs
 
 import(
   "os"
   "io"
-  "encoding/json"
+  "bufio"
   "errors"
+  "encoding/json"
+  "hash"
   "crypto/sha256"
   "crypto/sha512"
   "encoding/base64"
-  "hash"
+  "golang.org/x/text/encoding"
+  "golang.org/x/text/encoding/charmap"
+  "golang.org/x/text/encoding/unicode"
+  "golang.org/x/text/transform"
 )
 
-func readJSON(filepath string) (config Config, err error) {
+func ReadJSON[T any](filepath string) (config T, err error) {
+
   file, err := os.Open(filepath)
   if err != nil { return }
   defer file.Close()
@@ -31,7 +37,7 @@ func readJSON(filepath string) (config Config, err error) {
   return
 }
 
-func fileExist(path string) bool {
+func FileExist(path string) bool {
   target, err := os.Stat(path)
   if err == nil {
     return !target.IsDir()
@@ -42,7 +48,7 @@ func fileExist(path string) bool {
   return false
 }
 
-func checkSum(filePath string, algo string) (result string, err error) {
+func CheckSum(filePath string, algo string) (result string, err error) {
     file, err := os.Open(filePath)
     if err != nil { return }
     defer file.Close()
@@ -65,4 +71,35 @@ func checkSum(filePath string, algo string) (result string, err error) {
 
     result = base64.StdEncoding.EncodeToString(h.Sum(nil))
     return
+}
+
+func WriteFile(filename string, data string, format string) error {
+  file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+  if err != nil {
+    return err
+  }
+  defer file.Close()
+
+  var enc encoding.Encoding
+  switch format {
+    case "utf8":
+      enc = encoding.Nop //UTF-8 is default
+    case "utf8sig":
+      enc = unicode.UTF8BOM
+    case "utf16le":
+      enc = unicode.UTF16(unicode.LittleEndian, unicode.UseBOM)
+    case "windows1252":
+      enc = charmap.Windows1252
+    default:
+      return errors.New("Unsupported encoding: " + format)
+  }
+
+  encoder := enc.NewEncoder()
+  writer := bufio.NewWriter(transform.NewWriter(file, encoder))
+  _, err = writer.WriteString(data)
+  if err != nil {
+    return err
+  }
+
+  return writer.Flush()
 }
