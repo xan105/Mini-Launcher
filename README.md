@@ -193,7 +193,7 @@ The followings modules are exposed to the Lua VM, I might add more later on.
 
 ### 🌐 Globals
 
-### `sleep(ms int)
+### `sleep(ms int)`
 
 Suspends the execution of the Lua engine until the time-out interval elapses (interval is in milliseconds).
 
@@ -252,7 +252,9 @@ local file = require("file")
 
 #### `Write(filename: string, data: string, format?: string = "utf8")`
 
-Overwrite text data with specified format encoding (default to utf8). File is created if needed.
+Overwrite text data with specified format encoding (default to utf8).<br /> 
+Create target parent dir if doesn't exist.<br />
+File is created if doesn't exist.
 
 Encoding format:
 

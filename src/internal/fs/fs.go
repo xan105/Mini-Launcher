@@ -11,6 +11,7 @@ import(
   "io"
   "bufio"
   "errors"
+  "path/filepath"
   "encoding/json"
   "hash"
   "crypto/sha256"
@@ -74,6 +75,12 @@ func CheckSum(filePath string, algo string) (result string, err error) {
 }
 
 func WriteFile(filename string, data string, format string) error {
+  
+  dir := filepath.Dir(filename)
+  if err := os.MkdirAll(dir, 0755); err != nil {
+    return err
+  }
+  
   file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
   if err != nil {
     return err
