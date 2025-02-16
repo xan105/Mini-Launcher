@@ -8,10 +8,13 @@ package main
 
 import (
   "github.com/yuin/gopher-lua"
+  "launcher/lua/global"
   "launcher/lua/regedit"
+  "launcher/lua/random"
+  "launcher/lua/file"
 )
 
-func loadLua(file string){
+func loadLua(filename string){
   L := lua.NewState(lua.Options{ SkipOpenLibs: true })
   defer L.Close()
   
@@ -35,11 +38,16 @@ func loadLua(file string){
     }
   }
   
+  //Globals
+  L.SetGlobal("sleep", L.NewFunction(global.Sleep))
+  
   //Module
   L.PreloadModule("regedit", regedit.Loader)
+  L.PreloadModule("random", random.Loader)
+  L.PreloadModule("file", file.Loader)
   
   //Exec
-  if err := L.DoFile(file); err != nil {
+  if err := L.DoFile(filename); err != nil {
     panic(err.Error())
   }
 }
