@@ -15,6 +15,7 @@ import(
   "errors"
   "time"
   "math/rand"
+  "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/hook"
   "launcher/internal/splash"
@@ -43,7 +44,7 @@ type Config struct {
   Args        string              `json:"args"`
   Env         map[string]string   `json:"env"`
   Hide        bool                `json:"hide"`
-  Keygen      string              `json:"keygen"`
+  Script      string              `json:"script"`
   Addons      []Addon             `json:"addons"`
   Integrity   []File              `json:"integrity"`
   Splash      Splash              `json:"splash"`
@@ -61,7 +62,7 @@ func main(){
     configFile = filepath.Join(cwd, args.Config)
   }
 
-  config, err := readJSON(configFile)
+  config, err := fs.ReadJSON[Config](configFile)
   if err != nil { panic("Parsing JSON failure!\n\n" + err.Error()) }
   
   binary := expand.ExpandVariables(config.Bin)
@@ -102,7 +103,7 @@ func main(){
       }
       
       algo, expected := SRI[0], SRI[1]
-      sum, err := checkSum(target, algo)
+      sum, err := fs.CheckSum(target, algo)
       if err != nil { panic(err.Error()) }
       if sum != expected { 
         panic("Integrity failure!\n\n" + 
@@ -135,8 +136,8 @@ func main(){
     }
   }
 
-  if len(config.Keygen) > 0 {
-    file := config.Keygen
+  if len(config.Script) > 0 {
+    file := config.Script
     if !filepath.IsAbs(file) {
       file = filepath.Join(cwd, file)
     }
@@ -160,7 +161,7 @@ func main(){
         dylib = filepath.Join(cwd, dylib)
       }
             
-      if fileExist(dylib){
+      if fs.FileExist(dylib){
         err = hook.CreateRemoteThread(uintptr(cmd.Process.Pid), dylib)
         if err != nil {
           if addon.Required {

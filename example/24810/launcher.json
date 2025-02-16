@@ -1,7 +1,7 @@
 {
   "bin": "RetailExe\\1.2\\cnc3ep1.dat",
   "args": "-config \"%CURRENTDIR%\\CNC3EP1_english_1.2.SkuDef\"",
-  "keygen": "keygen.lua",
+  "script": "keygen.lua",
   "splash": {
     "show": true,
     "image": [

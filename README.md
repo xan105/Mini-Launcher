@@ -37,7 +37,7 @@ Config file
   args?: string,
   env?: object,
   hide?: bool,
-  keygen?: string,
+  script?: string,
   addons?: []{
     path: string, 
     required?: bool
@@ -98,10 +98,12 @@ Example:
 When enabled, the executable will run without displaying a window, making it invisible to the user.<br /> 
 This is useful for background tasks or command-line utilities that do not require user interaction.
 
-### `keygen?: string` (none)
+### `script?: string` (none)
 
-File path to a Lua script which role is to handle CD Key generation (see Lua Scripting for more details).<br />
+File path to a Lua script to be run just before the executable (see Lua Scripting for more details).<br />
 Path can be absolute or relative (to the current working dir).
+
+For now this is mainly to handle CD Key generation in old games.
 
 ### `addons?: []{ path: string, required?: boolean }` (none)
 
@@ -176,8 +178,7 @@ List of variables that will get expanded:
 Lua Scripting
 =============
 
-Very simple scripting engine to handle CD key for old games.<br />
-Powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
+Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
 
 - Lua 5.1
 - Libraries:
@@ -190,34 +191,80 @@ Powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
 Some standard libraries are not enabled by design.<br />
 The followings modules are exposed to the Lua VM, I might add more later on.
 
+### 🌐 Globals
+
+### `sleep(ms int)
+
+Suspends the execution of the Lua engine until the time-out interval elapses (interval is in milliseconds).
+
 ### 📦 Regedit
 
-This is a module to read and write to the registry.
+This is a module to read and write from/to the registry.
 
 ```lua
 local regedit = require("regedit")
 ```
 
-#### `QueryStringValue(root string, path string, key string) string`
+- `QueryStringValue(root: string, path: string, key: string)  string`
+- `WriteStringValue(root: string, path: string, key: string, value: string)`
+
+✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
+
+#### `QueryStringValue(root: string, path: string, key: string) string`
 
 > REG_SZ & REG_EXPAND_SZ
 
 Return string value of given path/key.
 
-✔️ root key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
+💡For the default key `@` use `key = ""`
 
-#### `WriteStringValue(root string, path string, key string, value string)`
+#### `WriteStringValue(root: string, path: string, key: string, value: string)`
 
 > REG_SZ & REG_EXPAND_SZ
 
 Write string value in given path/key (subkeys are created if necessary).
 
-✔️ root key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
+💡For the default key `@` use `key = ""`
+
+### 📦 Random
+
+This is a module to generate random things.
+
+```lua
+local random = require("random")
+```
+
+- `AlphaNumString(length: int) string`
+
+#### `AlphaNumString(length: int) string`
+
+Generate a random alpha numeric string of specified length.
+
+### 📦 File
+
+This is a module to read and write text data from/to file.
+
+```lua
+local file = require("file")
+```
+
+- `Write(filename: string, data: string, format?: string = "utf8")`
+
+#### `Write(filename: string, data: string, format?: string = "utf8")`
+
+Overwrite text data with specified format encoding (default to utf8). File is created if needed.
+
+Encoding format:
+
+  - `utf8`
+  - `utf8sig`
+  - `utf16le`
+  - `windows1252`
 
 Build
 =====
 
-- Golang v1.23
+- Golang v1.24.0
 - [go-winres](https://github.com/tc-hib/go-winres) installed in `%PATH%` env var for win32 manifest & cie
 
 Run `build.cmd` on Windows<br/>
