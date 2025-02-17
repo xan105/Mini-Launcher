@@ -8,6 +8,7 @@ package expand
 
 import(
   "os"
+  "os/user"
   "strings"
   "regexp"
   "path/filepath"
@@ -208,6 +209,13 @@ func ExpandVariables(input string) string {
           return match
         }
         return filepath.Dir(process)
+      }
+      case "USERNAME": {
+        user, err := user.Current()
+        if err != nil {
+          return match
+        }
+        return user.Username
       }
     }
     return match
