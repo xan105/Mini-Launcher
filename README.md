@@ -18,12 +18,18 @@ Mini-Launcher is an application launcher with the following features:
 Command Line
 ============
 
-### `-config string` (launcher.json)
+### `--config string` (launcher.json)
 
 File path to the json configuration file to use. Defaults to `launcher.json`.<br />
 Path can be absolute or relative (to the current working dir)
 
-### `-help`
+### `--dry-run` (false)
+
+Program will exit before starting the executable.
+
+💡 This flag can come in handy when testing Lua Script.
+
+### `--help` (false)
 
 Display a message box with all the command line arguments and a short description.
 
@@ -51,6 +57,10 @@ Config file
     show: bool,
     image: []string,
     timeout?: number
+  },
+  symlink?: []{
+    from: string,
+    to: string
   }
 }
 ```
@@ -60,7 +70,7 @@ Config file
 File path to the executable to launch.<br />
 Path can be absolute or relative (to the current working dir).
 
-`%VAR%` are expanded if any (see Expanding Variable for more details)
+`%VAR%` are expanded if any (see Expanding Variable for more details).
 
 ### `cwd?: string` (parent directory)
 
@@ -75,7 +85,7 @@ Example: `G:\METAPHOR\METAPHOR.exe` => `G:\METAPHOR\`
 Optional argument(s) to pass to the executable.<br />
 Argument(s) are passed "verbatim" ie: no quoting or escaping is done.
 
-`%VAR%` are expanded if any (see Expanding Variable for more details)
+`%VAR%` are expanded if any (see Expanding Variable for more details).
 
 ### `env?: object` (none)
 
@@ -91,7 +101,7 @@ Example:
 }
 ```
 
-`%VAR%` in value are expanded if any (see Expanding Variable for more details)
+`%VAR%` in value are expanded if any (see Expanding Variable for more details).
 
 ### `hide?: bool` (false)
 
@@ -150,6 +160,28 @@ Display a splash screen until the executable process change the cursor or displa
 - `timeout?: number` (10 sec)
   Failsafe timeout in seconds.<br />
   There was no event dispatched under Linux/Proton on Wayland in my limited testing.
+  
+### `symlink?: []{from: string, to: string}`
+
+Creates folder symlink before starting the executable.<br />
+Path can be absolute or relative (to the current working dir).<br />
+`%VAR%` are expanded if any (see Expanding Variable for more details).
+
+💡 Useful for savegames:
+
+```json
+{
+  "symlink": [
+    { 
+      "from": "%DOCUMENTS%/Telltale Games/The Walking Dead", 
+      "to": "%SAVEGAME%/The Walking Dead"
+    }
+  ]
+}
+```
+
+> [!CAUTION]
+> This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
 
 Expanding Variable
 ==================
@@ -174,6 +206,7 @@ List of variables that will get expanded:
 - `%TMP%`
 - `%CURRENTDIR%`: Current working dir of the mini-launcher
 - `%BINDIR%`: Dir where the mini-launcher is located at
+- `%USERNAME%`
 
 Lua Scripting
 =============
@@ -249,12 +282,7 @@ local file = require("file")
 ```
 
 - `Write(filename: string, data: string, format?: string = "utf8")`
-
-#### `Write(filename: string, data: string, format?: string = "utf8")`
-
-Overwrite text data with specified format encoding (default to utf8).<br /> 
-Create target parent dir if doesn't exist.<br />
-File is created if doesn't exist.
+- `Read(filename: string, format?: string = "utf8") string`
 
 Encoding format:
 
@@ -262,6 +290,32 @@ Encoding format:
   - `utf8sig`
   - `utf16le`
   - `windows1252`
+
+#### `Write(filename: string, data: string, format?: string = "utf8")`
+
+Overwrite text data with specified format encoding (default to utf8).<br /> 
+Create target parent dir if doesn't exist.<br />
+File is created if doesn't exist.
+  
+❌ This function will raise an error on unexpected error.
+
+```lua
+local file = require("file")
+local random = require("random")
+
+local key = random.AlphaNumString(20)
+
+local written, err = pcall(file.Write, "test.key", key)
+if (not written) then
+  print(err)
+end
+```
+  
+#### `Read(filename: string, format?: string = "utf8") string`
+
+Read text data as specified format encoding (default to utf8).
+
+❌ This function will raise an error on unexpected error.
 
 Build
 =====

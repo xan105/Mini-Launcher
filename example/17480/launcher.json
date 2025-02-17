@@ -1,5 +1,5 @@
 {
-  "bin": "Data\\ra3_1.12.game",
+  "bin": "Data/ra3_1.12.game",
   "args": "-config \"%CURRENTDIR%\\RA3_english_1.12.SkuDef\"",
   "script": "keygen.lua",
   "splash": {
