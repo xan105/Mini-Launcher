@@ -14,6 +14,7 @@ import (
 func Loader(L *lua.LState) int {
   var exports = map[string]lua.LGFunction{
     "Write": Write,
+    "Read": Read,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -22,7 +23,6 @@ func Loader(L *lua.LState) int {
 }
 
 func Write(L *lua.LState) int {
-  //get argument
   filename  := L.ToString(1)  
   data      := L.ToString(2)
   format    := L.ToString(3)
@@ -31,7 +31,27 @@ func Write(L *lua.LState) int {
     format = "utf8"
   } 
 
-  fs.WriteFile(filename, data, format)
+  err := fs.WriteFile(filename, data, format)
+  if err != nil {
+    L.RaiseError(err.Error());
+  }
     
-  return 0 //number of result(s)
+  return 0
+}
+
+func Read(L *lua.LState) int {
+  filename  := L.ToString(1)  
+  format    := L.ToString(2)
+
+  if len(format) == 0 {
+    format = "utf8"
+  } 
+  
+  data, err := fs.ReadFile(filename, format)
+  if err != nil {
+    L.RaiseError(err.Error());
+  }
+
+  L.Push(lua.LString(data))
+  return 1
 }

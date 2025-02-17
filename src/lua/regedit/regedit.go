@@ -23,19 +23,16 @@ func Loader(L *lua.LState) int {
 }
 
 func QueryStringValue(L *lua.LState) int {
-  //get argument
   root := L.ToString(1)  
   path := L.ToString(2)
   key  := L.ToString(3)  
 
-  //push result 
   value:= regedit.QueryStringValue(root, path, key)          
   L.Push(lua.LString(value))
-  return 1 //number of result(s)
+  return 1
 }
 
 func WriteStringValue(L *lua.LState) int {
-  //get argument
   root  := L.ToString(1)  
   path  := L.ToString(2)
   key   := L.ToString(3)
@@ -43,5 +40,5 @@ func WriteStringValue(L *lua.LState) int {
 
   regedit.WriteStringValue(root, path, key, value)
     
-  return 0 //number of result(s)
+  return 0
 }
