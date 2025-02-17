@@ -38,6 +38,11 @@ type Splash struct {
   Timeout     uint                `json:"timeout"`
 }
 
+type Link struct {
+  Origin      string              `json:"from"`
+  Destination string              `json:"to"`
+}
+
 type Config struct {
   Bin         string              `json:"bin"`
   Cwd         string              `json:"cwd"`
@@ -48,6 +53,7 @@ type Config struct {
   Addons      []Addon             `json:"addons"`
   Integrity   []File              `json:"integrity"`
   Splash      Splash              `json:"splash"`
+  Symlink     []Link              `json:"symlink"`
 }
 
 func main(){
@@ -57,7 +63,7 @@ func main(){
   cwd, err := os.Getwd() 
   if err != nil { panic(err.Error()) }
 
-  configFile := args.Config
+  configFile := filepath.FromSlash(args.Config)
   if !filepath.IsAbs(args.Config) {
     configFile = filepath.Join(cwd, args.Config)
   }
@@ -65,9 +71,9 @@ func main(){
   config, err := fs.ReadJSON[Config](configFile)
   if err != nil { panic("Parsing JSON failure!\n\n" + err.Error()) }
   
-  binary := expand.ExpandVariables(config.Bin)
-  if !filepath.IsAbs(config.Bin) {
-    binary = filepath.Join(cwd, config.Bin)
+  binary := filepath.FromSlash(expand.ExpandVariables(config.Bin))
+  if !filepath.IsAbs(binary) {
+    binary = filepath.Join(cwd, binary)
   }
   
   if config.Integrity != nil && len(config.Integrity) > 0 {
@@ -75,9 +81,9 @@ func main(){
       
       target:= binary
       if len(file.Path) > 0 {
-        target = expand.ExpandVariables(file.Path)
-        if !filepath.IsAbs(file.Path) {
-          target = filepath.Join(cwd, file.Path)
+        target = filepath.FromSlash(expand.ExpandVariables(file.Path))
+        if !filepath.IsAbs(target) {
+          target = filepath.Join(cwd, target)
         } 
       }
       
@@ -126,7 +132,7 @@ func main(){
 
   cmd.Dir = filepath.Dir(binary)
   if len(config.Cwd) > 0 {
-    cmd.Dir = config.Cwd
+    cmd.Dir = filepath.FromSlash(config.Cwd)
   }
 
   cmd.Env = os.Environ()
@@ -136,8 +142,27 @@ func main(){
     }
   }
 
+  if config.Symlink != nil && len(config.Symlink) > 0 {
+    for _, link := range config.Symlink {
+      origin := filepath.FromSlash(expand.ExpandVariables(link.Origin))
+      if !filepath.IsAbs(origin) {
+        origin = filepath.Join(cwd, origin)
+      }
+      
+      destination := filepath.FromSlash(expand.ExpandVariables(link.Destination))
+      if !filepath.IsAbs(destination) {
+        destination = filepath.Join(cwd, destination)
+      }
+
+      err:= fs.CreateFolderSymlink(origin, destination)
+      if err != nil { 
+        panic("Symlink failure!\n\n" + err.Error()) 
+      }
+    }
+  } 
+
   if len(config.Script) > 0 {
-    file := config.Script
+    file := filepath.FromSlash(config.Script)
     if !filepath.IsAbs(file) {
       file = filepath.Join(cwd, file)
     }
@@ -149,6 +174,10 @@ func main(){
   cmd.Stdout = nil
   cmd.Stderr = nil
 
+  if (args.DryRun) {
+    os.Exit(0)
+  }
+  
   err = cmd.Start()
     if err != nil { panic(err.Error()) }
   
@@ -156,7 +185,7 @@ func main(){
   if config.Addons != nil && len(config.Addons) > 0 {
     for _, addon := range config.Addons {
           
-      dylib := addon.Path
+      dylib := filepath.FromSlash(addon.Path)
       if !filepath.IsAbs(dylib) {
         dylib = filepath.Join(cwd, dylib)
       }
@@ -176,7 +205,7 @@ func main(){
   //splash screen
   if config.Splash.Show {
     image := config.Splash.Images[rand.Intn(len(config.Splash.Images))]
-    image = expand.ExpandVariables(image)
+    image = filepath.FromSlash(expand.ExpandVariables(image))
     if !filepath.IsAbs(image) {
       image = filepath.Join(cwd, image)
     }

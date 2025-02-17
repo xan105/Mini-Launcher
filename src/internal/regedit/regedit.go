@@ -7,7 +7,7 @@ found in the LICENSE file in the root directory of this source tree.
 package regedit
 
 import (
-  "strings"
+  "path/filepath"
   "golang.org/x/sys/windows/registry"
 )
 
@@ -28,16 +28,12 @@ func getRootKey(root string) registry.Key {
   }
 }
 
-func localize(path string) string {
-  return strings.ReplaceAll(path, "/", "\\")
-}
-
 func QueryStringValue(root string, path string, key string) string { 
 
   var result string
   HKEY := getRootKey(root)
 
-  k, _ := registry.OpenKey(HKEY , localize(path), registry.QUERY_VALUE)
+  k, _ := registry.OpenKey(HKEY , filepath.FromSlash(path), registry.QUERY_VALUE)
   defer k.Close()
   result, keyType, _ := k.GetStringValue(key)
   
@@ -56,7 +52,7 @@ func WriteStringValue(root string, path string, key string, value string) {
   HKEY := getRootKey(root)
   var buf []byte;
   
-  k, _, _ := registry.CreateKey(HKEY, localize(path), registry.ALL_ACCESS)
+  k, _, _ := registry.CreateKey(HKEY, filepath.FromSlash(path), registry.ALL_ACCESS)
   defer k.Close()
   _, keyType, _ := k.GetValue(key, buf)
   
