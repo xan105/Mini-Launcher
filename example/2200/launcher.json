@@ -1,0 +1,5 @@
+{
+  "bin": "quake3.exe",
+  "script": "keygen.lua"
+}
+
