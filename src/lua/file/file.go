@@ -23,9 +23,9 @@ func Loader(L *lua.LState) int {
 }
 
 func Write(L *lua.LState) int {
-  filename  := L.ToString(1)  
-  data      := L.ToString(2)
-  format    := L.ToString(3)
+  filename := L.ToString(1)  
+  data     := L.ToString(2)
+  format   := L.ToString(3)
 
   if len(format) == 0 {
     format = "utf8"
@@ -40,8 +40,8 @@ func Write(L *lua.LState) int {
 }
 
 func Read(L *lua.LState) int {
-  filename  := L.ToString(1)  
-  format    := L.ToString(2)
+  filename := L.ToString(1)  
+  format   := L.ToString(2)
 
   if len(format) == 0 {
     format = "utf8"

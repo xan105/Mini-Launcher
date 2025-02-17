@@ -27,7 +27,7 @@ func QueryStringValue(L *lua.LState) int {
   path := L.ToString(2)
   key  := L.ToString(3)  
 
-  value:= regedit.QueryStringValue(root, path, key)          
+  value := regedit.QueryStringValue(root, path, key)          
   L.Push(lua.LString(value))
   return 1
 }

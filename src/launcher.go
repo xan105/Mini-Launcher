@@ -27,7 +27,7 @@ type Addon struct {
 }
 
 type File struct {
-  Path      string                `json:"file"`
+  Path      string                `json:"path"`
   SRI       string                `json:"sri"` 
   Size      int64                 `json:"size"`
 }
@@ -39,8 +39,8 @@ type Splash struct {
 }
 
 type Link struct {
-  Origin      string              `json:"from"`
-  Destination string              `json:"to"`
+  Origin      string              `json:"path"`
+  Destination string              `json:"dest"`
 }
 
 type Config struct {

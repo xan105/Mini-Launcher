@@ -12,7 +12,7 @@ import (
 )
 
 func Sleep(L *lua.LState) int {
-  interval  := L.ToInt(1)
+  interval := L.ToInt(1)
   time.Sleep(time.Millisecond * time.Duration(interval)) 
   return 0
 }

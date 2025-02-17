@@ -50,7 +50,7 @@ Config file
   },
   integrity?: []{
     sri: string, 
-    file?: string, 
+    path?: string, 
     size?: number
   },
   splash?: {
@@ -59,8 +59,8 @@ Config file
     timeout?: number
   },
   symlink?: []{
-    from: string,
-    to: string
+    path: string,
+    dest: string
   }
 }
 ```
@@ -181,14 +181,14 @@ Example:
 }
 ```
 
-### `integrity?: []{sri: string, file?: string, size?: number}`
+### `integrity?: []{sri: string, path?: string, size?: number}`
 
 Check file(s) integrity before starting the executable.
 
 - `sri: string` 
   is a [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity), algo supported are `sha256, sha384, sha512`.
 
-- `file?: string` (executable path) 
+- `path?: string` (executable path) 
   File path, can be absolute or relative (to the current working dir). If no path is specified then the sri targets the executable path.<br />
   `%VAR%` are expanded if any (see Expanding Variable for more details).
 
@@ -211,7 +211,7 @@ Display a splash screen until the executable process change the cursor or displa
   Failsafe timeout in seconds.<br />
   There was no event dispatched under Linux/Proton on Wayland in my limited testing.
   
-### `symlink?: []{from: string, to: string}`
+### `symlink?: []{path: string, dest: string}`
 
 Creates folder symlink before starting the executable.<br />
 Path can be absolute or relative (to the current working dir).<br />
@@ -223,8 +223,8 @@ Path can be absolute or relative (to the current working dir).<br />
 {
   "symlink": [
     { 
-      "from": "%DOCUMENTS%/Telltale Games/The Walking Dead", 
-      "to": "%SAVEGAME%/The Walking Dead"
+      "path": "%DOCUMENTS%/Telltale Games/The Walking Dead",
+      "dest": "%SAVEGAME%/The Walking Dead"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "bin": "RetailExe\\1.2\\cnc3ep1.dat",
+  "bin": "RetailExe/1.2/cnc3ep1.dat",
   "args": "-config \"%CURRENTDIR%\\CNC3EP1_english_1.2.SkuDef\"",
   "script": "keygen.lua",
   "splash": {

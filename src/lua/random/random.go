@@ -47,7 +47,7 @@ func Loader(L *lua.LState) int {
 func AlphaNumString(L *lua.LState) int {
   length := L.ToInt(1)  
 
-  value:= randAlphaNumString(length)
+  value := randAlphaNumString(length)
   L.Push(lua.LString(value))
   return 1
 }
