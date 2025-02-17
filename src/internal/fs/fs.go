@@ -98,7 +98,7 @@ func WriteFile(filename string, data string, format string) error {
     case "windows1252":
       enc = charmap.Windows1252
     default:
-      return errors.New("Unsupported encoding: " + format)
+      return errors.New("Unsupported encoding: : \"" + format + "\"")
   }
 
   encoder := enc.NewEncoder()
@@ -109,4 +109,82 @@ func WriteFile(filename string, data string, format string) error {
   }
 
   return writer.Flush()
+}
+
+func ReadFile(filename string, format string) (string, error) {
+
+  file, err := os.Open(filename)
+  if err != nil {
+    return "", err
+  }
+  defer file.Close()
+
+  var enc encoding.Encoding
+  switch format {
+  case "utf8":
+    enc = encoding.Nop //UTF-8 is default
+  case "utf8sig":
+    enc = unicode.UTF8BOM
+  case "utf16le":
+    enc = unicode.UTF16(unicode.LittleEndian, unicode.ExpectBOM)
+  case "windows1252":
+    enc = charmap.Windows1252
+  default:
+    return "", errors.New("Unsupported encoding: \"" + format + "\"")
+  }
+
+  decoder := enc.NewDecoder()
+  reader := bufio.NewReader(transform.NewReader(file, decoder))
+  data, err := io.ReadAll(reader)
+  if err != nil {
+    return "", err
+  }
+
+  return string(data), nil
+}
+
+func CreateFolderSymlink(origin string, destination string) error {
+
+  target, err := os.Lstat(origin)
+  if err != nil {
+    if !errors.Is(err, os.ErrNotExist) {
+      return err
+    }
+  }
+  
+  if err == nil {
+    if target.Mode()&os.ModeSymlink != 0 { //Already a symlink
+      return nil
+    }
+  
+    if !target.IsDir() { //Target is a file
+      return errors.New("Symlink target is a file, aborting !")
+    }
+    
+    entries, err := os.ReadDir(origin)
+    if err != nil {
+      return err
+    }
+    if len(entries) != 0 { 
+      return errors.New("Symlink target is a non-empty dir, aborting !")
+    }
+    
+    //Empty so safe to delete
+    err = os.Remove(origin)
+    if err != nil {
+      return err
+    }
+  }
+
+  err = os.MkdirAll(destination, 0755)
+  if err != nil {
+    return err
+  }
+
+  err = os.Symlink(destination, origin)
+  if err != nil {
+    return err
+  }
+
+  return nil
 }
