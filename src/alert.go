@@ -11,20 +11,20 @@ import(
   "golang.org/x/sys/windows"
 )
 
-func alert(message string){
+func alert(title string, message string){
   windows.MessageBox(
     windows.HWND(uintptr(0)),
     windows.StringToUTF16Ptr(message),
-    windows.StringToUTF16Ptr("Launcher"),
+    windows.StringToUTF16Ptr(title),
     windows.MB_OK,
   )
 }
 
-func panic(message string){
+func panic(title string, message string){
   windows.MessageBox(
     windows.HWND(uintptr(0)),
     windows.StringToUTF16Ptr(message),
-    windows.StringToUTF16Ptr("Launcher"),
+    windows.StringToUTF16Ptr(title),
     windows.MB_OK | windows.MB_ICONERROR,
   )
   os.Exit(1)

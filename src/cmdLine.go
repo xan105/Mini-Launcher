@@ -12,18 +12,22 @@ import(
 )
 
 type Args struct {
-  Config     string
-  DryRun     bool
-  Help       bool
+  Help        bool
+  DryRun      bool
+  ConfigPath  string
 }
 
-func parseArgs() (args Args) {
-  flag.StringVar(&args.Config, "config", "launcher.json", "File path to the config file to use.")
+func parseArgs() (Args) {
+  var args Args
+  
+  flag.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
   flag.BoolVar(&args.DryRun, "dry-run", false, "Program will exit before starting the executable.")
-  flag.BoolVar(&args.Help, "help", false, "Show list of all arguments")
+  flag.StringVar(&args.ConfigPath, "config", "launcher.json", "File path to the config file to use.")
   flag.Parse()
-  if args.Help { 
-    alert( 
+  
+  if args.Help {
+    alert(
+      "Launcher",
       "--config filePath\n" +
       "File path to the config file to use.\n" +
       "--dry-run\n" +
@@ -34,6 +38,6 @@ func parseArgs() (args Args) {
     )
     os.Exit(0)
   }
-  return
+  return args
 }
 

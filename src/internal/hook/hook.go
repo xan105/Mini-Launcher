@@ -20,7 +20,7 @@ var (
   pCreateRemoteThread = kernel32.NewProc("CreateRemoteThread")
 )
 
-func CreateRemoteThread(pid uintptr, path string) error {
+func CreateRemoteThread(pid int, path string) error {
 
   //Opens a handle to the target process with the needed permissions
   hProcess, err := windows.OpenProcess(

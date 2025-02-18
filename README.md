@@ -113,6 +113,8 @@ This is useful for background tasks or command-line utilities that do not requir
 File path to a Lua script to be run just before the executable (see Lua Scripting for more details).<br />
 Path can be absolute or relative (to the current working dir).
 
+`%VAR%` are expanded if any (see Expanding Variable for more details).
+
 For now this is mainly to handle CD Key generation in old games.
 
 <details>
@@ -170,7 +172,8 @@ end
 List of addons to inject to the executable process.<br />
 When `required` is set to `true` and if the injection failed, alert the user and kill the process.
 
-Path can be absolute or relative (to the current working dir).
+Path can be absolute or relative (to the current working dir).<br />
+`%VAR%` are expanded if any (see Expanding Variable for more details).
 
 Example:
 ```json
@@ -181,7 +184,7 @@ Example:
 }
 ```
 
-### `integrity?: []{sri: string, path?: string, size?: number}`
+### `integrity?: []{sri: string, path?: string, size?: number}` (none)
 
 Check file(s) integrity before starting the executable.
 
@@ -195,7 +198,7 @@ Check file(s) integrity before starting the executable.
 - `size?: number`
   optional file size (in bytes), to accelerate sum comparison.
   
-### `splash?: { show: bool, image: []string, timeout?: number }`
+### `splash?: { show: bool, image: []string, timeout?: number }` (none)
 
 Display a splash screen until the executable process change the cursor or display a window. The splash screen should be a BMP file. 
 
@@ -211,7 +214,7 @@ Display a splash screen until the executable process change the cursor or displa
   Failsafe timeout in seconds.<br />
   There was no event dispatched under Linux/Proton on Wayland in my limited testing.
   
-### `symlink?: []{path: string, dest: string}`
+### `symlink?: []{path: string, dest: string}` (none)
 
 Creates folder symlink before starting the executable.<br />
 Path can be absolute or relative (to the current working dir).<br />
@@ -252,11 +255,18 @@ List of variables that will get expanded:
 - `%USERPROFILE%`
 - `%PUBLIC%` 
 - `%SYSTEMDIR%`
-- `%TEMP%`
 - `%TMP%`
+- `%TEMP%`
 - `%CURRENTDIR%`: Current working dir of the mini-launcher
 - `%BINDIR%`: Dir where the mini-launcher is located at
+
 - `%USERNAME%`
+- `%LOCALE%`: User's locale (ex: `en-US`, `fr-FR`)
+- `%LANG%`
+- `%LANGUAGE%`: User's language (ex: `english`, `french`)
+- `%SCREENWIDTH%`: Current primary display horizontal resolution (DPI Aware)
+- `%SCREENHEIGHT%`: Current primary display vertical resolution (DPI Aware)
+- `%SCREENREFRESH%`: Current primary display refresh rate
 
 Lua Scripting
 =============
@@ -346,6 +356,8 @@ Encoding format:
 Overwrite text data with specified format encoding (default to utf8).<br /> 
 Create target parent dir if doesn't exist.<br />
 File is created if doesn't exist.
+
+`%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
   
 ❌ This function will raise an error on unexpected error.
 
@@ -364,6 +376,8 @@ end
 #### `Read(filename: string, format?: string = "utf8") string`
 
 Read text data as specified format encoding (default to utf8).
+
+`%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
 
 ❌ This function will raise an error on unexpected error.
 

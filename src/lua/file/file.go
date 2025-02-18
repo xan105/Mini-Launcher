@@ -9,6 +9,7 @@ package file
 import (
   "github.com/yuin/gopher-lua"
   "launcher/internal/fs"
+  "launcher/internal/expand"
 )
 
 func Loader(L *lua.LState) int {
@@ -31,7 +32,8 @@ func Write(L *lua.LState) int {
     format = "utf8"
   } 
 
-  err := fs.WriteFile(filename, data, format)
+  filePath := fs.Resolve(expand.ExpandVariables(filename))
+  err := fs.WriteFile(filePath, data, format)
   if err != nil {
     L.RaiseError(err.Error());
   }
@@ -47,7 +49,8 @@ func Read(L *lua.LState) int {
     format = "utf8"
   } 
   
-  data, err := fs.ReadFile(filename, format)
+  filePath := fs.Resolve(expand.ExpandVariables(filename))
+  data, err := fs.ReadFile(filePath, format)
   if err != nil {
     L.RaiseError(err.Error());
   }

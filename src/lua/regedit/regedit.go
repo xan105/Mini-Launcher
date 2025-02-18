@@ -38,7 +38,6 @@ func WriteStringValue(L *lua.LState) int {
   key   := L.ToString(3)
   value := L.ToString(4)
 
-  regedit.WriteStringValue(root, path, key, value)
-    
+  regedit.WriteStringValue(root, path, key, value)   
   return 0
 }

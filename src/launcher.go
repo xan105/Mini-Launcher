@@ -21,98 +21,47 @@ import(
   "launcher/internal/splash"
 )
 
-type Addon struct {
-  Path      string                `json:"path"`
-  Required  bool                  `json:"required"`
-}
-
-type File struct {
-  Path      string                `json:"path"`
-  SRI       string                `json:"sri"` 
-  Size      int64                 `json:"size"`
-}
-
-type Splash struct {
-  Show        bool                `json:"show"`
-  Images      []string            `json:"image"`
-  Timeout     uint                `json:"timeout"`
-}
-
-type Link struct {
-  Origin      string              `json:"path"`
-  Destination string              `json:"dest"`
-}
-
-type Config struct {
-  Bin         string              `json:"bin"`
-  Cwd         string              `json:"cwd"`
-  Args        string              `json:"args"`
-  Env         map[string]string   `json:"env"`
-  Hide        bool                `json:"hide"`
-  Script      string              `json:"script"`
-  Addons      []Addon             `json:"addons"`
-  Integrity   []File              `json:"integrity"`
-  Splash      Splash              `json:"splash"`
-  Symlink     []Link              `json:"symlink"`
-}
-
 func main(){
 
-  args := parseArgs()
+  cmdLine := parseArgs()
 
-  cwd, err := os.Getwd() 
-  if err != nil { panic(err.Error()) }
-
-  configFile := filepath.FromSlash(args.Config)
-  if !filepath.IsAbs(args.Config) {
-    configFile = filepath.Join(cwd, args.Config)
-  }
-
-  config, err := fs.ReadJSON[Config](configFile)
-  if err != nil { panic("Parsing JSON failure!\n\n" + err.Error()) }
+  config, err := fs.ReadJSON[Config](fs.Resolve(cmdLine.ConfigPath))
+  if err != nil { panic("JSON Parser", err.Error()) }
   
-  binary := filepath.FromSlash(expand.ExpandVariables(config.Bin))
-  if !filepath.IsAbs(binary) {
-    binary = filepath.Join(cwd, binary)
-  }
-  
+  binary := fs.Resolve(expand.ExpandVariables(config.Bin))
+
+  //File Integrity
   if config.Integrity != nil && len(config.Integrity) > 0 {
     for _, file := range config.Integrity {
       
-      target:= binary
+      target := binary
       if len(file.Path) > 0 {
-        target = filepath.FromSlash(expand.ExpandVariables(file.Path))
-        if !filepath.IsAbs(target) {
-          target = filepath.Join(cwd, target)
-        } 
+        target = fs.Resolve(expand.ExpandVariables(file.Path))
       }
       
       stats, err := os.Stat(target)
       if err != nil { 
         if errors.Is(err, os.ErrNotExist) {
-          panic("Integrity failure!\n\n" + 
-                "File does not exist: \"" + target + "\"") 
+          panic("Integrity failure", "File does not exist: \"" + target + "\"") 
         }
-        panic(err.Error())  
+        panic("Integrity failure", err.Error())  
       }
       if file.Size > 0 {
         if stats.Size() != file.Size { 
-          panic("Integrity failure!\n\n" + 
-                "Size mismatch: \"" + target + "\"") 
+          panic("Integrity failure", "Size mismatch: \"" + target + "\"") 
         }
       }
       
       SRI := strings.SplitN(file.SRI, "-", 2)
       if len(SRI) != 2 {
-        panic("Integrity failure!\n\n" + 
-              "Unexpected SRI format: \"" + file.SRI + "\"") 
+        panic("Integrity failure", "Unexpected SRI format: \"" + file.SRI + "\"")
       }
       
       algo, expected := SRI[0], SRI[1]
       sum, err := fs.CheckSum(target, algo)
-      if err != nil { panic(err.Error()) }
+      if err != nil { panic("Integrity failure", err.Error()) }
       if sum != expected { 
-        panic("Integrity failure!\n\n" + 
+        panic("Integrity failure", 
               "Hash mismatch: \"" + target + "\"\n" +
               "SRI: " + algo + "-" + sum)
       }
@@ -124,48 +73,44 @@ func main(){
   if len(config.Args) > 0 {
     argv = append(argv, expand.ExpandVariables(config.Args))
   }
-  cmd.SysProcAttr = &syscall.SysProcAttr{ CmdLine: strings.Join(argv, " ") } //verbatim arguments
-
-  if config.Hide == true {
-    cmd.SysProcAttr = &syscall.SysProcAttr{ HideWindow: true }
+  cmd.SysProcAttr = &syscall.SysProcAttr{ 
+    CmdLine: strings.Join(argv, " "), //verbatim arguments
+    HideWindow: config.Hide,
   }
 
   cmd.Dir = filepath.Dir(binary)
   if len(config.Cwd) > 0 {
-    cmd.Dir = filepath.FromSlash(config.Cwd)
+    cmd.Dir = fs.Resolve(config.Cwd)
   }
 
   cmd.Env = os.Environ()
   if len(config.Env) > 0 {
     for key, value := range config.Env {
+      if len(key) == 0 || len(value) == 0 {
+        continue
+      }
       cmd.Env = append(cmd.Env, key + "=" + expand.ExpandVariables(value))
     }
   }
 
+  //Symlink
   if config.Symlink != nil && len(config.Symlink) > 0 {
     for _, link := range config.Symlink {
-      origin := filepath.FromSlash(expand.ExpandVariables(link.Origin))
-      if !filepath.IsAbs(origin) {
-        origin = filepath.Join(cwd, origin)
+      if len(link.Origin) == 0 || len(link.Destination) == 0 {
+        continue
       }
-      
-      destination := filepath.FromSlash(expand.ExpandVariables(link.Destination))
-      if !filepath.IsAbs(destination) {
-        destination = filepath.Join(cwd, destination)
-      }
-
-      err:= fs.CreateFolderSymlink(origin, destination)
+      origin := fs.Resolve(expand.ExpandVariables(link.Origin))
+      destination := fs.Resolve(expand.ExpandVariables(link.Destination))
+      err := fs.CreateFolderSymlink(origin, destination)
       if err != nil { 
-        panic("Symlink failure!\n\n" + err.Error()) 
+        panic("Symlink", err.Error()) 
       }
     }
   } 
 
+  //Lua Scripting
   if len(config.Script) > 0 {
-    file := filepath.FromSlash(config.Script)
-    if !filepath.IsAbs(file) {
-      file = filepath.Join(cwd, file)
-    }
+    file := fs.Resolve(expand.ExpandVariables(config.Script))
     loadLua(file)
     //Add WASI as well later on (?)
   }
@@ -174,55 +119,49 @@ func main(){
   cmd.Stdout = nil
   cmd.Stderr = nil
 
-  if (args.DryRun) {
-    os.Exit(0)
-  }
-  
+  if cmdLine.DryRun { os.Exit(0) }
   err = cmd.Start()
-    if err != nil { panic(err.Error()) }
+  if err != nil { panic("Launcher", err.Error()) }
   
   //Addons
   if config.Addons != nil && len(config.Addons) > 0 {
     for _, addon := range config.Addons {
-          
-      dylib := filepath.FromSlash(addon.Path)
-      if !filepath.IsAbs(dylib) {
-        dylib = filepath.Join(cwd, dylib)
+      if len(addon.Path) == 0 {
+        continue
       }
-            
+      dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
       if fs.FileExist(dylib){
-        err = hook.CreateRemoteThread(uintptr(cmd.Process.Pid), dylib)
+        err = hook.CreateRemoteThread(cmd.Process.Pid, dylib)
         if err != nil {
           if addon.Required {
             cmd.Process.Kill()
-            panic(err.Error())
+            panic("Remote Thread", err.Error())
           }
         }
       }
     }
   }
   
-  //splash screen
-  if config.Splash.Show {
+  //Splash screen
+  if config.Splash.Show && config.Splash.Images != nil && len(config.Splash.Images) > 0 {
     image := config.Splash.Images[rand.Intn(len(config.Splash.Images))]
-    image = filepath.FromSlash(expand.ExpandVariables(image))
-    if !filepath.IsAbs(image) {
-      image = filepath.Join(cwd, image)
-    }
-  
-    var timeout uint = 10
-    if config.Splash.Timeout > 0 {
-      timeout = config.Splash.Timeout
-    }
-  
-    exit := make(chan bool)
-    go splash.CreateWindow(exit, cmd.Process.Pid, image)
+    if len(image) > 0 {
+      image = fs.Resolve(expand.ExpandVariables(image))
 
-    select {
-      case <-exit:
-        return
-      case <-time.After(time.Second * time.Duration(timeout)):
-        return
+      var timeout uint = 10
+      if config.Splash.Timeout > 0 {
+        timeout = config.Splash.Timeout
+      }
+    
+      exit := make(chan bool)
+      go splash.CreateWindow(exit, cmd.Process.Pid, image)
+
+      select {
+        case <-exit:
+          return
+        case <-time.After(time.Second * time.Duration(timeout)):
+          return
+      }
     }
   }
 }

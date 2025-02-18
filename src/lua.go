@@ -14,7 +14,7 @@ import (
   "launcher/lua/file"
 )
 
-func loadLua(filename string){
+func loadLua(filePath string){
   L := lua.NewState(lua.Options{ SkipOpenLibs: true })
   defer L.Close()
   
@@ -34,7 +34,7 @@ func loadLua(filename string){
       NRet:    0,
       Protect: true,
     }, lua.LString(builtin.name)); err != nil {
-      panic(err.Error())
+      panic("Lua", err.Error())
     }
   }
   
@@ -47,7 +47,7 @@ func loadLua(filename string){
   L.PreloadModule("file", file.Loader)
   
   //Exec
-  if err := L.DoFile(filename); err != nil {
-    panic(err.Error())
+  if err := L.DoFile(filePath); err != nil {
+    panic("Lua", err.Error())
   }
 }
