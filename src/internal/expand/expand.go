@@ -9,10 +9,13 @@ package expand
 import(
   "os"
   "os/user"
-  "strings"
   "regexp"
+  "strings"
+  "strconv"
   "path/filepath"
   "launcher/internal/regedit"
+  "launcher/internal/locale"
+  "launcher/internal/video"
 )
 
 func getShellFolder(keys []string, root string) string {
@@ -160,8 +163,7 @@ func ExpandVariables(input string) string {
         }
         return match
       }
-      case "HOMEDIR":
-      case "USERPROFILE": {
+      case "HOMEDIR", "USERPROFILE": {
         value:= os.Getenv("USERPROFILE")
         if len(value) > 0 {
           return value
@@ -175,7 +177,7 @@ func ExpandVariables(input string) string {
         }
         return match
       }
-      case "SYSTEMDIR":{
+      case "SYSTEMDIR": {
         variables := []string{ "SYSTEMROOT", "WINDIR" }
         for _, variable := range variables {
           value := os.Getenv(variable)
@@ -185,8 +187,7 @@ func ExpandVariables(input string) string {
         }
         return match
       }
-      case "TEMP":
-      case "TMP": {
+      case "TEMP", "TMP": {
         variables := []string{"TEMP", "TMP"}
         for _, variable := range variables {
           value := os.Getenv(variable)
@@ -217,6 +218,45 @@ func ExpandVariables(input string) string {
         }
         return user.Username
       }
+      case "LOCALE": {
+        code, err := locale.GetUserLocale()
+        if err != nil {
+          return match
+        }
+        return code
+      }
+      case "LANG", "LANGUAGE": {
+        code, err := locale.GetUserLocale()
+        if err != nil {
+          return match
+        }
+        language, err := locale.GetLanguageFromLocale(code)
+        if err != nil {
+          return match
+        }
+        return language
+      }
+      case "SCREENWIDTH": {
+        display, err := video.GetCurrentDisplayMode()
+        if err != nil {
+          return match
+        }
+        return strconv.FormatUint(display.Width, 10)
+      }
+      case "SCREENHEIGHT": {
+        display, err := video.GetCurrentDisplayMode()
+        if err != nil {
+          return match
+        }
+        return strconv.FormatUint(display.Height, 10)
+      }
+      case "SCREENREFRESH": {
+        display, err := video.GetCurrentDisplayMode()
+        if err != nil {
+          return match
+        }
+        return strconv.FormatUint(display.Hz, 10)
+      }  
     }
     return match
   })
