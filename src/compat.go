@@ -12,7 +12,7 @@ import(
   "launcher/internal/regedit"
 )
 
-func setAppCompatFlags(binary string, flags CompatFlags) {
+func setCompatFlags(binary string, flags CompatFlags) {
 
   //Win10: "~ [Fullscreen Optimization] + [Privilege Level] + [Flags...] + [Compatibility Mode]"
 

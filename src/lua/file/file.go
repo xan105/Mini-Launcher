@@ -31,9 +31,12 @@ func Write(L *lua.LState) int {
   if len(format) == 0 {
     format = "utf8"
   } 
-
-  filePath := fs.Resolve(expand.ExpandVariables(filename))
-  err := fs.WriteFile(filePath, data, format)
+ 
+  err := fs.WriteFile(
+    fs.Resolve(expand.ExpandVariables(filename)), 
+    data, 
+    format,
+  )
   if err != nil {
     L.RaiseError(err.Error());
   }
@@ -49,8 +52,10 @@ func Read(L *lua.LState) int {
     format = "utf8"
   } 
   
-  filePath := fs.Resolve(expand.ExpandVariables(filename))
-  data, err := fs.ReadFile(filePath, format)
+  data, err := fs.ReadFile(
+    fs.Resolve(expand.ExpandVariables(filename)), 
+    format,
+  )
   if err != nil {
     L.RaiseError(err.Error());
   }

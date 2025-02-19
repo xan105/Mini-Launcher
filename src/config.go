@@ -48,8 +48,3 @@ type Config struct {
   Symlink         []Link              `json:"symlink"`
   Compatibility   CompatFlags         `json:"compatibility"`
 }
-
-
-
-
-

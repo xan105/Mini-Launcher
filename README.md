@@ -245,7 +245,7 @@ Path can be absolute or relative (to the current working dir).<br />
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
 
-### `compatibility?: { version?: string, fullscreen?: bool, admin?: bool, aware?: bool }`
+### `compatibility?: { version?: string, fullscreen?: bool, admin?: bool, aware?: bool }` (none)
 
 Set `Program Compatibility Assistant` (PCA) flags, this is equivalent to the `right click > Properties > Compatibility tab` on Windows.
 
