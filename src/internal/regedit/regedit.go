@@ -62,3 +62,12 @@ func WriteStringValue(root string, path string, key string, value string) {
     k.SetStringValue(key, value)
   }
 }
+
+func DeleteKeyValue (root string, path string, key string) {
+
+  HKEY := getRootKey(root)
+
+  k, _ := registry.OpenKey(HKEY , filepath.FromSlash(path), registry.ALL_ACCESS) 
+  defer k.Close()
+  k.DeleteValue(key)
+}

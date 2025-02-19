@@ -5,11 +5,12 @@ Mini-Launcher is an application launcher with the following features:
 
   - DLL Injection
   - Lua Scripting
-  - Optional Splash screen
-  - File integrity check
+  - Optional Splash Screen
+  - File Integrity Check
   - Expanding Variable
   - Verbatim Arguments
   - Setting Environnement Variables
+  - Setting PCA Flags
 
 🐧 This software has an emphasis on being compatible with Linux/Proton.
   
@@ -61,6 +62,12 @@ Config file
   symlink?: []{
     path: string,
     dest: string
+  },
+  compatibility?: {
+    version?: string,
+    fullscreen?: bool,
+    admin?: bool,
+    aware?: bool
   }
 }
 ```
@@ -162,7 +169,6 @@ if (current == "") then
     print(err)
   end
 end
-
 ```
 
 </details>
@@ -183,6 +189,9 @@ Example:
   ]
 }
 ```
+
+> [!IMPORTANT]
+> This launcher does not support Wow64 injection so make sure the launcher, the executable and the addon are all the same arch (x86 or x64).
 
 ### `integrity?: []{sri: string, path?: string, size?: number}` (none)
 
@@ -236,6 +245,38 @@ Path can be absolute or relative (to the current working dir).<br />
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
 
+### `compatibility?: { version?: string, fullscreen?: bool, admin?: bool, aware?: bool }`
+
+Set `Program Compatibility Assistant` (PCA) flags, this is equivalent to the `right click > Properties > Compatibility tab` on Windows.
+
+PCA flag(s) are set in `HKCU/Software/Microsoft/Windows NT/CurrentVersion/AppCompatFlags/Layers`.
+
+🐧 This has no effect on application behavior under Wine/Proton
+
+- `version?: string`
+  Run the executable in compatibility mode for:
+    + `WIN95`
+    + `WIN98`
+    + `WIN2000`
+    + `WINXP`
+    + `WINXPSP1`
+    + `WINXPSP2`
+    + `WINXPSP3`
+    + `VISTARTM`
+    + `VISTASP1`
+    + `VISTASP2`
+    + `WIN7RTM`
+    + `WIN8RTM`
+    
+- `fullscreen?: bool`
+  Disable fullscreen optimizations
+
+- `admin?: bool`
+  Run the executable as an Administrator
+  
+- `aware?: bool`
+  Override high DPI scaling behavior (Application)
+
 Expanding Variable
 ==================
 
@@ -251,19 +292,15 @@ List of variables that will get expanded:
 - `%VIDEOS%`
 - `%DOWNLOAD%`
 - `%SAVEGAME%`
-- `%HOMEDIR%`
-- `%USERPROFILE%`
+- `%HOMEDIR%`, `%USERPROFILE%`
 - `%PUBLIC%` 
 - `%SYSTEMDIR%`
-- `%TMP%`
-- `%TEMP%`
+- `%TEMP%`, `%TMP%`
 - `%CURRENTDIR%`: Current working dir of the mini-launcher
 - `%BINDIR%`: Dir where the mini-launcher is located at
-
 - `%USERNAME%`
 - `%LOCALE%`: User's locale (ex: `en-US`, `fr-FR`)
-- `%LANG%`
-- `%LANGUAGE%`: User's language (ex: `english`, `french`)
+- `%LANG%`, `%LANGUAGE%`: User's language (ex: `english`, `french`)
 - `%SCREENWIDTH%`: Current primary display horizontal resolution (DPI Aware)
 - `%SCREENHEIGHT%`: Current primary display vertical resolution (DPI Aware)
 - `%SCREENREFRESH%`: Current primary display refresh rate
@@ -361,18 +398,6 @@ File is created if doesn't exist.
   
 ❌ This function will raise an error on unexpected error.
 
-```lua
-local file = require("file")
-local random = require("random")
-
-local key = random.AlphaNumString(20)
-
-local written, err = pcall(file.Write, "test.key", key)
-if (not written) then
-  print(err)
-end
-```
-  
 #### `Read(filename: string, format?: string = "utf8") string`
 
 Read text data as specified format encoding (default to utf8).
@@ -380,6 +405,18 @@ Read text data as specified format encoding (default to utf8).
 `%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
 
 ❌ This function will raise an error on unexpected error.
+
+### 📦 User
+
+This is a module to get info about the current user.
+
+```lua
+local user = require("user")
+```
+
+- `name: string` : User name
+- `locale: string`: User's locale (ex: `en-US`, `fr-FR`)
+- `language: string`: User's language (ex: `english`, `french`)
 
 Build
 =====

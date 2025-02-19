@@ -92,6 +92,9 @@ func main(){
       cmd.Env = append(cmd.Env, key + "=" + expand.ExpandVariables(value))
     }
   }
+  
+  //AppCompatFlags
+  setAppCompatFlags(binary, config.Compatibility)
 
   //Symlink
   if config.Symlink != nil && len(config.Symlink) > 0 {
@@ -111,8 +114,19 @@ func main(){
   //Lua Scripting
   if len(config.Script) > 0 {
     file := fs.Resolve(expand.ExpandVariables(config.Script))
-    loadLua(file)
-    //Add WASI as well later on (?)
+    ext := filepath.Ext(file)
+    switch ext {
+      case ".lua": {
+        loadLua(file)
+      }
+      /*
+      case ".wasm": { //Add WASI later on ?
+      }
+      case ".bat", ".cmd": { //Shell script with env var ?
+        
+      }
+      */
+    } 
   }
 
   cmd.Stdin = nil
