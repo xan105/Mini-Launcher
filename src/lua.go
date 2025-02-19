@@ -12,6 +12,7 @@ import (
   "launcher/lua/regedit"
   "launcher/lua/random"
   "launcher/lua/file"
+  "launcher/lua/user"
 )
 
 func loadLua(filePath string){
@@ -45,6 +46,7 @@ func loadLua(filePath string){
   L.PreloadModule("regedit", regedit.Loader)
   L.PreloadModule("random", random.Loader)
   L.PreloadModule("file", file.Loader)
+  L.PreloadModule("user", user.Loader)
   
   //Exec
   if err := L.DoFile(filePath); err != nil {
