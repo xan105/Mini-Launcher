@@ -299,8 +299,8 @@ List of variables that will get expanded:
 - `%CURRENTDIR%`: Current working dir of the mini-launcher
 - `%BINDIR%`: Dir where the mini-launcher is located at
 - `%USERNAME%`
-- `%LOCALE%`: User's locale (ex: `en-US`, `fr-FR`)
-- `%LANG%`, `%LANGUAGE%`: User's language (ex: `english`, `french`)
+- `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
+- `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `German`)
 - `%SCREENWIDTH%`: Current primary display horizontal resolution (DPI Aware)
 - `%SCREENHEIGHT%`: Current primary display vertical resolution (DPI Aware)
 - `%SCREENREFRESH%`: Current primary display refresh rate
@@ -415,8 +415,10 @@ local user = require("user")
 ```
 
 - `name: string` : User name
-- `locale: string`: User's locale (ex: `en-US`, `fr-FR`)
-- `language: string`: User's language (ex: `english`, `french`)
+- `language: string`: User's language in English (ex: `english`, `french`, `German`)
+- `locale`: User's language as ISO 639
+  + `code: string`: language code (ex: `en`, `fr`, `de`)
+  + `region: string`: language region (ex: `US`, `BE`, `DE`)
 
 Build
 =====

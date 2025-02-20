@@ -218,19 +218,24 @@ func ExpandVariables(input string) string {
         }
         return user.Username
       }
-      case "LOCALE": {
-        code, err := locale.GetUserLocale()
-        if err != nil {
+      case "LANGCODE": {
+        localeName, err := locale.GetUserLocale()
+        if err != nil || !strings.Contains(localeName, "-") {
           return match
         }
+        loc := strings.SplitN(localeName, "-", 2)
+        if len(loc) != 2 { 
+          return match 
+        }
+        code := loc[0]
         return code
       }
-      case "LANG", "LANGUAGE": {
-        code, err := locale.GetUserLocale()
+      case "LANGUAGE": {
+        localeName, err := locale.GetUserLocale()
         if err != nil {
           return match
         }
-        language, err := locale.GetLanguageFromLocale(code)
+        language, err := locale.GetLanguageFromLocale(localeName)
         if err != nil {
           return match
         }

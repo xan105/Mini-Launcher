@@ -8,6 +8,8 @@ package user
 
 import (
   "os/user"
+  "errors"
+  "strings"
   "github.com/yuin/gopher-lua"
   "launcher/internal/locale"
 )
@@ -20,27 +22,41 @@ func getUserName() (string, error) {
   return user.Username, nil
 }
 
-func getUserLang() (string, string, error) {
-  code, err := locale.GetUserLocale()
+func getUserLang() (string, string, string, error) {
+  localeName, err := locale.GetUserLocale()
   if err != nil {
-    return "", "", err
+     return "", "", "", err
   }
-  lang, err := locale.GetLanguageFromLocale(code)
+  
+  if !strings.Contains(localeName, "-") {
+     return "", "", "", errors.New("Unexpected local ISO 639: \"" + localeName + "\"")
+  }
+  loc := strings.SplitN(localeName, "-", 2)
+  if len(loc) != 2 { 
+    return "", "", "", errors.New("Unexpected local ISO 639: \"" + localeName + "\"") 
+  }
+  
+  code, region := loc[0], loc[1]
+  lang, err := locale.GetLanguageFromLocale(localeName)
   if err != nil {
-    return code, "", err
+    return code, region, "", err
   }
-  return code, lang, nil
+  
+  return code, region, lang, nil
 }
 
 func Loader(L *lua.LState) int {
-  mod := L.NewTable()
-  
   name, _ := getUserName()
-  code, lang, _ := getUserLang()
+  code, region, lang, _ := getUserLang()
   
+  locale := L.NewTable()
+  L.SetField(locale, "code", lua.LString(code))
+  L.SetField(locale, "region", lua.LString(region))
+  
+  mod := L.NewTable()
   L.SetField(mod, "name", lua.LString(name))
-  L.SetField(mod, "locale", lua.LString(code))
   L.SetField(mod, "language", lua.LString(lang))
+  L.SetField(mod, "locale", locale)
   L.Push(mod)
   return 1
 }
