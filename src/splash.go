@@ -19,20 +19,21 @@ func displaySplash(pid int, screen Splash) {
     image := screen.Images[rand.Intn(len(screen.Images))]
     if len(image) > 0 {
       image = fs.Resolve(expand.ExpandVariables(image))
+      if fs.FileExist(image){
+        var timeout uint = 10
+        if screen.Timeout > 0 {
+          timeout = screen.Timeout
+        }
+      
+        exit := make(chan bool)
+        go splash.CreateWindow(exit, pid, image)
 
-      var timeout uint = 10
-      if screen.Timeout > 0 {
-        timeout = screen.Timeout
-      }
-    
-      exit := make(chan bool)
-      go splash.CreateWindow(exit, pid, image)
-
-      select {
-        case <-exit:
-          return
-        case <-time.After(time.Second * time.Duration(timeout)):
-          return
+        select {
+          case <-exit:
+            return
+          case <-time.After(time.Second * time.Duration(timeout)):
+            return
+        }
       }
     }
   }
