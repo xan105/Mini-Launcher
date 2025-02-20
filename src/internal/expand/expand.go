@@ -241,14 +241,14 @@ func ExpandVariables(input string) string {
         }
         return language
       }
-      case "SCREENWIDTH": {
+      case "SCREENWIDTH", "XRES": {
         display, err := video.GetCurrentDisplayMode()
         if err != nil {
           return match
         }
         return strconv.FormatUint(display.Width, 10)
       }
-      case "SCREENHEIGHT": {
+      case "SCREENHEIGHT", "YRES": {
         display, err := video.GetCurrentDisplayMode()
         if err != nil {
           return match

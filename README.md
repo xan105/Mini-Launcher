@@ -305,7 +305,7 @@ Update current prefix settings.
     + `winxp`
   
 - `dpi?: number`
-  Scale factor: 96 (100%) to 480.
+  Scale factor: 96 (100%), 120 (125%), 144 (150%), 192 (200%) to 480 (500%).
 
 - `overrides?: object` 
   key-value pairs of dll overrrides. Accepted values:
@@ -352,8 +352,8 @@ List of variables that will get expanded:
 - `%USERNAME%`
 - `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
 - `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
-- `%SCREENWIDTH%`: Current primary display horizontal resolution (DPI Aware)
-- `%SCREENHEIGHT%`: Current primary display vertical resolution (DPI Aware)
+- `%SCREENWIDTH%`, `XRES`: Current primary display horizontal resolution (DPI Aware)
+- `%SCREENHEIGHT%`, `YRES`: Current primary display vertical resolution (DPI Aware)
 - `%SCREENREFRESH%`: Current primary display refresh rate
 
 Lua Scripting
