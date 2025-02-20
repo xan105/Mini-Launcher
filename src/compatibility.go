@@ -24,7 +24,7 @@ func setCompatFlags(binary string, flags CompatFlags) {
      flags.Invoker ||
      flags.Aware {
 
-    version := []string{
+    versions := []string{
       "WIN95",
       "WIN98", 
       "WIN2000",
@@ -55,11 +55,51 @@ func setCompatFlags(binary string, flags CompatFlags) {
       template = append(template, "HIGHDPIAWARE")
     }
     
-    if slices.Contains(version, flags.Version) {
+    if slices.Contains(versions, flags.Version) {
       template = append(template, flags.Version)
     }
 
     regedit.WriteStringValue("HKCU", path, binary, strings.Join(template, " "))
     
   } else { regedit.DeleteKeyValue("HKCU", path, binary) }
+}
+
+func updatePrefixSettings(prefix WinePrefix) {
+
+  if !regedit.KeyExists("HCKU", "HKCU/Software/Wine") { return }
+
+  if len(prefix.WinVer) > 0 {
+    versions := []string{
+      "win11",
+      "win10",
+      "win81", 
+      "win8", 
+      "win7",  
+      "vista", 
+      "winxp",
+    }
+    if slices.Contains(versions, prefix.WinVer) {
+      regedit.WriteStringValue("HKCU", "HKCU/Software/Wine", "Version", prefix.WinVer)
+    }
+  }
+  
+  if prefix.DPI >= 96 && prefix.DPI <= 480 {
+    regedit.WriteDwordValue("HKCU", "Control Panel/Desktop", "LogPixels", prefix.DPI)
+  }
+  
+  if len(prefix.DllOverrides) > 0 {
+    overrides := []string{
+      "native,builtin",
+      "builtin,native",
+      "native",
+      "builtin",
+    }
+    for dll, override := range prefix.DllOverrides {
+      if len(dll) > 0 && len(override) > 0 {
+        if slices.Contains(overrides, override) {
+          regedit.WriteStringValue("HKCU", "HKCU/Software/Wine/DllOverrides", strings.ToLower(dll), override)
+        }
+      }
+    }
+  }
 }

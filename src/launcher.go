@@ -59,8 +59,9 @@ func main(){
   cmd := buildCommand(binary, config)
   
   verifyIntegrity(binary, config.Integrity)
-  setCompatFlags(binary, config.Compatibility)
   makeLink(config.Symlink)
+  setCompatFlags(binary, config.Compatibility)
+  updatePrefixSettings(config.Prefix)
 
   if len(config.Script) > 0 {
     script := fs.Resolve(expand.ExpandVariables(config.Script))

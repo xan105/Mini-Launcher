@@ -28,6 +28,20 @@ func getRootKey(root string) registry.Key {
   }
 }
 
+func KeyExists(root string, path string) bool {
+
+  HKEY := getRootKey(root)
+
+  k, err := registry.OpenKey(HKEY , filepath.FromSlash(path), registry.QUERY_VALUE)
+  defer k.Close()
+  
+  if err != nil {
+    return false
+  } else {
+    return true
+  }
+}
+
 func QueryStringValue(root string, path string, key string) string { 
 
   var result string
@@ -61,6 +75,15 @@ func WriteStringValue(root string, path string, key string, value string) {
   } else {
     k.SetStringValue(key, value)
   }
+}
+
+func WriteDwordValue(root string, path string, key string, value uint32) {
+
+  HKEY := getRootKey(root)
+  
+  k, _, _ := registry.CreateKey(HKEY, filepath.FromSlash(path), registry.ALL_ACCESS) 
+  defer k.Close()
+  k.SetDWordValue(key, value)
 }
 
 func DeleteKeyValue (root string, path string, key string) {

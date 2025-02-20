@@ -69,6 +69,11 @@ Config file
     admin?: bool,
     invoker?: bool,
     aware?: bool
+  },
+  prefix?: {
+    winver?: string,
+    dpi?: number,
+    overrides?: object
   }
 }
 ```
@@ -246,7 +251,7 @@ Path can be absolute or relative (to the current working dir).<br />
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
 
-### `compatibility?: object (none)
+### `compatibility?: object` (none)
 
 Set `Program Compatibility Assistant` (PCA) flags, this is equivalent to the `right click > Properties > Compatibility tab` on Windows.
 
@@ -282,6 +287,46 @@ PCA flag(s) are set in `HKCU/Software/Microsoft/Windows NT/CurrentVersion/AppCom
   Override high DPI scaling behavior (Application).
 
 NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supersede `invoker`.
+
+### `prefix?: {winver?: string, dpi?: number, overrides?: object}` (none)
+
+🐧 Linux Wine/Proton only.
+
+Update current prefix settings.
+
+- `winver?: string`
+  Windows version. Accepted values are: 
+    + `win11`
+    + `win10`
+    + `win81` 
+    + `win8`
+    + `win7`
+    + `vista` 
+    + `winxp`
+  
+- `dpi?: number`
+  Scale factor: 96 (100%) to 480.
+
+- `overrides?: object` 
+  key-value pairs of dll overrrides. Accepted values:
+    + `native,builtin`
+    + `builtin,native`
+    + `native`
+    + `builtin`
+    
+Example: 
+
+```json
+{
+  "prefix": {
+    "winver": "win10",
+    "dpi": 96,
+    "overrides": {
+      "winmm": "native,builtin"
+    }
+  }
+}
+```
 
 Expanding Variable
 ==================

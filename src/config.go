@@ -36,6 +36,12 @@ type CompatFlags struct {
   Aware           bool                `json:"aware"`
 }
 
+type WinePrefix struct {
+  WinVer          string              `json:"winver"`
+  DllOverrides    map[string]string   `json:"overrides"`
+  DPI             uint32              `json:"dpi"`
+}
+
 type Config struct {
   Bin             string              `json:"bin"`
   Cwd             string              `json:"cwd"`
@@ -48,4 +54,5 @@ type Config struct {
   Splash          Splash              `json:"splash"`
   Symlink         []Link              `json:"symlink"`
   Compatibility   CompatFlags         `json:"compatibility"`
+  Prefix          WinePrefix          `json:"prefix"`
 }
