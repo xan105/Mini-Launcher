@@ -67,6 +67,7 @@ Config file
     version?: string,
     fullscreen?: bool,
     admin?: bool,
+    invoker?: bool,
     aware?: bool
   }
 }
@@ -245,7 +246,7 @@ Path can be absolute or relative (to the current working dir).<br />
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
 
-### `compatibility?: { version?: string, fullscreen?: bool, admin?: bool, aware?: bool }` (none)
+### `compatibility?: object (none)
 
 Set `Program Compatibility Assistant` (PCA) flags, this is equivalent to the `right click > Properties > Compatibility tab` on Windows.
 
@@ -269,13 +270,18 @@ PCA flag(s) are set in `HKCU/Software/Microsoft/Windows NT/CurrentVersion/AppCom
     + `WIN8RTM`
     
 - `fullscreen?: bool`
-  Disable fullscreen optimizations
+  Disable fullscreen optimizations.
 
 - `admin?: bool`
-  Run the executable as an Administrator
+  Run the executable as an Administrator.
+  
+- `invoker?: bool`
+  Enforce running the executable as the invoker.
   
 - `aware?: bool`
-  Override high DPI scaling behavior (Application)
+  Override high DPI scaling behavior (Application).
+
+NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supersede `invoker`.
 
 Expanding Variable
 ==================
@@ -300,7 +306,7 @@ List of variables that will get expanded:
 - `%BINDIR%`: Dir where the mini-launcher is located at
 - `%USERNAME%`
 - `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
-- `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `German`)
+- `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
 - `%SCREENWIDTH%`: Current primary display horizontal resolution (DPI Aware)
 - `%SCREENHEIGHT%`: Current primary display vertical resolution (DPI Aware)
 - `%SCREENREFRESH%`: Current primary display refresh rate
@@ -415,7 +421,7 @@ local user = require("user")
 ```
 
 - `name: string` : User name
-- `language: string`: User's language in English (ex: `english`, `french`, `German`)
+- `language: string`: User's language in English (ex: `english`, `french`, `german`)
 - `locale`: User's language as ISO 639
   + `code: string`: language code (ex: `en`, `fr`, `de`)
   + `region: string`: language region (ex: `US`, `BE`, `DE`)

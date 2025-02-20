@@ -1,6 +1,9 @@
 {
   "bin": "Quake4.exe",
-  "args": "+set r_mode -1 +set r_customWidth %SCREENWIDTH% +set r_customHeight %SCREENHEIGHT% +set fs_savepath \"%SAVEGAME%\\Quake IV\""
+  "args": "+set r_mode -1 +set r_customWidth %SCREENWIDTH% +set r_customHeight %SCREENHEIGHT% +set fs_savepath \"%SAVEGAME%\\Quake IV\"",
+  "compatibility": {
+    "invoker": true
+  }
 }
 
 

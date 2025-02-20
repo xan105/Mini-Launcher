@@ -32,6 +32,7 @@ type CompatFlags struct {
   Version         string              `json:"version"`
   Fullscreen      bool                `json:"fullscreen"`
   Admin           bool                `json:"admin"`
+  Invoker         bool                `json:"invoker"`
   Aware           bool                `json:"aware"`
 }
 

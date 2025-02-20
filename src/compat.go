@@ -18,7 +18,11 @@ func setCompatFlags(binary string, flags CompatFlags) {
 
   const path = "Software/Microsoft/Windows NT/CurrentVersion/AppCompatFlags/Layers"
 
-  if len(flags.Version) > 0 || flags.Fullscreen || flags.Admin || flags.Aware {
+  if len(flags.Version) > 0 || 
+     flags.Fullscreen || 
+     flags.Admin ||
+     flags.Invoker ||
+     flags.Aware {
 
     version := []string{
       "WIN95",
@@ -43,6 +47,8 @@ func setCompatFlags(binary string, flags CompatFlags) {
 
     if flags.Admin {
       template = append(template, "RUNASADMIN")
+    } else if flags.Invoker {
+      template = append(template, "RUNASINVOKER")
     }
     
     if flags.Aware {
