@@ -23,14 +23,16 @@ func buildCommand(binary string, config Config) *exec.Cmd {
   if config.Shell {
     shell := os.Getenv("COMSPEC")
     if len(shell) == 0 {
-      shell = filepath.Join(os.Getenv("WINDIR") + "cmd.exe")
+      shell = filepath.Join(os.Getenv("WINDIR") + "System32/cmd.exe")
     }
     cmd = exec.Command(shell)
     argv := []string{ "\"" + shell + "\"" } //argv0
     argv = append(argv, "/D", "/C", "\"\"" + binary + "\"")
     if len(config.Args) > 0 {
-      argv = append(argv, expand.ExpandVariables(config.Args) + "\"")
+      argv = append(argv, expand.ExpandVariables(config.Args))
     }
+    argv[len(argv)-1] = argv[len(argv)-1] + "\""
+    
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "),
       HideWindow: config.Hide,
