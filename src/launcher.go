@@ -17,17 +17,36 @@ import(
 )
 
 func buildCommand(binary string, config Config) *exec.Cmd {
-  cmd := exec.Command(binary)
   
-  argv := []string{ "\"" + binary + "\"" }
-  if len(config.Args) > 0 {
-    argv = append(argv, expand.ExpandVariables(config.Args))
+  var cmd *exec.Cmd
+  
+  if config.Shell {
+    shell := os.Getenv("COMSPEC")
+    if len(shell) == 0 {
+      shell = filepath.Join(os.Getenv("WINDIR") + "cmd.exe")
+    }
+    cmd = exec.Command(shell)
+    argv := []string{ "\"" + shell + "\"" } //argv0
+    argv = append(argv, "/D", "/C", "\"\"" + binary + "\"")
+    if len(config.Args) > 0 {
+      argv = append(argv, expand.ExpandVariables(config.Args) + "\"")
+    }
+    cmd.SysProcAttr = &syscall.SysProcAttr{ 
+      CmdLine: strings.Join(argv, " "),
+      HideWindow: config.Hide,
+    }
+  } else {
+    cmd = exec.Command(binary)
+    argv := []string{ "\"" + binary + "\"" } //argv0
+    if len(config.Args) > 0 {
+      argv = append(argv, expand.ExpandVariables(config.Args))
+    }
+    cmd.SysProcAttr = &syscall.SysProcAttr{ 
+      CmdLine: strings.Join(argv, " "), //verbatim arguments
+      HideWindow: config.Hide,
+    }
   }
-  cmd.SysProcAttr = &syscall.SysProcAttr{ 
-    CmdLine: strings.Join(argv, " "), //verbatim arguments
-    HideWindow: config.Hide,
-  }
-
+  
   cmd.Dir = filepath.Dir(binary)
   if len(config.Cwd) > 0 {
     cmd.Dir = fs.Resolve(config.Cwd)

@@ -48,6 +48,7 @@ type Config struct {
   Args            string              `json:"args"`
   Env             map[string]string   `json:"env"`
   Hide            bool                `json:"hide"`
+  Shell           bool                `json:"shell"`
   Script          string              `json:"script"`
   Addons          []Addon             `json:"addons"`
   Integrity       []File              `json:"integrity"`

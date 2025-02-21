@@ -44,6 +44,7 @@ Config file
   args?: string,
   env?: object,
   hide?: bool,
+  shell?: bool,
   script?: string,
   addons?: []{
     path: string, 
@@ -118,8 +119,12 @@ Example:
 
 ### `hide?: bool` (false)
 
-When enabled, the executable will run without displaying a window, making it invisible to the user.<br /> 
-This is useful for background tasks or command-line utilities that do not require user interaction.
+When enabled, the executable will run without displaying a window, making it invisible to the user.
+
+### `shell?: bool` (false)
+
+When enabled runs inside of a shell (%COMSPEC% ie "cmd.exe").<br />
+💡Use the `hide` option above to hide the shell.
 
 ### `script?: string` (none)
 
