@@ -10,8 +10,8 @@ function keygen()
 end
 
 function getCurrentKey()
-  local read, value = pcall(file.Read, "baseq3/q3key")
-  if (not read) then
+  local value, err = file.Read("baseq3/q3key")
+  if err then
     return ""
   end
 
@@ -33,8 +33,8 @@ if (current == "") then
   table.insert(arr, "// id Software and Activision will NOT ask you to send this file to them.")
   local key = table.concat(arr, "\n")
   
-  local written, err = pcall(file.Write, "baseq3/q3key", key)
-  if (not written) then
+  local err = file.Write("baseq3/q3key", key)
+  if err then
     print(err)
   end
 end

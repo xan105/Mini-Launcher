@@ -383,6 +383,14 @@ The followings modules are exposed to the Lua VM, I might add more later on.
 
 Suspends the execution of the Lua engine until the time-out interval elapses (interval is in milliseconds).
 
+### `console: SetFuncs`
+
+  + `log(any)`
+  + `warn(any)`
+  + `error(any)`
+  
+A set of convenient methods to print value or array with timestamp and log level.   
+
 ### 📦 Regedit
 
 This is a module to read and write from/to the registry.
@@ -446,23 +454,19 @@ Encoding format:
   - `utf16le`
   - `windows1252`
 
-#### `Write(filename: string, data: string, format?: string = "utf8")`
+#### `Write(filename: string, data: string, format?: string = "utf8") error`
 
 Overwrite text data with specified format encoding (default to utf8).<br /> 
 Create target parent dir if doesn't exist.<br />
 File is created if doesn't exist.
 
 `%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
-  
-❌ This function will raise an error on unexpected error.
 
-#### `Read(filename: string, format?: string = "utf8") string`
+#### `Read(filename: string, format?: string = "utf8") string, error`
 
 Read text data as specified format encoding (default to utf8).
 
 `%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
-
-❌ This function will raise an error on unexpected error.
 
 ### 📦 User
 

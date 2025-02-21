@@ -41,7 +41,12 @@ func loadLua(filePath string){
   
   //Globals
   L.SetGlobal("sleep", L.NewFunction(global.Sleep))
-  
+  L.SetGlobal("console", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
+    "log": global.Log,
+    "warn": global.Warn,
+    "error": global.Error,
+  }))
+
   //Module
   L.PreloadModule("regedit", regedit.Loader)
   L.PreloadModule("random", random.Loader)

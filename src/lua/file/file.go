@@ -38,7 +38,8 @@ func Write(L *lua.LState) int {
     format,
   )
   if err != nil {
-    L.RaiseError(err.Error());
+    L.Push(lua.LString(err.Error()))
+    return 1
   }
     
   return 0
@@ -57,7 +58,9 @@ func Read(L *lua.LState) int {
     format,
   )
   if err != nil {
-    L.RaiseError(err.Error());
+    L.Push(lua.LNil)
+    L.Push(lua.LString(err.Error()))
+    return 2
   }
 
   L.Push(lua.LString(data))
