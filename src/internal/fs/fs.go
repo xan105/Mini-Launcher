@@ -53,15 +53,15 @@ func ReadJSON[T any](filePath string) (config T, err error) {
   return
 }
 
-func FileExist(filePath string) bool {
-  target, err := os.Stat(filePath)
+func FileExist(path string) (bool, error) {
+  target, err := os.Stat(path)
   if err == nil {
-    return !target.IsDir()
+    return !target.IsDir(), nil
   }
   if errors.Is(err, os.ErrNotExist) {
-    return false
+    return false, nil
   }
-  return false
+  return false, err
 }
 
 func CheckSum(filePath string, algo string) (string, error) {

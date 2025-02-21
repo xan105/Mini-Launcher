@@ -8,6 +8,7 @@ package main
 
 import(
   "os"
+  "path/filepath"
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/hook"
@@ -18,12 +19,14 @@ func load(process *os.Process, addons []Addon) {
     for _, addon := range addons {
       if len(addon.Path) > 0 {
         dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
-        if fs.FileExist(dylib){
-          err := hook.CreateRemoteThread(process.Pid, dylib)
-          if err != nil {
-            if addon.Required {
-              process.Kill()
-              panic("Remote Thread", err.Error())
+        if filepath.Ext(dylib) == ".dll" {
+          if ok, _ := fs.FileExist(dylib); ok {       
+            err := hook.CreateRemoteThread(process.Pid, dylib)
+            if err != nil {
+              if addon.Required {
+                process.Kill()
+                panic("Remote Thread", err.Error())
+              }
             }
           }
         }
