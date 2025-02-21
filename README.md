@@ -386,26 +386,27 @@ This is a module to read and write from/to the registry.
 local regedit = require("regedit")
 ```
 
-- `QueryStringValue(root: string, path: string, key: string)  string`
-- `WriteStringValue(root: string, path: string, key: string, value: string)`
+- `KeyExists(root: string, path: string) bool`
+- `ListAllSubkeys(root: string, path: string) []string`
+- `ListAllValues(root: string, path: string) []string`
+- `QueryValueType(root: string, path: string, key: string) string`
+- `QueryStringValue(root: string, path: string, key: string) string` //REG_SZ & REG_EXPAND_SZ
+- `QueryMultiStringValue(root: string, path: string, key: string) []string` //REG_MULTI_SZ
+- `QueryBinaryValue(root: string, path: string, key: string) string` //REG_BINARY
+- `QueryIntegerValue(root: string, path: string, key: string) string` //REG_DWORD & REG_QWORD
+- `WriteKey(root: string, path: string)`
+- `DeleteKey(root: string, path: string)`
+- `WriteStringValue(root: string, path: string, key: string, value: string)` //REG_SZ & REG_EXPAND_SZ
+- `WriteMultiStringValue(root: string, path: string, key: string, value: []string)` //REG_MULTI_SZ
+- `WriteBinaryValue(root: string, path: string, key: string, value: string)` //REG_BINARY
+- `WriteDwordValue(root: string, path: string, key: string, value: string)` //REG_DWORD 
+- `WriteQwordValue(root: string, path: string, key: string, value: string)` //REG_QWORD
+- `DeleteKeyValue(root: string, path: string, key: string)`
 
 ✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
-
-#### `QueryStringValue(root: string, path: string, key: string) string`
-
-> REG_SZ & REG_EXPAND_SZ
-
-Return string value of given path/key.
-
 💡For the default key `@` use `key = ""`
 
-#### `WriteStringValue(root: string, path: string, key: string, value: string)`
-
-> REG_SZ & REG_EXPAND_SZ
-
-Write string value in given path/key (subkeys are created if necessary).
-
-💡For the default key `@` use `key = ""`
+NB: `REG_DWORD` & `REG_QWORD` are represented as string due to floating-point precision limits, if you need to perform arithmetic on them in Lua use `tonumber()`.
 
 ### 📦 Random
 
