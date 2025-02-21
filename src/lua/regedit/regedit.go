@@ -28,6 +28,7 @@ func Loader(L *lua.LState) int {
     "WriteKey": WriteKey,
     "DeleteKey": DeleteKey,
     "WriteStringValue": WriteStringValue,
+    "WriteExpandStringValue": WriteExpandStringValue,
     "WriteMultiStringValue": WriteMultiStringValue,
     "WriteBinaryValue": WriteBinaryValue,
     "WriteDwordValue": WriteDwordValue,
@@ -154,6 +155,16 @@ func WriteStringValue(L *lua.LState) int {
   value := L.ToString(4)
 
   regedit.WriteStringValue(root, path, key, value)   
+  return 0
+}
+
+func WriteExpandStringValue(L *lua.LState) int {
+  root  := L.ToString(1)  
+  path  := L.ToString(2)
+  key   := L.ToString(3)
+  value := L.ToString(4)
+
+  regedit.WriteExpandStringValue(root, path, key, value)   
   return 0
 }
 

@@ -155,20 +155,22 @@ func DeleteKey (root string, path string) {
   registry.DeleteKey(HKEY, filepath.FromSlash(path)) 
 }
 
-func WriteStringValue(root string, path string, key string, value string) { //REG_SZ & REG_EXPAND_SZ
+func WriteStringValue(root string, path string, key string, value string) { //REG_SZ
   
   HKEY := getRootKey(root)
-  var buf []byte;
   
   k, _, _ := registry.CreateKey(HKEY, filepath.FromSlash(path), registry.ALL_ACCESS)
   defer k.Close()
-  _, keyType, _ := k.GetValue(key, buf)
+  k.SetStringValue(key, value)
+}
+
+func WriteExpandStringValue(root string, path string, key string, value string) { //REG_EXPAND_SZ
   
-  if keyType == registry.EXPAND_SZ {
-    k.SetExpandStringValue(key, value)
-  } else {
-    k.SetStringValue(key, value)
-  }
+  HKEY := getRootKey(root)
+  
+  k, _, _ := registry.CreateKey(HKEY, filepath.FromSlash(path), registry.ALL_ACCESS)
+  defer k.Close()
+  k.SetExpandStringValue(key, value)
 }
 
 func WriteMultiStringValue(root string, path string, key string, value []string) { //REG_MULTI_SZ

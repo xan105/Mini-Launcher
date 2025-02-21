@@ -396,7 +396,8 @@ local regedit = require("regedit")
 - `QueryIntegerValue(root: string, path: string, key: string) string` //REG_DWORD & REG_QWORD
 - `WriteKey(root: string, path: string)`
 - `DeleteKey(root: string, path: string)`
-- `WriteStringValue(root: string, path: string, key: string, value: string)` //REG_SZ & REG_EXPAND_SZ
+- `WriteStringValue(root: string, path: string, key: string, value: string)` //REG_SZ
+- `WriteExpandStringValue(root: string, path: string, key: string, value: string)` //REG_EXPAND_SZ
 - `WriteMultiStringValue(root: string, path: string, key: string, value: []string)` //REG_MULTI_SZ
 - `WriteBinaryValue(root: string, path: string, key: string, value: string)` //REG_BINARY
 - `WriteDwordValue(root: string, path: string, key: string, value: string)` //REG_DWORD 
