@@ -14,7 +14,7 @@ import(
   "launcher/internal/hook"
 )
 
-func load(process *os.Process, addons []Addon) {
+func loadAddons(process *os.Process, addons []Addon) {
   if addons != nil && len(addons) > 0 {
     for _, addon := range addons {
       if len(addon.Path) > 0 {

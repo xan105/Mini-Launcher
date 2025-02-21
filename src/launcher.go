@@ -31,7 +31,8 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     if len(config.Args) > 0 {
       argv = append(argv, expand.ExpandVariables(config.Args))
     }
-    argv[len(argv)-1] = argv[len(argv)-1] + "\""
+    last := len(argv)-1
+    argv[last] = argv[last] + "\""
     
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "),
@@ -101,6 +102,6 @@ func main(){
   err = cmd.Start()
   if err != nil { panic("Launcher", err.Error()) }
   
-  load(cmd.Process, config.Addons)
+  loadAddons(cmd.Process, config.Addons)
   displaySplash(cmd.Process.Pid, config.Splash)
 }
