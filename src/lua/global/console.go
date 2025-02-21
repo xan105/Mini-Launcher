@@ -12,56 +12,37 @@ import (
   "github.com/yuin/gopher-lua"
 )
 
-func Log(L *lua.LState) int {
-  val := L.CheckAny(1)
-
+func format(L *lua.LState, val lua.LValue, depth int) string {
   switch v := val.(type) {
   case *lua.LTable:
     msg := []string{"{"}
+    indent := strings.Repeat("  ", depth + 1)
     L.ForEach(v, func(key lua.LValue, value lua.LValue) {
-      msg = append(msg, "  " + value.String() + ",")
+      msg = append(msg, indent + key.String() + ": "+ format(L, value, depth + 1) + ",")
     })
-    msg = append(msg, "}")
-    slog.Info(strings.Join(msg, "\n"))
+    last := len(msg)-1
+    msg[last] = strings.TrimRight(msg[last], ",")
+    msg = append(msg, strings.Repeat("  ", depth) + "}")
+    return strings.Join(msg, "\n")
   default:
-    slog.Info(val.String()) 
+    return val.String()
   }
+}
 
+func Log(L *lua.LState) int {
+  val := L.CheckAny(1)
+  slog.Info(format(L, val, 0))
   return 0
 }
 
 func Warn(L *lua.LState) int {
   val := L.CheckAny(1)
-
-  switch v := val.(type) {
-  case *lua.LTable:
-    msg := []string{"{"}
-    L.ForEach(v, func(key lua.LValue, value lua.LValue) {
-      msg = append(msg, "  " + value.String() + ",")
-    })
-    msg = append(msg, "}")
-    slog.Warn(strings.Join(msg, "\n"))
-  default:
-    slog.Warn(val.String()) 
-  }
-
+  slog.Warn(format(L, val, 0))
   return 0
 }
 
 func Error(L *lua.LState) int {
   val := L.CheckAny(1)
-
-  switch v := val.(type) {
-  case *lua.LTable:
-    msg := []string{"{"}
-    L.ForEach(v, func(key lua.LValue, value lua.LValue) {
-      msg = append(msg, "  " + value.String() + ",")
-    })
-    msg = append(msg, "}")
-    slog.Error(strings.Join(msg, "\n"))
-  default:
-    slog.Error(val.String()) 
-  }
-
+  slog.Error(format(L, val, 0))
   return 0
 }
