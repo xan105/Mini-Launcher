@@ -10,12 +10,14 @@ import (
   "github.com/yuin/gopher-lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
+  "launcher/internal/version"
 )
 
 func Loader(L *lua.LState) int {
   var exports = map[string]lua.LGFunction{
     "Write": Write,
     "Read": Read,
+    "Version": Version,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -64,5 +66,27 @@ func Read(L *lua.LState) int {
   }
 
   L.Push(lua.LString(data))
+  return 1
+}
+
+func Version(L *lua.LState) int {
+  filename := L.ToString(1)  
+
+  fileInfo, err := version.FromFile(
+    fs.Resolve(expand.ExpandVariables(filename)),
+  )
+  if err != nil {
+    L.Push(lua.LNil)
+    L.Push(lua.LString(err.Error()))
+    return 2
+  }
+
+  fileVersion := L.NewTable()
+  L.SetField(fileVersion, "Major", lua.LNumber(fileInfo.Major))
+  L.SetField(fileVersion, "Minor", lua.LNumber(fileInfo.Minor))
+  L.SetField(fileVersion, "Build", lua.LNumber(fileInfo.Build))
+  L.SetField(fileVersion, "Revision", lua.LNumber(fileInfo.Revision))
+
+  L.Push(fileVersion)
   return 1
 }

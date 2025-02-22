@@ -13,6 +13,8 @@ import (
   "launcher/lua/random"
   "launcher/lua/file"
   "launcher/lua/user"
+  "launcher/lua/http"
+  "launcher/lua/config/json"
 )
 
 func loadLua(filePath string){
@@ -52,6 +54,8 @@ func loadLua(filePath string){
   L.PreloadModule("random", random.Loader)
   L.PreloadModule("file", file.Loader)
   L.PreloadModule("user", user.Loader)
+  L.PreloadModule("http", http.Loader)
+  L.PreloadModule("config/json", json.Loader)
   
   //Exec
   if err := L.DoFile(filePath); err != nil {
