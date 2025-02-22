@@ -216,7 +216,9 @@ func ExpandVariables(input string) string {
         if err != nil {
           return match
         }
-        return user.Username
+        parts := strings.Split(user.Username, "\\")
+        last := len(parts)-1
+        return parts[last]
       }
       case "LANGCODE": {
         localeName, err := locale.GetUserLocale()

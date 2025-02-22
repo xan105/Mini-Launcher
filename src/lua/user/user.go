@@ -19,7 +19,9 @@ func getUserName() (string, error) {
   if err != nil {
     return "", err
   }
-  return user.Username, nil
+  parts := strings.Split(user.Username, "\\")
+  last := len(parts)-1
+  return parts[last], nil
 }
 
 func getUserLang() (string, string, string, error) {
