@@ -25,6 +25,32 @@ func Find(L *lua.LState) int {
     }
 
     if L.ToBool(-1) {
+      L.Push(value)
+      return 1
+    }
+
+    L.Pop(1)
+  }
+
+  L.Push(lua.LNil)
+  return 1
+}
+
+func Some(L *lua.LState) int {
+  table := L.CheckTable(1)
+  fn := L.CheckFunction(2)
+
+  for i := 1; i <= table.Len(); i++ {
+    value := table.RawGetInt(i)
+
+    L.Push(fn)
+    L.Push(value)
+    err := L.PCall(1, 1, nil)
+    if err != nil {
+      L.RaiseError("Error calling function: %v", err)
+    }
+
+    if L.ToBool(-1) {
       L.Push(lua.LTrue)
       return 1
     }

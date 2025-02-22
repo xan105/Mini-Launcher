@@ -51,6 +51,7 @@ func loadLua(filePath string){
   }))
   L.SetGlobal("Array", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
     "find": global.Find,
+    "some": global.Some,
     "includes": global.Includes,
   }))
 

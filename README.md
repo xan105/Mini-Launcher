@@ -345,7 +345,8 @@ Convenience methods to print value or array with timestamp and log level.
 
 ### `Array: SetFuncs`
 
-  + `find(table, func) bool`
+  + `find(table, func) any`
+  + `some(table, func) bool`
   + `includes(table, any) bool`
   
 Convenience methods to search array.
@@ -355,15 +356,16 @@ Example:
 ```lua
 local arr = {1, 2, 3, 4, 5}
 
-Find(arr, function(x) return x > 3 end)
-Includes(arr, 3)
+Array.find(arr, function(x) return x > 3 end)
+Array.includes(arr, 3)
 
 local arr = {
   {foo = "bar", value = 1},
   {foo = "baz", value = 2}
 }
 
-find(arr, function(x) return x.foo == "bar" end)
+Array.find(arr, function(x) return x.foo == "bar" end)
+Array.some(arr, function(x) return x.foo == "baz" end)
 ```
 
 ### 📦 Regedit
