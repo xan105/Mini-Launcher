@@ -9,6 +9,7 @@ package main
 import (
   "github.com/yuin/gopher-lua"
   "launcher/lua/global"
+  "launcher/lua/global/array"
   "launcher/lua/regedit"
   "launcher/lua/random"
   "launcher/lua/file"
@@ -50,9 +51,9 @@ func loadLua(filePath string){
     "error": global.Error,
   }))
   L.SetGlobal("Array", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
-    "find": global.Find,
-    "some": global.Some,
-    "includes": global.Includes,
+    "find": array.Find,
+    "some": array.Some,
+    "includes": array.Includes,
   }))
 
   //Module
