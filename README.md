@@ -341,7 +341,30 @@ Suspends the execution of the Lua engine until the time-out interval elapses (in
   + `warn(any)`
   + `error(any)`
   
-A set of convenient methods to print value or array with timestamp and log level.   
+Convenience methods to print value or array with timestamp and log level.
+
+### `Array: SetFuncs`
+
+  + `find(table, func) bool`
+  + `includes(table, any) bool`
+  
+Convenience methods to search array.
+
+Example: 
+
+```lua
+local arr = {1, 2, 3, 4, 5}
+
+Find(arr, function(x) return x > 3 end)
+Includes(arr, 3)
+
+local arr = {
+  {foo = "bar", value = 1},
+  {foo = "baz", value = 2}
+}
+
+find(arr, function(x) return x.foo == "bar" end)
+```
 
 ### 📦 Regedit
 
@@ -396,8 +419,8 @@ This is a module to read and write text data from/to file.
 local file = require("file")
 ```
 
-- `Write(filename: string, data: string, format?: string = "utf8")`
-- `Read(filename: string, format?: string = "utf8") string`
+- `Write(filename: string, data: string, format?: string = "utf8") error`
+- `Read(filename: string, format?: string = "utf8") string, error`
 - `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
 
 Encoding format:

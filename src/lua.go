@@ -49,6 +49,10 @@ func loadLua(filePath string){
     "warn": global.Warn,
     "error": global.Error,
   }))
+  L.SetGlobal("Array", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
+    "find": global.Find,
+    "includes": global.Includes,
+  }))
 
   //Module
   L.PreloadModule("regedit", regedit.Loader)
