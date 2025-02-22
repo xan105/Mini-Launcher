@@ -16,12 +16,12 @@ import (
 func Fetch(L *lua.LState) int {
   url := L.CheckString(1)
 
-  // Default options
+  //Default options
   method := "GET"
   headers := make(map[string]string)
   var body io.Reader
 
-  // Optional 'options' table
+  //Optional 'options' table
   if L.GetTop() >= 2 {
     options := L.CheckTable(2)
     options.ForEach(func(key lua.LValue, value lua.LValue) {
@@ -50,7 +50,7 @@ func Fetch(L *lua.LState) int {
     })
   }
 
-  // Create HTTP request
+  //Create HTTP request
   req, err := http.NewRequest(method, url, body)
   if err != nil {
     L.Push(lua.LNil)
@@ -58,12 +58,12 @@ func Fetch(L *lua.LState) int {
     return 2
   }
 
-  // Set headers
+  //Set headers
   for key, value := range headers {
     req.Header.Set(key, value)
   }
 
-  // Make the request
+  //Make the request
   client := &http.Client{}
   resp, err := client.Do(req)
   if err != nil {
@@ -73,7 +73,7 @@ func Fetch(L *lua.LState) int {
   }
   defer resp.Body.Close()
 
-  // Read response body
+  //Read response body
   respBody, err := io.ReadAll(resp.Body)
   if err != nil {
     L.Push(lua.LNil)
@@ -81,13 +81,13 @@ func Fetch(L *lua.LState) int {
     return 2
   }
 
-  // Create response table
+  //Create response table
   result := L.NewTable()
   L.SetField(result, "status", lua.LNumber(resp.StatusCode))
   L.SetField(result, "body", lua.LString(string(respBody)))
   headersTable := L.NewTable()
 
-  // Extract headers
+  //Extract headers
   for key, values := range resp.Header {
     if len(values) > 0 {
       L.SetField(headersTable, key, lua.LString(values[0]))
