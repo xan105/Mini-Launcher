@@ -12,6 +12,7 @@ import (
   "launcher/lua/regedit"
   "launcher/lua/random"
   "launcher/lua/file"
+  "launcher/lua/archive"
   "launcher/lua/user"
   "launcher/lua/http"
   "launcher/lua/config/json"
@@ -53,6 +54,7 @@ func loadLua(filePath string){
   L.PreloadModule("regedit", regedit.Loader)
   L.PreloadModule("random", random.Loader)
   L.PreloadModule("file", file.Loader)
+  L.PreloadModule("archive", archive.Loader)
   L.PreloadModule("user", user.Loader)
   L.PreloadModule("http", http.Loader)
   L.PreloadModule("config/json", json.Loader)

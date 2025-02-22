@@ -133,7 +133,7 @@ Path can be absolute or relative (to the current working dir).
 
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-For now this is mainly to handle CD Key generation in old games.<br />
+For now this is mainly to handle CD Key generation in old games and/or auto-update small mod files.<br />
 See the `./example` directory for some examples.
 
 ### `addons?: []{ path: string, required?: boolean }` (none)
@@ -463,6 +463,7 @@ local http = require("http")
 ```
 
 - `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, err`
+- `Download(url: string, destDir: string) string, err`
 
 #### `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, err`
 
@@ -495,6 +496,44 @@ end
 
 local latestRelease = github["tag_name"]
 ```
+
+#### `Download(url: string, destDir: string) string, err`
+
+Download a file. Filename is determined by the `Content-Disposition` header.
+Create target parent dir if doesn't exist.<br />
+Overwrite existing file.<br />
+Return the downloaded file path.
+
+`%VAR%` in `destDir` are expanded if any (see Expanding Variable for more details).
+
+Example:
+
+```lua
+local http = require("http")
+
+local filepath, err = http.Download("http://.../foo.bar", "%DOWNLOAD%")
+if err then
+  console.error(err)
+else
+  console.log("downloaded: " .. filepath)
+end
+```
+
+### 📦 Archive
+
+This is a module to decompress archive file.
+
+```lua
+local archive = require("archive")
+```
+
+- `Unzip(filePath: string, destDir: string) err`
+
+#### `Unzip(filePath: string, destDir: string) err`
+
+Extract `.zip` archive to `destDir`. Overwriting existing files.
+
+`%VAR%` are expanded if any (see Expanding Variable for more details).
 
 ### 📦 User
 
