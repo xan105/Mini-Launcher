@@ -84,9 +84,18 @@ func Parse(L *lua.LState) int {
 
 func Stringify(L *lua.LState) int {
   luaTable := L.CheckTable(1)
-
+  pretty := true
+  if L.GetTop() > 1 {
+    pretty = L.CheckBool(2)
+  }
+  
+  indent := ""
+  if pretty {
+    indent = "  "
+  }
+  
   data := toGoMap(luaTable)
-  jsonBytes, err := json.Marshal(data)
+  jsonBytes, err := json.MarshalIndent(data, "", indent)
   if err != nil {
     L.Push(lua.LNil)
     L.Push(lua.LString(err.Error()))

@@ -458,7 +458,7 @@ local JSON = require("config/json")
 
 - `JSON`
   + `Parse(data: string) table, err`
-  + `Stringify(data: table) string, err`
+  + `Stringify(data: table, pretty?: bool = true) string, err`
   
 Example: 
 
