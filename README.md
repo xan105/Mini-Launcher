@@ -331,7 +331,7 @@ The followings modules are exposed to the Lua VM, I might add more later on.
 
 ### 🌐 Globals
 
-### `sleep(ms int)`
+### `sleep(ms: int)`
 
 Suspends the execution of the Lua engine until the time-out interval elapses (interval is in milliseconds).
 
@@ -341,7 +341,7 @@ Suspends the execution of the Lua engine until the time-out interval elapses (in
   + `warn(any)`
   + `error(any)`
   
-Convenience methods to print value or array with timestamp and log level.
+Convenience methods to print value or array with timestamp and log level. Values are colored depending on their type.
 
 ### `Array: SetFuncs`
 
@@ -349,7 +349,7 @@ Convenience methods to print value or array with timestamp and log level.
   + `some(table, func) bool`
   + `includes(table, any) bool`
   
-Convenience methods to search array.
+Convenience methods to search ~~array~~ Lua table.
 
 Example: 
 
