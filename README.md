@@ -598,6 +598,16 @@ local user = require("user")
 - `locale`: User's language as ISO 639
   + `code: string`: language code (ex: `en`, `fr`, `de`)
   + `region: string`: language region (ex: `US`, `BE`, `DE`)
+  
+### 📦 Video
+
+This is a module to get info about the current display mode.
+
+```lua
+local video = require("video")
+```
+
+- `Current() { width: number, height: number, hz: number }, err`
 
 Build
 =====

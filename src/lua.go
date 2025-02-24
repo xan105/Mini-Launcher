@@ -15,6 +15,7 @@ import (
   "launcher/lua/file"
   "launcher/lua/archive"
   "launcher/lua/user"
+  "launcher/lua/video"
   "launcher/lua/http"
   "launcher/lua/config/json"
   "launcher/lua/config/ini"
@@ -63,6 +64,7 @@ func loadLua(filePath string){
   L.PreloadModule("file", file.Loader)
   L.PreloadModule("archive", archive.Loader)
   L.PreloadModule("user", user.Loader)
+  L.PreloadModule("video", video.Loader)
   L.PreloadModule("http", http.Loader)
   L.PreloadModule("config/json", json.Loader)
   L.PreloadModule("config/ini", ini.Loader)
