@@ -24,25 +24,14 @@ type ParserOptions struct {
   Number    bool
 }
 
-func unquote(str string) string {
-  if len(str) < 2 {
-    return str
-  }
-  
-  first := str[0]
-  last := str[len(str)-1]
-
-  if (first == '"' || first == '\'') && first == last {
-    return str[1 : len(str)-1]
-  }
-
-  return str
-}
-
 func translate(value string, options *ParserOptions) interface{} {
   
-  if options.Unquote {
-    value = unquote(value)
+  if options.Unquote && len(value) > 2 {
+    first := value[0]
+    last  := value[len(value)-1]
+    if (first == '"' || first == '\'') && first == last {
+      value = value[1 : len(value)-1]
+    }
   }
   
   if options.Boolean {
@@ -85,11 +74,13 @@ func Parse(data string, options *ParserOptions) map[string]interface{} {
   ignore := !options.Global
   
   sectionRegex := regexp.MustCompile(`^\[([^\]]*)\]`)
-  
+  commentRegex := regexp.MustCompile(`^\s*[;#]`)
+  blankLineRegex := regexp.MustCompile(`^\s*$`)
+
   scanner := bufio.NewScanner(strings.NewReader(data))
   for scanner.Scan() {
     line := strings.TrimSpace(scanner.Text())
-    if line == "" || strings.HasPrefix(line, ";") || strings.HasPrefix(line, "#") { continue }
+    if line == "" || commentRegex.MatchString(line) || blankLineRegex.MatchString(line)  { continue }
 
     if strings.HasPrefix(line, "[") {
       match := sectionRegex.FindStringSubmatch(line)
@@ -122,6 +113,6 @@ func Parse(data string, options *ParserOptions) map[string]interface{} {
       }
     }
   }
-  
+
   return result
 }

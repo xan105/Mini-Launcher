@@ -22,8 +22,6 @@ type StringifyOptions struct {
 }
 
 func Stringify(data map[string]interface{}, options *StringifyOptions) string {
-    var result []string
-    
     if options == nil {
       options = &StringifyOptions{
         Whitespace: true,
@@ -44,6 +42,9 @@ func Stringify(data map[string]interface{}, options *StringifyOptions) string {
       eol = "\r\n" 
     }
     
+    var result []string
+    var section []string
+    
     for key, v := range data {
         switch value := v.(type) {
         case string:
@@ -57,12 +58,17 @@ func Stringify(data map[string]interface{}, options *StringifyOptions) string {
         case float64:
             result = append(result, key + delimiter + strconv.FormatFloat(value, 'f', -1, 64))
         case map[string]interface{}:
-            section := "[" + key + "]"
-            result = append(result, section)
-            result = append(result, Stringify(value, options))
-            if options.BlankLine { result = append(result, "") }
+            name := "[" + key + "]"
+            section = append(section, name)
+            section = append(section, Stringify(value, options))
       }
     }
+    
+    if options.BlankLine { result = append(result, "") }
+    
+    // Append sections at the end to ensure global keys appear first
+    // Go Map order is not guaranteed !
+    result = append(result, section...)
 
     return strings.Join(result, eol)
 }

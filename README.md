@@ -491,18 +491,18 @@ console.log(data)
 
 Parse options: 
 
-- `Filter?: []string` Section filter
-- `Global?: bool` Include global section
-- `Unquote?: bool` Unquote string (starting/ending with `"` or `'`)
-- `Boolean?: bool` String to boolean type conversion
-- `Number?: bool` String to number type conversion (same rules as JavaScript's JSON.parse())
+- `filter?: []string (none)` Section filter
+- `global?: bool (true)` Include global section
+- `unquote?: bool (true)` Unquote string (starting/ending with `"` or `'`)
+- `boolean?: bool (true)` String to boolean type conversion
+- `number?: bool (true)` String to number type conversion (same rules as JavaScript's JSON.parse())
 
 Stringify options:
 
-- `Whitespace?: bool` add space between delimiter `=`
-- `BlankLine?: bool` add empty line between sections
-- `Quote?: bool` quote string with `"`
-- `Eol?: string` Either `\n` or `\r\n`
+- `whitespace?: bool (true)` add space between delimiter `=`
+- `blankLine?: bool (false)` add empty line between sections
+- `quote?: bool (false)` quote string with `"`
+- `eol?: string (system)` Either `\n` or `\r\n`
 
 ### 📦 Http
 
