@@ -17,6 +17,7 @@ import (
   "launcher/lua/user"
   "launcher/lua/http"
   "launcher/lua/config/json"
+  "launcher/lua/config/ini"
 )
 
 func loadLua(filePath string){
@@ -64,6 +65,7 @@ func loadLua(filePath string){
   L.PreloadModule("user", user.Loader)
   L.PreloadModule("http", http.Loader)
   L.PreloadModule("config/json", json.Loader)
+  L.PreloadModule("config/ini", ini.Loader)
   
   //Exec
   if err := L.DoFile(filePath); err != nil {

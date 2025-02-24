@@ -9,52 +9,8 @@ package json
 import (
   "encoding/json"
   "github.com/yuin/gopher-lua"
+  "launcher/lua/config"
 )
-
-func toLuaValue(L *lua.LState, value interface{}) lua.LValue {
-  switch v := value.(type) {
-    case string:
-      return lua.LString(v)
-    case bool:
-      return lua.LBool(v)
-    case float64:
-      return lua.LNumber(v)
-    default:
-      return lua.LNil
-  }
-}
-
-func toLuaTable(L *lua.LState, data map[string]interface{}) *lua.LTable {
-  table := L.NewTable()
-  for key, value := range data {
-    switch v := value.(type) {
-    case map[string]interface{}:
-      table.RawSetString(key, toLuaTable(L, v))
-    case []interface{}:
-      arrayTable := L.NewTable()
-      for i, item := range v {
-        arrayTable.RawSetInt(i+1, toLuaValue(L, item))
-      }
-      table.RawSetString(key, arrayTable)
-    default:
-      table.RawSetString(key, toLuaValue(L, v))
-    }
-  }
-  return table
-}
-
-func toGoMap(luaTable *lua.LTable) map[string]interface{} {
-  data := make(map[string]interface{})
-  luaTable.ForEach(func(key lua.LValue, value lua.LValue) {
-    switch v := value.(type) {
-    case *lua.LTable:
-      data[key.String()] = toGoMap(v)
-    default:
-      data[key.String()] = v.String()
-    }
-  })
-  return data
-}
 
 func Loader(L *lua.LState) int {
   var exports = map[string]lua.LGFunction{
@@ -77,7 +33,7 @@ func Parse(L *lua.LState) int {
     return 2
   }
 
-  luaTable := toLuaTable(L, data)
+  luaTable := config.ToLuaTable(L, data)
   L.Push(luaTable)
   return 1
 }
@@ -94,7 +50,7 @@ func Stringify(L *lua.LState) int {
     indent = "  "
   }
   
-  data := toGoMap(luaTable)
+  data := config.ToGoMap(luaTable)
   jsonBytes, err := json.MarshalIndent(data, "", indent)
   if err != nil {
     L.Push(lua.LNil)

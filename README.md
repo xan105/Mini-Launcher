@@ -454,12 +454,20 @@ This is a module to parse/stringify config files.
 
 ```lua
 local JSON = require("config/json")
+local INI = require("config/ini")
 ```
 
 - `JSON`
   + `Parse(data: string) table, err`
   + `Stringify(data: table, pretty?: bool = true) string, err`
+- `INI`
+  + `Parse(data: string, options?: table) table`
+  + `Stringify(data: table, options?: table) string`
   
+⚠️ Due to GoLang using hashmap the key order is not guaranteed !
+
+#### `JSON`
+
 Example: 
 
 ```lua
@@ -478,6 +486,23 @@ end
 
 console.log(data)
 ```
+
+#### `INI`
+
+Parse options: 
+
+- `Filter?: []string` Section filter
+- `Global?: bool` Include global section
+- `Unquote?: bool` Unquote string (starting/ending with `"` or `'`)
+- `Boolean?: bool` String to boolean type conversion
+- `Number?: bool` String to number type conversion (same rules as JavaScript's JSON.parse())
+
+Stringify options:
+
+- `Whitespace?: bool` add space between delimiter `=`
+- `BlankLine?: bool` add empty line between sections
+- `Quote?: bool` quote string with `"`
+- `Eol?: string` Either `\n` or `\r\n`
 
 ### 📦 Http
 
