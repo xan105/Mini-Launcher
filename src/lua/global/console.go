@@ -12,6 +12,19 @@ import (
   "github.com/yuin/gopher-lua"
 )
 
+//cf: https://nodejs.org/api/util.html#customizing-utilinspect-colors
+const (
+  reset     = "\033[0m"
+  yellow    = "\033[33m"  // Bigint, Boolean, Number
+  magenta   = "\033[35m"  // Date
+  underline = "\033[4m"   // Module
+  green     = "\033[32m"  // String, Symbol
+  cyan      = "\033[36m"  // Special (e.g., Proxies)
+  red       = "\033[31m"  // RegExp
+  bold      = "\033[1m"   // Null
+  grey      = "\033[90m"  // Undefined
+)
+
 func format(L *lua.LState, val lua.LValue, depth int) string {
   switch v := val.(type) {
   case *lua.LTable:
@@ -24,8 +37,18 @@ func format(L *lua.LState, val lua.LValue, depth int) string {
     msg[last] = strings.TrimRight(msg[last], ",")
     msg = append(msg, strings.Repeat("  ", depth) + "}")
     return strings.Join(msg, "\n")
+  case lua.LString:
+    return green + "\"" + v.String() + "\"" + reset
+  case lua.LNumber:
+    return yellow + v.String() + reset
+  case lua.LBool:
+    return yellow + v.String() + reset
+  case *lua.LNilType:
+    return bold + "nil" + reset
+  case *lua.LFunction, *lua.LState, *lua.LChannel:
+    return cyan + v.String() + reset
   default:
-    return val.String()
+    return grey + val.String() + reset
   }
 }
 
