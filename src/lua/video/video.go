@@ -34,6 +34,7 @@ func Current(L *lua.LState) int {
   L.SetField(displayMode, "width", lua.LNumber(display.Width))
   L.SetField(displayMode, "height", lua.LNumber(display.Height))
   L.SetField(displayMode, "hz", lua.LNumber(display.Hz))
+  L.SetField(displayMode, "scale", lua.LNumber(display.Scale))
   L.Push(displayMode)
   return 1
 }
