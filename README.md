@@ -394,7 +394,7 @@ local regedit = require("regedit")
 - `WriteQwordValue(root: string, path: string, key: string, value: string)` //REG_QWORD
 - `DeleteKeyValue(root: string, path: string, key: string)`
 
-✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
+✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.<br />
 💡For the default key `@` use `key = ""`
 
 NB: `REG_DWORD` & `REG_QWORD` are represented as string due to floating-point precision limits, if you need to perform arithmetic on them in Lua use `tonumber()`.
@@ -454,38 +454,25 @@ This is a module to parse/stringify config files.
 
 ```lua
 local JSON = require("config/json")
+local YAML = require("config/yaml")
+local TOML = require("config/toml")
 local INI = require("config/ini")
 ```
 
 - `JSON`
   + `Parse(data: string) table, err`
   + `Stringify(data: table, pretty?: bool = true) string, err`
+- `YAML`
+  + `Parse(data: string) table, err`
+  + `Stringify(data: table) string, err`
+- `TOML`
+  + `Parse(data: string) table, err`
+  + `Stringify(data: table) string, err`
 - `INI`
   + `Parse(data: string, options?: table) table`
   + `Stringify(data: table, options?: table) string`
   
 ⚠️ Due to GoLang using hashmap the key order is not guaranteed !
-
-#### `JSON`
-
-Example: 
-
-```lua
-local file = require("file")
-local JSON = require("config/json")
-
-local config, err = file.Read("launcher.json")
-if err then
-  console.error(err)
-end
-
-local data, err = JSON.Parse(config)
-if err then
-  console.error(err)
-end
-
-console.log(data)
-```
 
 #### `INI`
 

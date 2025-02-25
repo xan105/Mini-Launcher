@@ -19,6 +19,8 @@ import (
   "launcher/lua/http"
   "launcher/lua/config/json"
   "launcher/lua/config/ini"
+  "launcher/lua/config/toml"
+  "launcher/lua/config/yaml"
 )
 
 func loadLua(filePath string){
@@ -68,6 +70,8 @@ func loadLua(filePath string){
   L.PreloadModule("http", http.Loader)
   L.PreloadModule("config/json", json.Loader)
   L.PreloadModule("config/ini", ini.Loader)
+  L.PreloadModule("config/toml", toml.Loader)
+  L.PreloadModule("config/yaml", yaml.Loader)
   
   //Exec
   if err := L.DoFile(filePath); err != nil {
