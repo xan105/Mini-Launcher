@@ -454,23 +454,27 @@ This is a module to parse/stringify config files.
 
 ```lua
 local JSON = require("config/json")
-local YAML = require("config/yaml")
 local TOML = require("config/toml")
-local INI = require("config/ini")
+local INI  = require("config/ini")
+local YAML = require("config/yaml")
+local XML  = require("config/xml")
 ```
 
 - `JSON`
   + `Parse(data: string) table, err`
   + `Stringify(data: table, pretty?: bool = true) string, err`
-- `YAML`
-  + `Parse(data: string) table, err`
-  + `Stringify(data: table) string, err`
 - `TOML`
   + `Parse(data: string) table, err`
   + `Stringify(data: table) string, err`
 - `INI`
   + `Parse(data: string, options?: table) table`
   + `Stringify(data: table, options?: table) string`
+- `YAML`
+  + `Parse(data: string) table, err`
+  + `Stringify(data: table) string, err`
+- `XML`
+  + `Parse(data: string) table, err`
+  + `Stringify(data: table, pretty?: bool = true) string, err`
   
 ⚠️ Due to GoLang using hashmap the key order is not guaranteed !
 
@@ -594,7 +598,7 @@ This is a module to get info about the current display mode.
 local video = require("video")
 ```
 
-- `Current() { width: number, height: number, hz: number }, err`
+- `Current() { width: number, height: number, hz: number, scale: number }, err`
 
 Build
 =====
