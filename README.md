@@ -5,9 +5,9 @@ Mini-Launcher is an application launcher with the following features:
 
   - DLL Injection
   - Lua Scripting
-  - Optional Splash Screen
-  - File Integrity Check
-  - Expanding Variable
+  - Splash Screen (optional)
+  - File Integrity
+  - Expanding Variables
   - Verbatim Arguments
   - Setting Environnement Variables
   - Setting PCA Flags
@@ -123,17 +123,17 @@ When enabled, the executable will run without displaying a window, making it inv
 
 ### `shell?: bool` (false)
 
-When enabled runs inside of a shell (%COMSPEC% ie "cmd.exe").<br />
+When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 💡Use the `hide` option above to hide the shell.
 
 ### `script?: string` (none)
 
-File path to a Lua script to be run just before the executable (see Lua Scripting for more details).<br />
+File path to a Lua script to be run just before the executable (see **Lua Scripting** below for more details).<br />
 Path can be absolute or relative (to the current working dir).
 
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-For now this is mainly to handle CD Key generation in old games and/or auto-update small mod files.<br />
+For now this is mainly to handle CD Key generation in old games.<br />
 See the `./example` directory for some examples.
 
 ### `addons?: []{ path: string, required?: boolean }` (none)
@@ -598,7 +598,7 @@ This is a module to get info about the current display mode.
 local video = require("video")
 ```
 
-- `Current() { width: number, height: number, hz: number, scale: number }, err`
+- `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, err`
 
 Build
 =====
