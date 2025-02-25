@@ -1,15 +1,18 @@
 {
   "bin": "WDC.exe",
+  "script": "launcher.lua",
   "env": {
     "GAMEPAD_API_XINPUT": "HOOK",
     "GAMEPAD_API_DINPUT8": "HOOK",
     "GAMEPAD_LED": "BATTERYLVL"
   },
+  "addons": [
+    { "path": "InputFusion.dll", "required": true }
+  ]
   "symlink":[
     {
       "path": "%DOCUMENTS%/Telltale Games/The Walking Dead - The Telltale Definitive Series", 
       "dest": "%SAVEGAME%/The Walking Dead - The Telltale Definitive Series"
     }
-  ],
-  "script": "launcher.lua"
+  ]
 }
