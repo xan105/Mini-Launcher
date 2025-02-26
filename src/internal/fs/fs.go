@@ -12,6 +12,7 @@ import(
   "hash"
   "bufio"
   "errors"
+  "strings"
   "runtime"
   "path/filepath"
   "encoding/json"
@@ -201,4 +202,49 @@ func CreateFolderSymlink(origin string, destination string) error {
   }
 
   return nil
+}
+
+//Go path/filepath Glob() is too limited, build our own
+func Glob(root, pattern string, recursive bool, absolute bool) ([]string, error) {
+  var matches []string
+  onlyDir := strings.HasSuffix(pattern, "/")
+
+  err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+    if err != nil {
+      return err
+    }
+    
+    if onlyDir && !d.IsDir() {
+      return nil
+    }
+
+    match, err := filepath.Match(strings.TrimSuffix(pattern, "/"), filepath.Base(path))
+    if err != nil {
+      return err
+    }
+
+    if match && path != root {
+      if absolute {
+        matches = append(matches, path)
+      } else {
+        relPath, err := filepath.Rel(root, path)
+        if err != nil {
+          return err
+        }
+        matches = append(matches, relPath)
+      }
+    }
+
+    if !recursive && d.IsDir() && path != root {
+      return filepath.SkipDir
+    }
+
+    return nil
+  })
+
+  if err != nil {
+    return nil, err
+  }
+
+  return matches, nil
 }

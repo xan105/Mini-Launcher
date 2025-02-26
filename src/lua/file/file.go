@@ -18,6 +18,7 @@ func Loader(L *lua.LState) int {
     "Write": Write,
     "Read": Read,
     "Version": Version,
+    "Glob": Glob,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -88,5 +89,44 @@ func Version(L *lua.LState) int {
   L.SetField(fileVersion, "Revision", lua.LNumber(fileInfo.Revision))
 
   L.Push(fileVersion)
+  return 1
+}
+
+func Glob(L *lua.LState) int {
+  root := L.CheckString(1)
+  pattern := L.CheckString(2)
+  recursive := false
+  absolute := false
+  if L.GetTop() >= 3 {
+    table := L.CheckTable(3)
+    table.ForEach(func(key lua.LValue, value lua.LValue) {
+      switch key.String() {
+      case "recursive":
+        if b, ok := value.(lua.LBool); ok {
+          recursive = bool(b)
+        }
+      case "absolute":
+        if b, ok := value.(lua.LBool); ok {
+          absolute = bool(b)
+        }
+      }
+    })
+  }
+      
+  matches, err := fs.Glob(fs.Resolve(expand.ExpandVariables(root)), pattern, recursive, absolute)
+  if err != nil {
+    L.Push(lua.LNil)
+    L.Push(lua.LString(err.Error()))
+    return 2
+  }
+
+  table := L.NewTable()
+  if matches != nil {
+    for _, match := range matches {
+      table.Append(lua.LString(match))
+    }
+  }
+
+  L.Push(table)
   return 1
 }

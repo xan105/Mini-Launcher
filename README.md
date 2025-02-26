@@ -424,6 +424,7 @@ local file = require("file")
 - `Write(filename: string, data: string, format?: string = "utf8") error`
 - `Read(filename: string, format?: string = "utf8") string, error`
 - `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
+- `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, err`
 
 Encoding format:
 
@@ -432,7 +433,7 @@ Encoding format:
   - `utf16le`
   - `windows1252`
 
-`%VAR%` in `filename` are expanded if any (see Expanding Variable for more details).
+`%VAR%` in `filename` / `root` are expanded if any (see Expanding Variable for more details).
 
 #### `Write(filename: string, data: string, format?: string = "utf8") error`
 
@@ -447,6 +448,11 @@ Read text data as specified format encoding (default to utf8).
 #### `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
 
 Retrieves version information for the specified file. Binary only (exe/dll).
+
+#### `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, err`
+
+Returns the names of all files matching pattern. The pattern syntax is the same as in Go [path/filepath Match](https://pkg.go.dev/path/filepath#Match).
+With the addition that, to return only directories the pattern should end with `/`.
 
 ### 📦 Config
 
