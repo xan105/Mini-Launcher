@@ -7,6 +7,8 @@ found in the LICENSE file in the root directory of this source tree.
 package file
 
 import (
+  "strings"
+  "path/filepath"
   "github.com/yuin/gopher-lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
@@ -19,6 +21,7 @@ func Loader(L *lua.LState) int {
     "Read": Read,
     "Version": Version,
     "Glob": Glob,
+    "Basename": Basename,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -128,5 +131,18 @@ func Glob(L *lua.LState) int {
   }
 
   L.Push(table)
+  return 1
+}
+
+func Basename(L *lua.LState) int {
+  path := L.CheckString(1)
+  suffix := L.OptBool(2, true)
+ 
+  filename := filepath.Base(path)
+  if !suffix {
+    filename = strings.TrimSuffix(filename, filepath.Ext(filename))
+  }
+  
+  L.Push(lua.LString(filename))
   return 1
 }
