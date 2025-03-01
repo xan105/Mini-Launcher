@@ -8,6 +8,8 @@ package main
 
 import(
   "time"
+  "slices"
+  "strings"
   "math/rand"
   "path/filepath"
   "launcher/internal/fs"
@@ -27,9 +29,15 @@ func displaySplash(pid int, screen Splash) {
           if screen.Timeout > 0 {
             timeout = screen.Timeout
           }
+
+          events := []string{"FOREGROUND", "WINDOW", "CURSOR"}
+          var wait string = events[0]
+          if slices.Contains(events, strings.ToUpper(screen.Wait)) {
+            wait = strings.ToUpper(screen.Wait)
+          }
         
           exit := make(chan bool)
-          go splash.CreateWindow(exit, pid, image)
+          go splash.CreateWindow(exit, pid, image, wait)
 
           select {
             case <-exit:

@@ -84,21 +84,27 @@ func getObject(hBitmap syscall.Handle) (BITMAP, error) {
 var (
   user32 = syscall.NewLazyDLL("user32.dll")
 
-  pCreateWindowExW  = user32.NewProc("CreateWindowExW")
-  pDefWindowProcW   = user32.NewProc("DefWindowProcW")
-  pDestroyWindow    = user32.NewProc("DestroyWindow")
-  pDispatchMessageW = user32.NewProc("DispatchMessageW")
-  pGetMessageW      = user32.NewProc("GetMessageW")
-  pLoadCursorW      = user32.NewProc("LoadCursorW")
-  pPostQuitMessage  = user32.NewProc("PostQuitMessage")
-  pRegisterClassExW = user32.NewProc("RegisterClassExW")
-  pTranslateMessage = user32.NewProc("TranslateMessage")
-  pLoadImageW       = user32.NewProc("LoadImageW")
-  pSetWinEventHook  = user32.NewProc("SetWinEventHook")
-  pUnhookWinEvent   = user32.NewProc("UnhookWinEvent") //todo
-  pGetDC            = user32.NewProc("GetDC")
-  pReleaseDC        = user32.NewProc("ReleaseDC")
+  pCreateWindowExW          = user32.NewProc("CreateWindowExW")
+  pDefWindowProcW           = user32.NewProc("DefWindowProcW")
+  pDestroyWindow            = user32.NewProc("DestroyWindow")
+  pDispatchMessageW         = user32.NewProc("DispatchMessageW")
+  pGetMessageW              = user32.NewProc("GetMessageW")
+  pLoadCursorW              = user32.NewProc("LoadCursorW")
+  pPostQuitMessage          = user32.NewProc("PostQuitMessage")
+  pRegisterClassExW         = user32.NewProc("RegisterClassExW")
+  pTranslateMessage         = user32.NewProc("TranslateMessage")
+  pLoadImageW               = user32.NewProc("LoadImageW")
+  pSetWinEventHook          = user32.NewProc("SetWinEventHook")
+  pUnhookWinEvent           = user32.NewProc("UnhookWinEvent")
+  pGetDC                    = user32.NewProc("GetDC")
+  pReleaseDC                = user32.NewProc("ReleaseDC")
+  pIsWindowVisible          = user32.NewProc("IsWindowVisible")
 )
+
+func isWindowVisible(hWnd syscall.Handle) bool {
+  ret, _, _ := pIsWindowVisible.Call(uintptr(hWnd))
+  return ret != 0
+}
 
 func getDC(hWnd syscall.Handle) (syscall.Handle, error) {
   ret, _, err := pGetDC.Call(
@@ -290,7 +296,7 @@ func translateMessage(msg *tMSG) {
   pTranslateMessage.Call(uintptr(unsafe.Pointer(msg)))
 }
 
-func CreateWindow(exit chan bool, pid int, splashImage string) {
+func CreateWindow(exit chan bool, pid int, splashImage string, waitEvent string) {
   
   slog.Info("splash")
 
@@ -305,12 +311,13 @@ func CreateWindow(exit chan bool, pid int, splashImage string) {
   var win syscall.Handle
 
   activeWinEventHook := func(hWinEventHook syscall.Handle, event uint32, hwnd syscall.Handle, idObject int32, idChild int32, idEventThread uint32, dwmsEventTime uint32) uintptr {
-  
-    if event == EVENT_OBJECT_SHOW && 
-      (idObject == OBJID_CURSOR || idObject == OBJID_WINDOW){ 
+
+    if (waitEvent == "FOREGROUND" && (event == EVENT_SYSTEM_FOREGROUND && isWindowVisible(hwnd))) ||
+       (waitEvent == "WINDOW" && (event == EVENT_OBJECT_SHOW && idObject == OBJID_WINDOW)) ||
+       (waitEvent == "CURSOR" && (event == EVENT_OBJECT_SHOW && idObject == OBJID_CURSOR)) {
       slog.Info("Splash bye bye")
       destroyWindow(win)
-      unhookWinEvent(hWinEventHook)
+      unhookWinEvent(hWinEventHook) 
     }
 
     return 0

@@ -58,7 +58,8 @@ Config file
   splash?: {
     show: bool,
     image: []string,
-    timeout?: number
+    timeout?: number,
+    wait?: string
   },
   symlink?: []{
     path: string,
@@ -185,6 +186,13 @@ Display a splash screen until the executable process change the cursor or displa
 - `timeout?: number` (10 sec)
   Failsafe timeout in seconds.<br />
   There was no event dispatched under Linux/Proton on Wayland in my limited testing.
+  
+- `wait?: string` ("FOREGROUND")
+  Which window event to wait for:
+  
+  + `FOREGROUND`: The foreground window has changed.
+  + `WINDOW`: An hidden window is shown.
+  + `CURSOR`: An hidden cursor is shown.
   
 ### `symlink?: []{path: string, dest: string}` (none)
 

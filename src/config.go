@@ -21,6 +21,7 @@ type Splash struct {
   Show            bool                `json:"show"`
   Images          []string            `json:"image"`
   Timeout         uint                `json:"timeout"`
+  Wait            string              `json:"wait"`
 }
 
 type Link struct {
