@@ -13,6 +13,7 @@ import (
   "encoding/hex"
   "github.com/yuin/gopher-lua"
   "launcher/internal/regedit"
+  "launcher/internal/expand"
 )
 
 func Loader(L *lua.LState) int {
@@ -154,7 +155,7 @@ func WriteStringValue(L *lua.LState) int {
   key   := L.ToString(3)
   value := L.ToString(4)
 
-  regedit.WriteStringValue(root, path, key, value)   
+  regedit.WriteStringValue(root, path, key, expand.ExpandVariables(value))   
   return 0
 }
 

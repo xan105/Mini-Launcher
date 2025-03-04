@@ -188,9 +188,9 @@ Display a splash screen until the executable process change the cursor or displa
   There was no event dispatched under Linux/Proton on Wayland in my limited testing.
   
 - `wait?: string` ("FOREGROUND")
-  Which window event to wait for:
+  Which window event to wait for (case insensitive):
   
-  + `FOREGROUND`: The foreground window has changed.
+  + `FOREGROUND`: The foreground window has changed and is visible.
   + `WINDOW`: An hidden window is shown.
   + `CURSOR`: An hidden cursor is shown.
   
@@ -404,6 +404,8 @@ local regedit = require("regedit")
 
 ✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.<br />
 💡For the default key `@` use `key = ""`
+
+`%VAR%` in `WriteStringValue(..., value)` are expanded if any (see Expanding Variable for more details).
 
 NB: `REG_DWORD` & `REG_QWORD` are represented as string due to floating-point precision limits, if you need to perform arithmetic on them in Lua use `tonumber()`.
 
