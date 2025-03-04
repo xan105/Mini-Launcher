@@ -195,6 +195,11 @@ func CreateFolderSymlink(origin string, destination string) error {
   if err != nil {
     return err
   }
+  
+  err = os.MkdirAll(filepath.Dir(origin), 0755)
+  if err != nil {
+    return err
+  }
 
   err = os.Symlink(destination, origin)
   if err != nil {
