@@ -29,6 +29,12 @@ type Link struct {
   Destination     string              `json:"dest"`
 }
 
+type Attrib struct {
+  Path           string               `json:"path"`
+  Hidden         bool                 `json:"hidden"` 
+  ReadOnly       bool                 `json:"readonly"`
+}
+
 type CompatFlags struct {
   Version         string              `json:"version"`
   Fullscreen      bool                `json:"fullscreen"`
@@ -57,4 +63,5 @@ type Config struct {
   Symlink         []Link              `json:"symlink"`
   Compatibility   CompatFlags         `json:"compatibility"`
   Prefix          WinePrefix          `json:"prefix"`
+  Attrib          []Attrib            `json:"attrib"`
 }

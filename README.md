@@ -76,6 +76,11 @@ Config file
     winver?: string,
     dpi?: number,
     overrides?: object
+  },
+  attrib?: []{
+    path: string,
+    hidden?: boolean,
+    readonly?: boolean
   }
 }
 ```
@@ -292,6 +297,13 @@ Example:
   }
 }
 ```
+
+### `attrib?: []{path: string, hidden?: boolean = false, readonly?: boolean = false}` (none)
+
+Set file(s) attributes: read only and/or hidden.
+
+Path can be absolute or relative (to the current working dir).<br />
+`%VAR%` are expanded if any (see Expanding Variable for more details).
 
 Expanding Variable
 ==================

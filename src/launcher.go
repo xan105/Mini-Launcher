@@ -82,6 +82,7 @@ func main(){
   
   verifyIntegrity(binary, config.Integrity)
   makeLink(config.Symlink)
+  applyFileAttributes(config.Attrib)
   setCompatFlags(binary, config.Compatibility)
   updatePrefixSettings(config.Prefix)
 
