@@ -48,6 +48,12 @@ func ToGoMap(luaTable *lua.LTable) map[string]interface{} {
     switch v := value.(type) {
     case *lua.LTable:
       data[key.String()] = ToGoMap(v)
+    case lua.LString:
+        data[key.String()] = v.String()
+    case lua.LNumber:
+        data[key.String()] = float64(v)
+    case lua.LBool:
+        data[key.String()] = bool(v)
     default:
       data[key.String()] = v.String()
     }
