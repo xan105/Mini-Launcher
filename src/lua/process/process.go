@@ -4,19 +4,20 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package random
+package process
 
 import (
+  "os"
+  "runtime"
   "github.com/yuin/gopher-lua"
 )
 
 func Loader(L *lua.LState) int {
-  var exports = map[string]lua.LGFunction{
-    "AlphaNumString": AlphaNumString,
-    "UserPID": GetRandomUserPID,
-  }
-    
-  mod := L.SetFuncs(L.NewTable(), exports)
+
+  mod := L.NewTable()
+  L.SetField(mod, "platform", lua.LString(runtime.GOOS))
+  L.SetField(mod, "arch", lua.LString(runtime.GOARCH))
+  L.SetField(mod, "pid", lua.LNumber(os.Getpid()))
   L.Push(mod)
   return 1
 }

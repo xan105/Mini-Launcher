@@ -22,6 +22,7 @@ import (
   "launcher/lua/config/toml"
   "launcher/lua/config/yaml"
   "launcher/lua/config/xml"
+  "launcher/lua/process"
 )
 
 func loadLua(filePath string){
@@ -74,6 +75,7 @@ func loadLua(filePath string){
   L.PreloadModule("config/toml", toml.Loader)
   L.PreloadModule("config/yaml", yaml.Loader)
   L.PreloadModule("config/xml", xml.Loader)
+  L.PreloadModule("process", process.Loader)
   
   //Exec
   if err := L.DoFile(filePath); err != nil {

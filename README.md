@@ -429,11 +429,16 @@ This is a module to generate random things.
 local random = require("random")
 ```
 
-- `AlphaNumString(length: int) string`
+- `AlphaNumString(length: number) string`
+- `UserPID() number`
 
-#### `AlphaNumString(length: int) string`
+#### `AlphaNumString(length: number) string`
 
 Generate a random alpha numeric string of specified length.
+
+#### `UserPID() number`
+
+Picks a random PID from the user-owned processes.
 
 ### 📦 File
 
@@ -642,6 +647,18 @@ local video = require("video")
 ```
 
 - `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, err`
+
+### 📦 Process
+
+This is a module to get info about the current Mini-Launcher process.
+
+```lua
+local process = require("process")
+```
+
+- `platform: string` : operating system target (GOOS)
+- `arch: string` : architecture target (GOARCH)
+- `pid: number` : process id
 
 Build
 =====
