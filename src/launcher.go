@@ -105,4 +105,8 @@ func main(){
   
   loadAddons(cmd.Process, config.Addons)
   displaySplash(cmd.Process.Pid, config.Splash)
+  
+  if config.Wait {
+    cmd.Wait()
+  }
 }

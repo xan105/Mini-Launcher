@@ -45,6 +45,7 @@ Config file
   env?: object,
   hide?: bool,
   shell?: bool,
+  wait?: bool,
   script?: string,
   addons?: []{
     path: string, 
@@ -131,6 +132,10 @@ When enabled, the executable will run without displaying a window, making it inv
 
 When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 💡Use the `hide` option above to hide the shell.
+
+### `wait?: bool` (false)
+
+When enabled, will wait for the executable to terminate before exiting.
 
 ### `script?: string` (none)
 
@@ -329,8 +334,8 @@ List of variables that will get expanded:
 - `%USERNAME%`
 - `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
 - `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
-- `%SCREENWIDTH%`, `XRES`: Current primary display horizontal resolution (DPI Aware)
-- `%SCREENHEIGHT%`, `YRES`: Current primary display vertical resolution (DPI Aware)
+- `%SCREENWIDTH%`, `%XRES%`: Current primary display horizontal resolution (DPI Aware)
+- `%SCREENHEIGHT%`, `%YRES%`: Current primary display vertical resolution (DPI Aware)
 - `%SCREENREFRESH%`: Current primary display refresh rate
 
 Lua Scripting
@@ -659,6 +664,8 @@ local process = require("process")
 - `platform: string` : operating system target (GOOS)
 - `arch: string` : architecture target (GOARCH)
 - `pid: number` : process id
+- `Cwd() string` : process current working dir
+- `ExecPath() string`: process absolute pathname
 
 Build
 =====

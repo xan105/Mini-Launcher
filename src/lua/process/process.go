@@ -18,6 +18,20 @@ func Loader(L *lua.LState) int {
   L.SetField(mod, "platform", lua.LString(runtime.GOOS))
   L.SetField(mod, "arch", lua.LString(runtime.GOARCH))
   L.SetField(mod, "pid", lua.LNumber(os.Getpid()))
+  L.SetField(mod, "Cwd", L.NewFunction(Getwd))
+  L.SetField(mod, "ExecPath", L.NewFunction(ExecPath))
   L.Push(mod)
+  return 1
+}
+
+func Getwd(L *lua.LState) int {
+  cwd, _ := os.Getwd()
+  L.Push(lua.LString(cwd))
+  return 1
+}
+
+func ExecPath(L *lua.LState) int {
+  path, _ := os.Executable()
+  L.Push(lua.LString(path))
   return 1
 }
