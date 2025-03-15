@@ -23,6 +23,7 @@ import(
   "golang.org/x/text/transform"
   "golang.org/x/text/encoding/charmap"
   "golang.org/x/text/encoding/unicode"
+  "golang.org/x/sys/windows"
 )
 
 func Resolve(filePath string) string {
@@ -168,8 +169,8 @@ func CreateFolderSymlink(origin string, destination string) error {
   }
   
   if err == nil {
-    if target.Mode()&os.ModeSymlink != 0 { //Already a symlink
-      return nil                           //Nothing to do
+    if target.Mode() & os.ModeSymlink != 0 { //Already a symlink
+      return nil                             //Nothing to do
     }
   
     if !target.IsDir() { //Target is a file
@@ -180,33 +181,42 @@ func CreateFolderSymlink(origin string, destination string) error {
     if err != nil {
       return err
     }
-    if len(entries) != 0 { 
-      return errors.New("Symlink target is a non-empty dir, aborting !")
-    }
-    
-    //Empty so safe to delete
-    err = os.Remove(origin)
-    if err != nil {
-      return err
+    if len(entries) == 0 { //Empty so safe to delete
+      if err := os.Remove(origin); err != nil {
+        return err
+      }
+    } else { //Non-Empty
+      if err := os.MkdirAll(filepath.Dir(destination), 0755); err != nil {
+        return err
+      }
+      if err := os.Rename(origin, destination); err != nil { //Try to move
+        if linkErr, ok := err.(*os.LinkError); ok {
+          if errors.Is(linkErr.Err, windows.Errno(windows.ERROR_NOT_SAME_DEVICE)) { 
+            if err := os.CopyFS(destination, os.DirFS(origin)); err != nil { //Fallback to copy
+              return err
+            }
+            if err := os.RemoveAll(origin); err != nil {
+              return err
+            }
+          } else {
+            return err
+          }
+        } else {
+          return err
+        }
+      } 
     }
   }
 
-  err = os.MkdirAll(destination, 0755)
-  if err != nil {
+  if err := os.MkdirAll(destination, 0755); err != nil {
     return err
   }
   
-  err = os.MkdirAll(filepath.Dir(origin), 0755)
-  if err != nil {
+  if err := os.MkdirAll(filepath.Dir(origin), 0755); err != nil {
     return err
   }
 
-  err = os.Symlink(destination, origin)
-  if err != nil {
-    return err
-  }
-
-  return nil
+  return os.Symlink(destination, origin)
 }
 
 //Go path/filepath Glob() is too limited, build our own
