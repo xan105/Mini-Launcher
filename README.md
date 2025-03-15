@@ -665,7 +665,12 @@ local process = require("process")
 - `arch: string` : architecture target (GOARCH)
 - `pid: number` : process id
 - `Cwd() string` : process current working dir
-- `ExecPath() string`: process absolute pathname
+- `ExecPath() string` : process absolute pathname
+- `On(event: string, callback: function)` : register callback function to be run for specified event
+
+**Events**
+
+- `will-quit` : Fired when process is about to terminate.
 
 Build
 =====

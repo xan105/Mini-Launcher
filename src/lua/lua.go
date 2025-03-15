@@ -4,7 +4,7 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package main
+package lua
 
 import (
   "github.com/yuin/gopher-lua"
@@ -25,9 +25,17 @@ import (
   "launcher/lua/process"
 )
 
-func loadLua(filePath string){
-  L := lua.NewState(lua.Options{ SkipOpenLibs: true })
-  defer L.Close()
+var L *lua.LState
+
+var EventRegistry = map[string]map[string]*lua.LFunction{ 
+  "process": process.EventRegistry,
+}
+
+func LoadLua(filePath string) error {
+
+  if L != nil { return nil }
+  
+  L = lua.NewState(lua.Options{ SkipOpenLibs: true })
   
   //Opening a subset of built-in modules
   for _, builtin := range []struct {
@@ -45,7 +53,7 @@ func loadLua(filePath string){
       NRet:    0,
       Protect: true,
     }, lua.LString(builtin.name)); err != nil {
-      panic("Lua", err.Error())
+      return err
     }
   }
   
@@ -78,7 +86,24 @@ func loadLua(filePath string){
   L.PreloadModule("process", process.Loader)
   
   //Exec
-  if err := L.DoFile(filePath); err != nil {
-    panic("Lua", err.Error())
+  return L.DoFile(filePath);
+}
+
+func CloseLua() {
+  if L != nil { 
+    L.Close()
   }
+}
+
+func TriggerEvent(module string, event string) error {
+  if L == nil { return nil }
+  
+  events, exists := EventRegistry[module]
+  if !exists { return nil }
+  
+  callback, exists := events[event]
+  if !exists { return nil }
+  
+  L.Push(callback)
+  return L.PCall(0, 0, nil)
 }

@@ -9,6 +9,7 @@ package main
 import(
   "os"
   "golang.org/x/sys/windows"
+  "launcher/lua"
 )
 
 func alert(title string, message string){
@@ -27,5 +28,6 @@ func panic(title string, message string){
     windows.StringToUTF16Ptr(title),
     windows.MB_OK | windows.MB_ICONERROR,
   )
+  lua.CloseLua()
   os.Exit(1)
 }

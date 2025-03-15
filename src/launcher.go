@@ -12,6 +12,7 @@ import(
   "strings"
   "syscall"
   "path/filepath"
+  "launcher/lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
 )
@@ -91,7 +92,9 @@ func main(){
     ext := filepath.Ext(script)
     switch ext {
       case ".lua": {
-        loadLua(script)
+        if err := lua.LoadLua(script); err != nil {
+          panic("Lua", err.Error())
+        }
       }
       default: {
         panic("Launcher", "Unsupported script: \""+ ext +"\"")  
@@ -99,7 +102,11 @@ func main(){
     } 
   }
 
-  if cmdLine.DryRun { os.Exit(0) }
+  if cmdLine.DryRun { 
+    lua.CloseLua()
+    os.Exit(0) 
+  }
+  
   err = cmd.Start()
   if err != nil { panic("Launcher", err.Error()) }
   
@@ -109,4 +116,10 @@ func main(){
   if config.Wait {
     cmd.Wait()
   }
+  
+  if err:= lua.TriggerEvent("process", "will-quit"); err != nil {
+    panic("Lua", err.Error())
+  }
+  
+  lua.CloseLua()
 }

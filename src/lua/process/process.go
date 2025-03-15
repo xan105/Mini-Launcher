@@ -12,16 +12,29 @@ import (
   "github.com/yuin/gopher-lua"
 )
 
+var EventRegistry = make(map[string]*lua.LFunction)
+
 func Loader(L *lua.LState) int {
 
-  mod := L.NewTable()
+  mod := L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
+    "Cwd": Getwd,
+    "ExecPath": ExecPath,
+    "On": On,
+  })
+  
   L.SetField(mod, "platform", lua.LString(runtime.GOOS))
   L.SetField(mod, "arch", lua.LString(runtime.GOARCH))
   L.SetField(mod, "pid", lua.LNumber(os.Getpid()))
-  L.SetField(mod, "Cwd", L.NewFunction(Getwd))
-  L.SetField(mod, "ExecPath", L.NewFunction(ExecPath))
   L.Push(mod)
   return 1
+}
+
+func On(L *lua.LState) int {
+  name     := L.CheckString(1)
+  callback := L.CheckFunction(2)
+
+  EventRegistry[name] = callback
+  return 0
 }
 
 func Getwd(L *lua.LState) int {
