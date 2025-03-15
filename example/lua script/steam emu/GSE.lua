@@ -23,7 +23,7 @@ local steam_languages = {
 
 local language = file.Read(path .. "language.txt")
 if not language or language == "" then
-  local language = user.language
+  language = user.language
   if not Array.includes(steam_languages, language) then
     language = "english"
   elseif language == "spanish" and user.locale.region ~= "ES" then
@@ -41,15 +41,3 @@ if not language or language == "" then
   end
   file.Write(path .. "language.txt", language)
 end
-
--- Mods
-
-mods = file.Glob("XCom2-WarOfTheChosen/XComGame/Mods/", "*.XComMod", { recursive = true })
-list = { "[Engine.XComModOptions]" }
-if mods then
-  for i, value in ipairs(mods) do
-      table.insert(list, "ActiveMods=\"" .. file.Basename(value, false) .. "\"")
-  end
-end
-config = table.concat(list, "\r\n")
-file.Write("XCom2-WarOfTheChosen/XComGame/Config/DefaultModOptions.ini", config)
