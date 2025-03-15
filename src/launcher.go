@@ -107,8 +107,9 @@ func main(){
     os.Exit(0) 
   }
   
-  err = cmd.Start()
-  if err != nil { panic("Launcher", err.Error()) }
+  if err := cmd.Start(); err != nil { 
+    panic("Launcher", err.Error()) 
+  }
   
   loadAddons(cmd.Process, config.Addons)
   displaySplash(cmd.Process.Pid, config.Splash)
@@ -117,7 +118,7 @@ func main(){
     cmd.Wait()
   }
   
-  if err:= lua.TriggerEvent("process", "will-quit"); err != nil {
+  if err := lua.TriggerEvent("process", "will-quit"); err != nil {
     panic("Lua", err.Error())
   }
   

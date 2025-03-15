@@ -18,14 +18,14 @@ func getCurrentUserSID() (string, error) {
 
   hProcess, err := windows.GetCurrentProcess()
   if err != nil {
-		return "", err
-	}
+    return "", err
+  }
 
-	var token windows.Token
-	if err := windows.OpenProcessToken(hProcess, windows.TOKEN_QUERY, &token); err != nil {
-		return "", err
-	}
-	defer token.Close()
+  var token windows.Token
+  if err := windows.OpenProcessToken(hProcess, windows.TOKEN_QUERY, &token); err != nil {
+    return "", err
+  }
+  defer token.Close()
 
   user, err := token.GetTokenUser()
   if err != nil {
