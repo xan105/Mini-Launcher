@@ -159,6 +159,39 @@ func ReadFile(filePath string, format string) (string, error) {
   return string(data), nil
 }
 
+func moveDir(oldPath string, newPath string) error {
+  entries, err := os.ReadDir(oldPath)
+  if err != nil {
+    return err
+  }
+  if len(entries) == 0 { //Empty so safe to delete
+    if err := os.Remove(oldPath); err != nil {
+      return err
+    }
+  } else { //Non-Empty
+    if err := os.MkdirAll(filepath.Dir(newPath), 0755); err != nil {
+      return err
+    }
+    if err := os.Rename(oldPath, newPath); err != nil { //Try to move
+      if linkErr, ok := err.(*os.LinkError); ok {
+        if errors.Is(linkErr.Err, windows.Errno(windows.ERROR_NOT_SAME_DEVICE)) { 
+          if err := os.CopyFS(newPath, os.DirFS(oldPath)); err != nil { //Fallback to copy
+            return err
+          }
+          if err := os.RemoveAll(oldPath); err != nil {
+            return err
+          }
+        } else {
+          return err
+        }
+      } else {
+        return err
+      }
+    } 
+  }
+  return nil
+}
+
 func CreateFolderSymlink(origin string, destination string) error {
 
   target, err := os.Lstat(origin)
@@ -170,41 +203,30 @@ func CreateFolderSymlink(origin string, destination string) error {
   
   if err == nil {
     if target.Mode() & os.ModeSymlink != 0 { //Already a symlink
-      return nil                             //Nothing to do
-    }
-  
-    if !target.IsDir() { //Target is a file
-      return errors.New("Symlink target is a file, aborting !")
-    }
-    
-    entries, err := os.ReadDir(origin)
-    if err != nil {
-      return err
-    }
-    if len(entries) == 0 { //Empty so safe to delete
+      
+      targetDest, err := os.Readlink(origin)
+      if err != nil {
+        return err
+      }
+      
+      if targetDest == destination {
+        return nil //Nothing to do
+      }
+      
+      if err := moveDir(targetDest, destination); err != nil {
+        return err
+      }
+      
       if err := os.Remove(origin); err != nil {
         return err
       }
-    } else { //Non-Empty
-      if err := os.MkdirAll(filepath.Dir(destination), 0755); err != nil {
+                             
+    } else if target.IsDir() {
+      if err := moveDir(origin, destination); err != nil {
         return err
       }
-      if err := os.Rename(origin, destination); err != nil { //Try to move
-        if linkErr, ok := err.(*os.LinkError); ok {
-          if errors.Is(linkErr.Err, windows.Errno(windows.ERROR_NOT_SAME_DEVICE)) { 
-            if err := os.CopyFS(destination, os.DirFS(origin)); err != nil { //Fallback to copy
-              return err
-            }
-            if err := os.RemoveAll(origin); err != nil {
-              return err
-            }
-          } else {
-            return err
-          }
-        } else {
-          return err
-        }
-      } 
+    } else {
+      return errors.New("Symlink target is a file, aborting !")
     }
   }
 
