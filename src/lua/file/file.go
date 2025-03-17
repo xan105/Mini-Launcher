@@ -19,6 +19,7 @@ func Loader(L *lua.LState) int {
   var exports = map[string]lua.LGFunction{
     "Write": Write,
     "Read": Read,
+    "Remove": Remove,
     "Version": Version,
     "Glob": Glob,
     "Basename": Basename,
@@ -71,6 +72,18 @@ func Read(L *lua.LState) int {
 
   L.Push(lua.LString(data))
   return 1
+}
+
+func Remove(L *lua.LState) int {
+  path := L.ToString(1)
+  
+  err := fs.Remove(fs.Resolve(expand.ExpandVariables(path)))
+  if err != nil {
+    L.Push(lua.LString(err.Error()))
+    return 1
+  }
+  
+  return 0
 }
 
 func Version(L *lua.LState) int {

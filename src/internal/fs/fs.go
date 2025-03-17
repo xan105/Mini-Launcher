@@ -242,7 +242,7 @@ func CreateFolderSymlink(origin string, destination string) error {
 }
 
 //Go path/filepath Glob() is too limited, build our own
-func Glob(root, pattern string, recursive bool, absolute bool) ([]string, error) {
+func Glob(root string, pattern string, recursive bool, absolute bool) ([]string, error) {
   var matches []string
   onlyDir := strings.HasSuffix(pattern, "/")
 
@@ -284,4 +284,25 @@ func Glob(root, pattern string, recursive bool, absolute bool) ([]string, error)
   }
 
   return matches, nil
+}
+
+func Remove(path string) error {
+  info, err := os.Stat(path)
+  if err != nil {
+    return err
+  }
+
+  if info.IsDir() {
+    err := os.RemoveAll(path)
+    if err != nil {
+      return err
+    }
+  } else {
+    err := os.Remove(path)
+    if err != nil {
+      return err
+    }
+  }
+
+  return nil
 }

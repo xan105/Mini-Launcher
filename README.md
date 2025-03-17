@@ -478,6 +478,10 @@ File is created if doesn't exist.
 
 Read text data as specified format encoding (default to utf8).
 
+#### `Remove(path: string) error`
+
+Delete file or directory and any children it contains at the given path.
+
 #### `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
 
 Retrieves version information for the specified file. Binary only (exe/dll).
