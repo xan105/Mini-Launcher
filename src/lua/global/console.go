@@ -53,19 +53,40 @@ func format(L *lua.LState, val lua.LValue, depth int) string {
 }
 
 func Log(L *lua.LState) int {
-  val := L.CheckAny(1)
-  slog.Info(format(L, val, 0))
+  var output []string
+  args := L.GetTop()
+
+  for i := 1; i <= args; i++ {
+    val := L.Get(i)
+    output = append(output, format(L, val, 0))
+  }
+
+  slog.Info(strings.Join(output, " "))
   return 0
 }
 
 func Warn(L *lua.LState) int {
-  val := L.CheckAny(1)
-  slog.Warn(format(L, val, 0))
+  var output []string
+  args := L.GetTop()
+
+  for i := 1; i <= args; i++ {
+    val := L.Get(i)
+    output = append(output, format(L, val, 0))
+  }
+
+  slog.Warn(strings.Join(output, " "))
   return 0
 }
 
 func Error(L *lua.LState) int {
-  val := L.CheckAny(1)
-  slog.Error(format(L, val, 0))
+  var output []string
+  args := L.GetTop()
+
+  for i := 1; i <= args; i++ {
+    val := L.Get(i)
+    output = append(output, format(L, val, 0))
+  }
+
+  slog.Error(strings.Join(output, " "))
   return 0
 }
