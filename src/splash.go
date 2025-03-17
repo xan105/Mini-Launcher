@@ -14,7 +14,7 @@ import(
   "path/filepath"
   "launcher/internal/fs"
   "launcher/internal/expand"
-  "launcher/internal/splash"
+  "launcher/internal/winui/splash"
 )
 
 func displaySplash(pid int, screen Splash) {
@@ -35,12 +35,10 @@ func displaySplash(pid int, screen Splash) {
           if slices.Contains(events, strings.ToUpper(screen.Wait)) {
             wait = strings.ToUpper(screen.Wait)
           }
-        
-          exit := make(chan bool)
-          go splash.CreateWindow(exit, pid, image, wait)
 
+          splashScreen := splash.Show(image, wait, pid)
           select {
-            case <-exit:
+            case <-splashScreen:
               return
             case <-time.After(time.Second * time.Duration(timeout)):
               return
