@@ -7,21 +7,20 @@ found in the LICENSE file in the root directory of this source tree.
 package locale
 
 import (
-	"syscall"
 	"unsafe"
 	"strings"
+  "golang.org/x/sys/windows"
 )
 
 var (
-	kernel32 = syscall.NewLazyDLL("kernel32.dll")
-
-	pGetUserDefaultLocaleName = kernel32.NewProc("GetUserDefaultLocaleName")
-	pGetLocaleInfoEx          = kernel32.NewProc("GetLocaleInfoEx")
+	kernel32                    = windows.NewLazySystemDLL("kernel32.dll")
+	pGetUserDefaultLocaleName   = kernel32.NewProc("GetUserDefaultLocaleName")
+	pGetLocaleInfoEx            = kernel32.NewProc("GetLocaleInfoEx")
 )
 
 const (
-	LOCALE_NAME_MAX_LENGTH         = 85
-	LOCALE_SENGLISHLANGUAGENAME    = 0x1001
+	LOCALE_NAME_MAX_LENGTH      = 85
+	LOCALE_SENGLISHLANGUAGENAME = 0x1001
 )
 
 func GetUserLocale() (string, error) {
@@ -33,11 +32,11 @@ func GetUserLocale() (string, error) {
 	if ret == 0 {
 		return "", err
 	}
-	return syscall.UTF16ToString(buffer), nil
+	return windows.UTF16ToString(buffer), nil
 }
 
 func GetLanguageFromLocale(locale string) (string, error) {
-	localePtr, _ := syscall.UTF16PtrFromString(locale)
+	localePtr, _ := windows.UTF16PtrFromString(locale)
 	buffer := make([]uint16, 100)
 
 	ret, _, err := pGetLocaleInfoEx.Call(
@@ -49,5 +48,5 @@ func GetLanguageFromLocale(locale string) (string, error) {
 	if ret == 0 {
 		return "", err
 	}
-	return strings.ToLower(syscall.UTF16ToString(buffer)), nil
+	return strings.ToLower(windows.UTF16ToString(buffer)), nil
 }

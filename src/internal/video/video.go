@@ -9,22 +9,21 @@ found in the LICENSE file in the root directory of this source tree.
 package video
 
 import (
-  "syscall"
   "unsafe"
   "errors"
+  "golang.org/x/sys/windows"
 )
 
 var (
-  user32          = syscall.NewLazyDLL("user32.dll")
-  gdi32           = syscall.NewLazyDLL("gdi32.dll")
-  shcore          = syscall.NewLazyDLL("shcore.dll")
-  
-  pSetThreadDpiAwarenessContext = user32.NewProc("SetThreadDpiAwarenessContext")
-  pGetDC                        = user32.NewProc("GetDC")
-  pReleaseDC                    = user32.NewProc("ReleaseDC")
-  pMonitorFromPoint             = user32.NewProc("MonitorFromPoint")
-  pGetDeviceCaps                = gdi32.NewProc("GetDeviceCaps")
-  pGetDpiForMonitor             = shcore.NewProc("GetDpiForMonitor")
+  user32                                     = windows.NewLazySystemDLL("user32.dll")
+  gdi32                                      = windows.NewLazySystemDLL("gdi32.dll")
+  shcore                                     = windows.NewLazySystemDLL("shcore.dll")
+  pSetThreadDpiAwarenessContext              = user32.NewProc("SetThreadDpiAwarenessContext")
+  pGetDC                                     = user32.NewProc("GetDC")
+  pReleaseDC                                 = user32.NewProc("ReleaseDC")
+  pMonitorFromPoint                          = user32.NewProc("MonitorFromPoint")
+  pGetDeviceCaps                             = gdi32.NewProc("GetDeviceCaps")
+  pGetDpiForMonitor                          = shcore.NewProc("GetDpiForMonitor")
 )
 
 const (

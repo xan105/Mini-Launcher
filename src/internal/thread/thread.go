@@ -4,19 +4,17 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package hook
+package thread
 
 import (
   "unsafe"
-  "syscall"
   "golang.org/x/sys/windows"
 )
 
 var (
-  kernel32 = syscall.NewLazyDLL("kernel32.dll")
-    
-  pVirtualAllocEx = kernel32.NewProc("VirtualAllocEx")
-  pVirtualFreeEx = kernel32.NewProc("VirtualFreeEx")
+  kernel32            = windows.NewLazySystemDLL("kernel32.dll")
+  pVirtualAllocEx     = kernel32.NewProc("VirtualAllocEx")
+  pVirtualFreeEx      = kernel32.NewProc("VirtualFreeEx")
   pCreateRemoteThread = kernel32.NewProc("CreateRemoteThread")
 )
 
@@ -35,7 +33,7 @@ func CreateRemoteThread(pid int, path string) error {
   if err != nil {
     return err
   }
-  defer syscall.CloseHandle(syscall.Handle(hProcess))
+  defer windows.CloseHandle(hProcess)
 
  //Allocates virtual memory for the file path
   lpBaseAddress, _, err := pVirtualAllocEx.Call(
@@ -66,8 +64,8 @@ func CreateRemoteThread(pid int, path string) error {
   }
  
  //Gets a pointer to the LoadLibrary function
-  LoadLibAddr, err := syscall.GetProcAddress(
-    syscall.Handle(kernel32.Handle()), 
+  LoadLibAddr, err := windows.GetProcAddress(
+    windows.Handle(kernel32.Handle()), 
     "LoadLibraryW",
   )
   if err != nil {
@@ -87,7 +85,7 @@ func CreateRemoteThread(pid int, path string) error {
   if hThread == 0 {
     return err
   }
-  defer syscall.CloseHandle(syscall.Handle(hThread))
+  defer windows.CloseHandle(windows.Handle(hThread))
 
   windows.WaitForSingleObject(windows.Handle(hThread), windows.INFINITE)
 

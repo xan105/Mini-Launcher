@@ -11,7 +11,7 @@ import(
   "path/filepath"
   "launcher/internal/fs"
   "launcher/internal/expand"
-  "launcher/internal/hook"
+  "launcher/internal/thread"
 )
 
 func loadAddons(process *os.Process, addons []Addon) {
@@ -21,7 +21,7 @@ func loadAddons(process *os.Process, addons []Addon) {
         dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
         if filepath.Ext(dylib) == ".dll" {
           if ok, _ := fs.FileExist(dylib); ok {       
-            err := hook.CreateRemoteThread(process.Pid, dylib)
+            err := thread.CreateRemoteThread(process.Pid, dylib)
             if err != nil {
               if addon.Required {
                 process.Kill()

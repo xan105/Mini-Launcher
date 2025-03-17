@@ -9,14 +9,8 @@ package elevated
 import (
   "os"
   "strings"
-  "syscall"
   "unsafe"
   "golang.org/x/sys/windows"
-)
-
-var (
-  modShell32      = syscall.NewLazyDLL("shell32.dll")
-  pShellExecuteW  = modShell32.NewProc("ShellExecuteW")
 )
 
 func IsElevated() bool {
@@ -50,17 +44,17 @@ func IsElevated() bool {
 func RestartElevated() {
 
   exePath, _ := os.Executable()
-  verb, _ := syscall.UTF16PtrFromString("runas")
-  exe, _ := syscall.UTF16PtrFromString(exePath)
-  args, _ := syscall.UTF16PtrFromString(strings.Join(os.Args[1:], " "))
+  verb, _ := windows.UTF16PtrFromString("runas")
+  exe, _ := windows.UTF16PtrFromString(exePath)
+  args, _ := windows.UTF16PtrFromString(strings.Join(os.Args[1:], " "))
       
-  pShellExecuteW.Call(
+  windows.ShellExecute(
     0,
-    uintptr(unsafe.Pointer(verb)), 
-    uintptr(unsafe.Pointer(exe)), 
-    uintptr(unsafe.Pointer(args)), 
-    0,
-    10,
+    verb, 
+    exe, 
+    args, 
+    nil,
+    windows.SW_SHOWDEFAULT,
   )
   
   os.Exit(0)
