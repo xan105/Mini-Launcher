@@ -27,38 +27,38 @@ func FromFile(filePath string) (FileVersion, error) {
     return FileVersion{}, errors.New("Query version information only from binary (exe/dll)")
   }
 
-	size, err := windows.GetFileVersionInfoSize(filePath, nil)
-	if err != nil {
-		return FileVersion{}, err
-	}
+  size, err := windows.GetFileVersionInfoSize(filePath, nil)
+  if err != nil {
+    return FileVersion{}, err
+  }
 
-	buf := make([]byte, size)
-	if err := windows.GetFileVersionInfo(
+  buf := make([]byte, size)
+  if err := windows.GetFileVersionInfo(
     filePath, 
     0,
     size,
     unsafe.Pointer(&buf[0]),
   ); err != nil {
-		return FileVersion{}, err
-	}
+    return FileVersion{}, err
+  }
 
-	var versionInfo *windows.VS_FIXEDFILEINFO
-	var versionInfoSize uint32
-	if err := windows.VerQueryValue(unsafe.Pointer(
+  var versionInfo *windows.VS_FIXEDFILEINFO
+  var versionInfoSize uint32
+  if err := windows.VerQueryValue(unsafe.Pointer(
     &buf[0]), 
     "\\", 
     unsafe.Pointer(&versionInfo), 
     &versionInfoSize,
   ); err != nil {
-		return FileVersion{}, err
-	}
+    return FileVersion{}, err
+  }
 
-	version := FileVersion{
-		Major:    uint16(versionInfo.FileVersionMS >> 16),
-		Minor:    uint16(versionInfo.FileVersionMS & 0xFFFF),
-		Build:    uint16(versionInfo.FileVersionLS >> 16),
-		Revision: uint16(versionInfo.FileVersionLS & 0xFFFF),
-	}
+  version := FileVersion{
+    Major:    uint16(versionInfo.FileVersionMS >> 16),
+    Minor:    uint16(versionInfo.FileVersionMS & 0xFFFF),
+    Build:    uint16(versionInfo.FileVersionLS >> 16),
+    Revision: uint16(versionInfo.FileVersionLS & 0xFFFF),
+  }
 
-	return version, nil
+  return version, nil
 }
