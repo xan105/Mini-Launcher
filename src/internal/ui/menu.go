@@ -38,7 +38,7 @@ func createMenuWindow(labels []string, button chan int) {
         id := uint16(wparam)
         index := int(id)
         button <- index
-        postQuitMessage(0)
+        destroyWindow(hwnd);
       default:
         ret := defWindowProc(hwnd, msg, wparam, lparam)
         return ret
