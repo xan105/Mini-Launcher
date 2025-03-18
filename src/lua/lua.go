@@ -25,13 +25,19 @@ import (
   "launcher/lua/process"
 )
 
+type Permissions struct {
+  Fs    bool  //Filesystem
+  Net   bool  //Network request
+  Reg   bool  //Windows registry
+}
+
 var L *lua.LState
 
 var EventRegistry = map[string]map[string]*lua.LFunction{ 
   "process": process.EventRegistry,
 }
 
-func LoadLua(filePath string) error {
+func LoadLua(filePath string, perm Permissions) error {
 
   if L != nil { return nil }
   
@@ -71,13 +77,26 @@ func LoadLua(filePath string) error {
   }))
 
   //Module
-  L.PreloadModule("regedit", regedit.Loader)
+  if perm.Reg {
+    L.PreloadModule("regedit", regedit.Loader)
+  } else {
+    L.PreloadModule("regedit", permissionStub)
+  }
+  if perm.Fs {
+    L.PreloadModule("file", file.Loader)
+    L.PreloadModule("archive", archive.Loader)
+  } else {
+    L.PreloadModule("file", permissionStub
+    L.PreloadModule("archive", permissionStub)
+  }
+  if perm.Net {
+    L.PreloadModule("http", http.Loader)
+  } else {
+    L.PreloadModule("http", permissionStub)
+  }
   L.PreloadModule("random", random.Loader)
-  L.PreloadModule("file", file.Loader)
-  L.PreloadModule("archive", archive.Loader)
   L.PreloadModule("user", user.Loader)
   L.PreloadModule("video", video.Loader)
-  L.PreloadModule("http", http.Loader)
   L.PreloadModule("config/json", json.Loader)
   L.PreloadModule("config/ini", ini.Loader)
   L.PreloadModule("config/toml", toml.Loader)
@@ -106,4 +125,9 @@ func TriggerEvent(module string, event string) error {
   
   L.Push(callback)
   return L.PCall(0, 0, nil)
+}
+
+func permissionStub(L *lua.LState) int {
+  L.RaiseError("Module unavailable due to lack of permission !")
+  return 0
 }

@@ -46,7 +46,12 @@ Config file
   hide?: bool,
   shell?: bool,
   wait?: bool,
-  script?: string,
+  script?: {
+    path: string,
+    fs?: bool,
+    net?: bool,
+    reg?: bool
+  },
   addons?: []{
     path: string, 
     required?: bool
@@ -138,15 +143,26 @@ When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 
 When enabled, will wait for the executable to terminate before exiting.
 
-### `script?: string` (none)
+### `script?: { path: string, fs?: bool, net?: bool, reg?: bool }` (none)
 
-File path to a Lua script to be run just before the executable (see **Lua Scripting** below for more details).<br />
-Path can be absolute or relative (to the current working dir).
+Lua script to be run just before the executable (see **Lua Scripting** below for more details).
 
-`%VAR%` are expanded if any (see Expanding Variable for more details).
-
-For now this is mainly to handle CD Key generation in old games.<br />
+Originally this feature was for handling CD Key generation in old games.<br />
 See the `./example` directory for some examples.
+
+- `path: string`
+
+  Script file path can be absolute or relative (to the current working dir).<br />
+  `%VAR%` are expanded if any (see Expanding Variable for more details).
+
+- `fs, net, reg ?: bool` (false)
+
+  These flags act as a simple permissions system: 
+  + `fs`: Filesystem operation
+  + `net`: Network request
+  + `reg`: Windows registry
+
+  You must explicitly grant access to these resources.
 
 ### `addons?: []{ path: string, required?: boolean }` (none)
 
@@ -432,6 +448,8 @@ Array.some(arr, function(x) return x.foo == "baz" end)
 
 This is a module to read and write from/to the registry.
 
+> Requires the `reg` permission.
+
 ```lua
 local regedit = require("regedit")
 ```
@@ -483,6 +501,8 @@ Picks a random PID from the user-owned processes.
 ### 📦 File
 
 This is a module to read and write text data from/to file.
+
+> Requires the `fs` permission.
 
 ```lua
 local file = require("file")
@@ -592,6 +612,8 @@ Stringify options:
 
 This is a module to do http request.
 
+> Requires the `net` permission.
+
 ```lua
 local http = require("http")
 ```
@@ -657,6 +679,8 @@ end
 
 This is a module to decompress archive file.
 
+> Requires the `fs` permission.
+
 ```lua
 local archive = require("archive")
 ```
@@ -715,7 +739,7 @@ local process = require("process")
 Build
 =====
 
-- Golang v1.24.0
+- Golang v1.24.1
 - [go-winres](https://github.com/tc-hib/go-winres) installed in `%PATH%` env var for win32 manifest & cie
 
 Run `build.cmd` on Windows<br/>

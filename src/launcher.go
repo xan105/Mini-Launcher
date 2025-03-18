@@ -97,12 +97,16 @@ func main(){
   setCompatFlags(binary, config.Compatibility)
   updatePrefixSettings(config.Prefix)
 
-  if len(config.Script) > 0 {
-    script := fs.Resolve(expand.ExpandVariables(config.Script))
+  if len(config.Script.Path) > 0 {
+    script := fs.Resolve(expand.ExpandVariables(config.Script.Path))
     ext := filepath.Ext(script)
     switch ext {
       case ".lua": {
-        if err := lua.LoadLua(script); err != nil {
+        if err := lua.LoadLua(script, lua.Permissions{
+          Fs: config.Script.Fs,
+          Net: config.Script.Net,
+          Reg: config.Script.Reg,
+        }); err != nil {
           panic("Lua", err.Error())
         }
       }

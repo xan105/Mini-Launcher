@@ -49,6 +49,13 @@ type WinePrefix struct {
   DPI             uint32              `json:"dpi"`
 }
 
+type Script struct {
+  Path            string               `json:"path"`
+  Fs              bool                 `json:"fs"`
+  Net             bool                 `json:"net"`
+  Reg             bool                 `json:"reg"`
+}
+
 type Config struct {
   Bin             string              `json:"bin"`
   Cwd             string              `json:"cwd"`
@@ -57,7 +64,7 @@ type Config struct {
   Hide            bool                `json:"hide"`
   Shell           bool                `json:"shell"`
   Wait            bool                `json:"wait"`
-  Script          string              `json:"script"`
+  Script          Script              `json:"script"`
   Addons          []Addon             `json:"addons"`
   Integrity       []File              `json:"integrity"`
   Splash          Splash              `json:"splash"`
@@ -74,7 +81,6 @@ func mergeConfig(config *Config, override *Config) {
   if len(override.Bin) > 0 { config.Bin = override.Bin }
   if len(override.Cwd) > 0 { config.Cwd = override.Cwd }
   if len(override.Args) > 0 { config.Args = override.Args }
-  if len(override.Script) > 0 { config.Script = override.Script }
   
   //bool
   if override.Hide != config.Hide { config.Hide = override.Hide }
@@ -93,6 +99,11 @@ func mergeConfig(config *Config, override *Config) {
   if override.Attrib != nil && len(override.Attrib) > 0 { config.Attrib = override.Attrib }
   
   //Nested
+  if len(override.Script.Path) > 0 { config.Script.Path = override.Script.Path }
+  if override.Script.Fs != config.Script.Fs { config.Script.Fs = override.Script.Fs }
+  if override.Script.Net != config.Script.Net { config.Script.Net = override.Script.Net }
+  if override.Script.Reg != config.Script.Reg { config.Script.Reg = override.Script.Reg }
+
   if override.Splash.Show != config.Splash.Show { config.Splash.Show = override.Splash.Show }
   if override.Splash.Images != nil && len(override.Splash.Images) > 0 { config.Splash.Images = override.Splash.Images }
   if override.Splash.Timeout > 0 { config.Splash.Timeout = override.Splash.Timeout }
