@@ -4,51 +4,21 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package splash
+package ui
 
 import (
   "log/slog"
   "os"
   "unsafe"
+  "runtime"
   "golang.org/x/sys/windows"
 )
 
-const classNameGUID = "D2FF2B71-7532-4BA6-8025-4D044372B710"  //Random GUID
-
-func createBrushFromBMP(splashImage string) (windows.Handle, BITMAP, error) {
-  hbm, err := loadImage(splashImage)
-  if err != nil {    
-    return 0, BITMAP{}, err
-  } 
-   
-  hbrush, err := createPatternBrush(hbm)
-  if err != nil {    
-    return 0, BITMAP{}, err
-  }
-  
-  //Get Image dimension
-  image, err:= getObject(hbm)
-  if err != nil {
-    return hbrush, image, err
-  }
-
-  return hbrush, image, nil
-}
-
-func getScreenResolution() (uint32, uint32, error){
-  hDC, err := getDC(0)
-  if err != nil {
-    return 0, 0, err
-  }
-  defer releaseDC(0, hDC)
-  
-  width := getDeviceCaps(hDC, HORZRES)
-  height := getDeviceCaps(hDC, VERTRES)
-  return width, height, nil
-}
-
-func createSplash(splashImage string, waitEvent string, pid int, exit chan bool) { 
+func createSplashWindow(splashImage string, waitEvent string, pid int, exit chan bool) { 
+  runtime.LockOSThread() //GetMessageW() must be called in the same thread
   slog.Info("Create Splash Window")
+  
+  const classNameGUID = "D2FF2B71-7532-4BA6-8025-4D044372B710"  //Random GUID
 
   var win windows.Handle
 
@@ -163,6 +133,9 @@ func createSplash(splashImage string, waitEvent string, pid int, exit chan bool)
 
     if gotMessage {
       translateMessage(&msg)
+      if msg.message == WM_QUIT {
+        break
+      }
       dispatchMessage(&msg)
     } else {
       break
@@ -171,8 +144,8 @@ func createSplash(splashImage string, waitEvent string, pid int, exit chan bool)
   exit <- true
 }
 
-func Show(splashImage string, waitEvent string, pid int) chan bool {
+func Splash(splashImage string, waitEvent string, pid int) chan bool {
   exit := make(chan bool)
-  go createSplash(splashImage, waitEvent, pid, exit)
+  go createSplashWindow(splashImage, waitEvent, pid, exit)
   return exit
 }

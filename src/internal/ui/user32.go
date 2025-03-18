@@ -4,7 +4,7 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package splash
+package ui
 
 import (
   "unsafe"
@@ -32,11 +32,21 @@ const (
   WM_CREATE                 = 0x0001
   WM_DESTROY                = 0x0002
   WM_SHOWWINDOW             = 0x0018
+  WM_CLOSE                  = 0x0010
+  WM_COMMAND                = 0x0111
+  WM_QUIT                   = 0x0012
+  WS_CHILD                  = 0x40000000
   WS_VISIBLE                = 0x10000000
   WS_EX_TOPMOST             = 0x00000008
   WS_POPUP                  = 0x80000000
   WS_EX_TOOLWINDOW          = 0x000000080
   WS_TABSTOP                = 0x00010000
+  WS_CAPTION                = 0x00C00000
+  WS_OVERLAPPEDWINDOW       = 0x00CF0000
+  WS_SYSMENU                = 0x00080000
+  WS_THICKFRAME             = 0x00040000
+  WS_MINIMIZEBOX            = 0x20000
+  WS_MAXIMIZEBOX            = 0x10000
   EVENT_SYSTEM_FOREGROUND   = 0x0003
   EVENT_OBJECT_CREATE       = 0x8000
   EVENT_OBJECT_SHOW         = 0x8002
@@ -49,6 +59,8 @@ const (
   OBJID_CLIENT              = -4;
   IMAGE_BITMAP              = 0x00
   LR_LOADFROMFILE           = 0x00000010
+  COLOR_WINDOW              = 5
+  BS_DEFPUSHBUTTON          = 0x01
 )
 
 type POINT struct {

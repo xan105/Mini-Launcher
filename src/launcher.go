@@ -75,9 +75,19 @@ func buildCommand(binary string, config Config) *exec.Cmd {
 func main(){
 
   cmdLine := parseArgs()
-  config, err := fs.ReadJSON[Config](fs.Resolve(cmdLine.ConfigPath))
+  configFile := fs.Resolve(cmdLine.ConfigPath)
+  config, err := fs.ReadJSON[Config](configFile)
   if err != nil { panic("JSON Parser", err.Error()) }
-  
+
+  if path := displayMenuOverride(config.Menu, cmdLine.ConfigPath); len(path) > 0 {
+    overrideFile := fs.Resolve(path)
+    if (configFile != overrideFile) {
+      override, err := fs.ReadJSON[Config](overrideFile)
+      if err != nil { panic("JSON Parser", err.Error()) }
+      mergeConfig(&config, &override)
+    }
+  }
+
   binary := fs.Resolve(expand.ExpandVariables(config.Bin))
   cmd := buildCommand(binary, config)
   

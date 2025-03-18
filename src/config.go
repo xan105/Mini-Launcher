@@ -65,4 +65,50 @@ type Config struct {
   Compatibility   CompatFlags         `json:"compatibility"`
   Prefix          WinePrefix          `json:"prefix"`
   Attrib          []Attrib            `json:"attrib"`
+  Menu            map[string]string   `json:"menu"`
+}
+
+func mergeConfig(config *Config, override *Config) {
+  
+  //string
+  if len(override.Bin) > 0 { config.Bin = override.Bin }
+  if len(override.Cwd) > 0 { config.Cwd = override.Cwd }
+  if len(override.Args) > 0 { config.Args = override.Args }
+  if len(override.Script) > 0 { config.Script = override.Script }
+  
+  //bool
+  if override.Hide != config.Hide { config.Hide = override.Hide }
+  if override.Shell != config.Shell { config.Shell = override.Shell }
+  if override.Wait != config.Wait { config.Wait = override.Wait }
+  
+  //map
+  if len(override.Env) > 0 {
+    for k, v := range override.Env { config.Env[k] = v }
+  }
+  
+  //[]struct
+  if override.Addons != nil && len(override.Addons) > 0 { config.Addons = override.Addons }
+  if override.Integrity != nil && len(override.Integrity) > 0 { config.Integrity = override.Integrity }
+  if override.Symlink != nil && len(override.Symlink) > 0 { config.Symlink = override.Symlink }
+  if override.Attrib != nil && len(override.Attrib) > 0 { config.Attrib = override.Attrib }
+  
+  //Nested
+  if override.Splash.Show != config.Splash.Show { config.Splash.Show = override.Splash.Show }
+  if override.Splash.Images != nil && len(override.Splash.Images) > 0 { config.Splash.Images = override.Splash.Images }
+  if override.Splash.Timeout > 0 { config.Splash.Timeout = override.Splash.Timeout }
+  if len(override.Splash.Wait) > 0 { config.Splash.Wait = override.Splash.Wait }
+  
+  if len(override.Compatibility.Version) > 0 { config.Compatibility.Version = override.Compatibility.Version }
+  if override.Compatibility.Fullscreen != config.Compatibility.Fullscreen  { config.Compatibility.Fullscreen = override.Compatibility.Fullscreen }
+  if override.Compatibility.Admin != config.Compatibility.Admin { config.Compatibility.Admin = override.Compatibility.Admin }
+  if override.Compatibility.Invoker != config.Compatibility.Invoker { config.Compatibility.Invoker = override.Compatibility.Invoker }
+  if override.Compatibility.Aware != config.Compatibility.Aware { config.Compatibility.Aware = override.Compatibility.Aware }
+  
+  if len(override.Prefix.WinVer) > 0 { config.Prefix.WinVer = override.Prefix.WinVer }
+  if override.Prefix.DPI > 0 { config.Prefix.DPI = override.Prefix.DPI }
+  if len(override.Prefix.DllOverrides) > 0 {
+    for k, v := range override.Prefix.DllOverrides {
+      config.Prefix.DllOverrides[k] = v
+    }
+  }
 }

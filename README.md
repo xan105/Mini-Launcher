@@ -82,7 +82,8 @@ Config file
     path: string,
     hidden?: boolean,
     readonly?: boolean
-  }
+  },
+  menu?: object
 }
 ```
 
@@ -310,6 +311,28 @@ Set file(s) attributes: read only and/or hidden.
 Path can be absolute or relative (to the current working dir).<br />
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
+### `menu?: object` (none)
+
+Show a very simple button menu where each key/value pair is the button label and its corresponding override config file.
+
+Example:
+
+```json
+{
+  "menu": {
+    "Mass Effect": "me.json",
+    "Mass Effect 2": "me2.json",
+    "Mass Effect 3": "me3.json"
+  }
+}
+```
+
+Path can be absolute or relative (to the current working dir).
+`%VAR%` in the path are expanded if any (see Expanding Variable for more details).
+
+💡 You can point an entry to the default config file.
+If empty, the default is assumed ie: the value of `--config string` which defaults to `launcher.json`
+
 Expanding Variable
 ==================
 
@@ -455,6 +478,7 @@ local file = require("file")
 
 - `Write(filename: string, data: string, format?: string = "utf8") error`
 - `Read(filename: string, format?: string = "utf8") string, error`
+- `Remove(path: string) error`
 - `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
 - `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, err`
 - `Basename(path: string, suffix?: bool = true) string`
