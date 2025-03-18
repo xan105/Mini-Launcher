@@ -313,7 +313,7 @@ Path can be absolute or relative (to the current working dir).<br />
 
 ### `menu?: object` (none)
 
-Show a very simple button menu where each key/value pair is the button label and its corresponding override config file.
+Show a very simple button menu where each key/value pair is a button label and its corresponding override config file.
 
 Example:
 
@@ -332,6 +332,18 @@ Path can be absolute or relative (to the current working dir).
 
 💡 You can point an entry to the default config file.
 If empty, the default is assumed ie: the value of `--config string` which defaults to `launcher.json`
+
+Example:
+
+```json
+{
+  "binary": "bin/bg3_dx11.exe"
+  "menu": {
+    "Baldurs Gate 3": "",
+    "Baldurs Gate 3 (Vulkan)": "vulkan.json"
+  }
+}
+```
 
 Expanding Variable
 ==================
@@ -385,9 +397,9 @@ Suspends the execution of the Lua engine until the time-out interval elapses (in
 
 ### `console: SetFuncs`
 
-  + `log(any)`
-  + `warn(any)`
-  + `error(any)`
+  + `log(any, ...)`
+  + `warn(any, ...)`
+  + `error(any, ...)`
   
 Convenience methods to print value or array with timestamp and log level. Values are colored depending on their type.
 
