@@ -23,12 +23,14 @@ import (
   "launcher/lua/config/yaml"
   "launcher/lua/config/xml"
   "launcher/lua/process"
+  "launcher/lua/shell"
 )
 
 type Permissions struct {
   Fs    bool  //Filesystem
   Net   bool  //Network request
   Reg   bool  //Windows registry
+  Exec  bool  //Exec shell command
 }
 
 var L *lua.LState
@@ -86,13 +88,18 @@ func LoadLua(filePath string, perm Permissions) error {
     L.PreloadModule("file", file.Loader)
     L.PreloadModule("archive", archive.Loader)
   } else {
-    L.PreloadModule("file", permissionStub
+    L.PreloadModule("file", permissionStub)
     L.PreloadModule("archive", permissionStub)
   }
   if perm.Net {
     L.PreloadModule("http", http.Loader)
   } else {
     L.PreloadModule("http", permissionStub)
+  }
+  if perm.Exec {
+    L.PreloadModule("shell", shell.Loader)
+  } else {
+    L.PreloadModule("shell", permissionStub)
   }
   L.PreloadModule("random", random.Loader)
   L.PreloadModule("user", user.Loader)

@@ -54,6 +54,7 @@ type Script struct {
   Fs              bool                 `json:"fs"`
   Net             bool                 `json:"net"`
   Reg             bool                 `json:"reg"`
+  Exec            bool                 `json:"exec"`
 }
 
 type Config struct {
@@ -103,6 +104,7 @@ func mergeConfig(config *Config, override *Config) {
   if override.Script.Fs != config.Script.Fs { config.Script.Fs = override.Script.Fs }
   if override.Script.Net != config.Script.Net { config.Script.Net = override.Script.Net }
   if override.Script.Reg != config.Script.Reg { config.Script.Reg = override.Script.Reg }
+  if override.Script.Exec != config.Script.Exec { config.Script.Exec = override.Script.Exec }
 
   if override.Splash.Show != config.Splash.Show { config.Splash.Show = override.Splash.Show }
   if override.Splash.Images != nil && len(override.Splash.Images) > 0 { config.Splash.Images = override.Splash.Images }

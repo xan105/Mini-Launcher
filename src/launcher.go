@@ -106,6 +106,7 @@ func main(){
           Fs: config.Script.Fs,
           Net: config.Script.Net,
           Reg: config.Script.Reg,
+          Exec: config.Script.Exec,
         }); err != nil {
           panic("Lua", err.Error())
         }

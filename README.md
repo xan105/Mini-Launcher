@@ -50,7 +50,8 @@ Config file
     path: string,
     fs?: bool,
     net?: bool,
-    reg?: bool
+    reg?: bool,
+    exec?: bool
   },
   addons?: []{
     path: string, 
@@ -143,7 +144,7 @@ When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 
 When enabled, will wait for the executable to terminate before exiting.
 
-### `script?: { path: string, fs?: bool, net?: bool, reg?: bool }` (none)
+### `script?: { path: string, fs, net, reg, exec?: bool }` (none)
 
 Lua script to be run just before the executable (see **Lua Scripting** below for more details).
 
@@ -155,12 +156,13 @@ See the `./example` directory for some examples.
   Script file path can be absolute or relative (to the current working dir).<br />
   `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-- `fs, net, reg ?: bool` (false)
+- `fs, net, reg, exec ?: bool` (false)
 
   These flags act as a simple permissions system: 
   + `fs`: Filesystem operation
   + `net`: Network request
   + `reg`: Windows registry
+  + `exec`: Shell command
 
   You must explicitly grant access to these resources.
 
@@ -735,6 +737,22 @@ local process = require("process")
 **Events**
 
 - `will-quit` : Fired when process is about to terminate.
+
+### 📦 Shell
+
+This is a module to execute shell command. 
+
+> Requires the `exec` permission.
+
+```lua
+local shell = require("shell")
+```
+
+- `Run(command: string) {stdout: string, stderr: string}, err`
+
+#### `Run(command: string) {stdout: string, stderr: string}, err`
+
+Spawns a shell then execute the command within that shell (ComSpec).
 
 Build
 =====
