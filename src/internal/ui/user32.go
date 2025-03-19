@@ -102,7 +102,7 @@ func getDC(hWnd windows.Handle) (windows.Handle, error) {
   return windows.Handle(ret), nil
 }
 
-func releaseDC (hWnd windows.Handle, hDC windows.Handle) bool {
+func releaseDC(hWnd windows.Handle, hDC windows.Handle) bool {
   ret, _, _ := pReleaseDC.Call(
     uintptr(hWnd),
     uintptr(hDC),

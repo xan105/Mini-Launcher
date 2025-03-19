@@ -8,6 +8,7 @@ package ui
 
 import (
   "log/slog"
+  "os"
   "unsafe"
   "runtime"
   "golang.org/x/sys/windows"
@@ -31,17 +32,18 @@ func createMenuWindow(labels []string, button chan int) {
 
   lpfnWndProc := func(hwnd windows.Handle, msg uint32, wparam uintptr, lparam uintptr) uintptr {
     switch msg {
-      case WM_DESTROY, WM_CLOSE: 
+      case WM_DESTROY: 
         postQuitMessage(0)
-        button <- -1
+      case WM_CLOSE:
+        destroyWindow(hwnd)
+        os.Exit(0)
       case WM_COMMAND:
         id := uint16(wparam)
         index := int(id)
         button <- index
-        destroyWindow(hwnd);
+        destroyWindow(hwnd)
       default:
-        ret := defWindowProc(hwnd, msg, wparam, lparam)
-        return ret
+        return defWindowProc(hwnd, msg, wparam, lparam)
     }
     return 0
   }
@@ -53,11 +55,14 @@ func createMenuWindow(labels []string, button chan int) {
     return
   }
   
+  hIcon := extractIcon()
   wcx := WNDCLASSEXW{
     wndProc:    windows.NewCallback(lpfnWndProc),
     instance:   instance,
     background: COLOR_WINDOW,
     className:  windows.StringToUTF16Ptr(classNameGUID),
+    icon:      windows.Handle(hIcon),
+    iconSm:    windows.Handle(hIcon),
   }
   wcx.size = uint32(unsafe.Sizeof(wcx))
   
@@ -89,8 +94,8 @@ func createMenuWindow(labels []string, button chan int) {
   win, err := createWindow(
     classNameGUID,
     "Launcher",
-    WS_EX_TOPMOST,
-    WS_CAPTION | WS_VISIBLE | WS_TABSTOP,
+    0,
+    (WS_SYSMENU | WS_VISIBLE | WS_TABSTOP) &^ WS_MAXIMIZEBOX,
     (screenWidth - uint32(menuWidth)) / 2, //center X
     (screenHeight - uint32(menuHeight)) / 2, //center Y
     uint32(menuWidth),
@@ -146,6 +151,7 @@ func createMenuWindow(labels []string, button chan int) {
     }
   }
   button <- -1
+  return
 }
 
 func Menu(labels []string) chan int {

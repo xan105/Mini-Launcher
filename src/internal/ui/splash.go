@@ -37,7 +37,6 @@ func createSplashWindow(splashImage string, waitEvent string, pid int, exit chan
     switch msg {
       case WM_DESTROY:
         postQuitMessage(0)
-        exit <- true
       case WM_SHOWWINDOW: {
         _, err := setWinEventHook(
           EVENT_SYSTEM_FOREGROUND,
@@ -50,13 +49,11 @@ func createSplashWindow(splashImage string, waitEvent string, pid int, exit chan
         )
         if err != nil {
           slog.Error(err.Error())
-          postQuitMessage(0)
-          exit <- true
+          destroyWindow(hwnd)
         }
       }
       default:
-        ret := defWindowProc(hwnd, msg, wparam, lparam)
-        return ret
+        return defWindowProc(hwnd, msg, wparam, lparam)
     }
     return 0
   }
@@ -142,6 +139,7 @@ func createSplashWindow(splashImage string, waitEvent string, pid int, exit chan
     }
   }
   exit <- true
+  return
 }
 
 func Splash(splashImage string, waitEvent string, pid int) chan bool {

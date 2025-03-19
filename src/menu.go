@@ -7,6 +7,7 @@ found in the LICENSE file in the root directory of this source tree.
 package main
 
 import(
+  "sort"
   "launcher/internal/ui"
 )
   
@@ -19,6 +20,7 @@ func displayMenuOverride(menu map[string]string, defaultPath string) string {
       }
     }
     if len(labels) > 0 {
+      sort.Strings(labels)
       button := ui.Menu(labels)
       index := <- button
       if index >= 0 && index <= len(labels) {
