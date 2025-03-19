@@ -1,6 +1,9 @@
 {
   "bin": "quake3.exe",
   "args": "+wait +set fs_homepath \"%SAVEGAME%\\Quake III Arena\""
-  "script": "keygen.lua"
+  "script": {
+    "path": "keygen.lua",
+    "fs": true
+  }
 }
 

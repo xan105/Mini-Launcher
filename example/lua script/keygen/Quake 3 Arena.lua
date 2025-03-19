@@ -35,6 +35,6 @@ if (current == "") then
   
   local err = file.Write("baseq3/q3key", key)
   if err then
-    print(err)
+    console.log(err)
   end
 end

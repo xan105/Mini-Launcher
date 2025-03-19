@@ -4,10 +4,10 @@ local process = require("process")
 -- Steam Loader
 
 local appid = "480"
+local steamPath = "%CURRENTDIR%"
+local steamExe = "%CURRENTDIR%\\Example.exe"
 local clientDLL = "%CURRENTDIR%\\steamclient.dll"
 local clientDLL64 = "%CURRENTDIR%\\steamclient64.dll"
-local steamExe = "%CURRENTDIR%\\Example.exe"
-local steamPath = "%CURRENTDIR%"
 
 -- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
 -- Example: 

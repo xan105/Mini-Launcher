@@ -1,6 +1,9 @@
 {
   "bin": "WDC.exe",
-  "script": "launcher.lua",
+  "script": {
+    "path": "launcher.lua"
+    "file": true
+  },
   "env": {
     "GAMEPAD_API_XINPUT": "HOOK",
     "GAMEPAD_API_DINPUT8": "HOOK",

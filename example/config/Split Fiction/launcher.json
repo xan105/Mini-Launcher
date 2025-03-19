@@ -1,6 +1,9 @@
 {
   "bin": "Split/Binaries/Win64/SplitFiction.exe",
-  "script": "launcher.lua",
+  "script": {
+    "path": "launcher.lua"
+    "file": true
+  },
   "symlink": [
     {
       "path": "%LOCALAPPDATA%/SplitFiction",
