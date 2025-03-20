@@ -422,6 +422,8 @@ Suspends the execution of the Lua engine until the time-out interval elapses (in
   
 Convenience methods to print value or array with timestamp and log level. Values are colored depending on their type.
 
+💡 `print()` is an alias to `console.log()`
+
 ### `Array: SetFuncs`
 
   + `find(table, func) any`

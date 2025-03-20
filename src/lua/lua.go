@@ -68,6 +68,7 @@ func LoadLua(filePath string, perm Permissions) error {
   
   //Globals
   L.SetGlobal("sleep", L.NewFunction(global.Sleep))
+  L.SetGlobal("print", L.NewFunction(global.Log)) //override built-in and alias it to console.log
   L.SetGlobal("console", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
     "log": global.Log,
     "warn": global.Warn,
