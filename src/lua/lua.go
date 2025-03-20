@@ -50,11 +50,12 @@ func LoadLua(filePath string, perm Permissions) error {
     name string
     function lua.LGFunction
   }{
-    {lua.LoadLibName, lua.OpenPackage}, //Must be first
-    {lua.BaseLibName, lua.OpenBase},
-    {lua.TabLibName, lua.OpenTable},
-    {lua.StringLibName, lua.OpenString},
-    {lua.MathLibName, lua.OpenMath},
+    { lua.LoadLibName, lua.OpenPackage }, //Must be first
+    { lua.BaseLibName, lua.OpenBase },
+    { lua.TabLibName, lua.OpenTable },
+    { lua.StringLibName, lua.OpenString },
+    { lua.MathLibName, lua.OpenMath },
+    { lua.CoroutineLibName, lua.OpenCoroutine },
   } {
     if err := L.CallByParam(lua.P{
       Fn:      L.NewFunction(builtin.function),

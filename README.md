@@ -403,6 +403,7 @@ Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yui
   + Table
   + String
   + Math
+  + Coroutine
   
 Some standard libraries are not enabled by design.<br />
 The followings modules are exposed to the Lua VM, I might add more later on.
