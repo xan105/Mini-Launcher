@@ -707,6 +707,7 @@ local user = require("user")
 ```
 
 - `name: string` : User name
+- `admin: bool` : has elevated rights ?
 - `language: string`: User's language in English (ex: `english`, `french`, `german`)
 - `locale`: User's language as ISO 639
   + `code: string`: language code (ex: `en`, `fr`, `de`)

@@ -12,6 +12,7 @@ import (
   "strings"
   "github.com/yuin/gopher-lua"
   "launcher/internal/locale"
+  "launcher/internal/elevated"
 )
 
 func getUserName() (string, error) {
@@ -57,6 +58,7 @@ func Loader(L *lua.LState) int {
   
   mod := L.NewTable()
   L.SetField(mod, "name", lua.LString(name))
+  L.SetField(mod, "admin", lua.LBool(elevated.IsElevated()))
   L.SetField(mod, "language", lua.LString(lang))
   L.SetField(mod, "locale", locale)
   L.Push(mod)
