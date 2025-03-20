@@ -8,11 +8,13 @@ package main
 
 import(
   "os"
+  "log/slog"
   "golang.org/x/sys/windows"
   "launcher/lua"
 )
 
 func alert(title string, message string){
+  slog.Warn(message)
   windows.MessageBox(
     windows.HWND(uintptr(0)),
     windows.StringToUTF16Ptr(message),
@@ -22,6 +24,7 @@ func alert(title string, message string){
 }
 
 func panic(title string, message string){
+  slog.Error(message)
   windows.MessageBox(
     windows.HWND(uintptr(0)),
     windows.StringToUTF16Ptr(message),
