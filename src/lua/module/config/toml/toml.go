@@ -4,12 +4,13 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package yaml
+package toml
 
 import (
-  "gopkg.in/yaml.v3"
+  "github.com/pelletier/go-toml/v2"
   "github.com/yuin/gopher-lua"
-  "launcher/lua/config"
+  "launcher/lua/module/config"
+  "launcher/lua/type/failure"
 )
 
 func Loader(L *lua.LState) int {
@@ -24,12 +25,12 @@ func Loader(L *lua.LState) int {
 }
 
 func Parse(L *lua.LState) int {
-  yamlStr := L.CheckString(1)
+  tomlStr := L.CheckString(1)
 
   var data map[string]interface{}
-  if err := yaml.Unmarshal([]byte(yamlStr), &data); err != nil {
+  if err := toml.Unmarshal([]byte(tomlStr), &data); err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_TOML_PARSE", err.Error()))
     return 2
   }
 
@@ -42,13 +43,13 @@ func Stringify(L *lua.LState) int {
   luaTable := L.CheckTable(1)
 
   data := config.ToGoMap(luaTable)
-  yamlBytes, err := yaml.Marshal(data)
+  tomlBytes, err := toml.Marshal(data)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_TOML_PARSE", err.Error()))
     return 2
   }
 
-  L.Push(lua.LString(yamlBytes))
+  L.Push(lua.LString(tomlBytes))
   return 1
 }

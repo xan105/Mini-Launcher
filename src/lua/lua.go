@@ -8,22 +8,23 @@ package lua
 
 import (
   "github.com/yuin/gopher-lua"
+  "launcher/lua/type/failure"
   "launcher/lua/global"
   "launcher/lua/global/array"
-  "launcher/lua/regedit"
-  "launcher/lua/random"
-  "launcher/lua/file"
-  "launcher/lua/archive"
-  "launcher/lua/user"
-  "launcher/lua/video"
-  "launcher/lua/http"
-  "launcher/lua/config/json"
-  "launcher/lua/config/ini"
-  "launcher/lua/config/toml"
-  "launcher/lua/config/yaml"
-  "launcher/lua/config/xml"
-  "launcher/lua/process"
-  "launcher/lua/shell"
+  "launcher/lua/module/regedit"
+  "launcher/lua/module/random"
+  "launcher/lua/module/file"
+  "launcher/lua/module/archive"
+  "launcher/lua/module/user"
+  "launcher/lua/module/video"
+  "launcher/lua/module/http"
+  "launcher/lua/module/config/json"
+  "launcher/lua/module/config/ini"
+  "launcher/lua/module/config/toml"
+  "launcher/lua/module/config/yaml"
+  "launcher/lua/module/config/xml"
+  "launcher/lua/module/process"
+  "launcher/lua/module/shell"
 )
 
 type Permissions struct {
@@ -65,6 +66,9 @@ func LoadLua(filePath string, perm Permissions) error {
       return err
     }
   }
+  
+  //Custom Type
+  failure.RegisterType(L)
   
   //Globals
   L.SetGlobal("sleep", L.NewFunction(global.Sleep))

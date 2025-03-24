@@ -408,7 +408,7 @@ Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yui
 Some standard libraries are not enabled by design.<br />
 The followings modules are exposed to the Lua VM, I might add more later on.
 
-### 🌐 Globals
+## 🌐 Globals
 
 ### `sleep(ms: int)`
 
@@ -449,7 +449,38 @@ Array.find(arr, function(x) return x.foo == "bar" end)
 Array.some(arr, function(x) return x.foo == "baz" end)
 ```
 
-### 📦 Regedit
+### `Failure(code?: string, message?: string) Failure{ code: string, message: string }`
+
+Failure is a custom type (_userdata_) that represents an "error object" with an associated error code and message.
+This provides a structured way to handle error.
+
+- `code?: string` ("ERR_UNKNOWN")
+  Error code.
+  
+- `message?: string` ("An unknown error occurred")
+  Error message.
+  
+💡 `Failure` has a `__tostring` metamethod. If not invoked automatically, you can explicitly call it using `tostring(Failure)`
+
+Example:
+
+```lua
+local err = Failure("ERR_NOT_FOUND", "The requested item was not found")
+print(err.code)    -- "ERR_NOT_FOUND"
+print(err.message) -- "The requested item was not found"
+print(err)         -- "The requested item was not found"
+
+local value, err = Foo()
+if err and err.code == "ERR_UNKNOWN" then
+  error(err.message) -- Raise an error "An unknown error occurred"
+  -- or
+  error(tostring(err))
+end
+```
+
+## 📦 Modules
+
+### Regedit
 
 This is a module to read and write from/to the registry.
 
@@ -484,7 +515,7 @@ local regedit = require("regedit")
 
 NB: `REG_DWORD` & `REG_QWORD` are represented as string due to floating-point precision limits, if you need to perform arithmetic on them in Lua use `tonumber()`.
 
-### 📦 Random
+### Random
 
 This is a module to generate random things.
 
@@ -503,7 +534,7 @@ Generate a random alpha numeric string of specified length.
 
 Picks a random PID from the user-owned processes.
 
-### 📦 File
+### File
 
 This is a module to read and write text data from/to file.
 
@@ -513,11 +544,11 @@ This is a module to read and write text data from/to file.
 local file = require("file")
 ```
 
-- `Write(filename: string, data: string, format?: string = "utf8") error`
-- `Read(filename: string, format?: string = "utf8") string, error`
-- `Remove(path: string) error`
-- `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
-- `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, err`
+- `Write(filename: string, data: string, format?: string = "utf8") Failure`
+- `Read(filename: string, format?: string = "utf8") string, Failure`
+- `Remove(path: string) Failure`
+- `Version(filename: string) {Major, Minor, Build, Revision: number}, Failure`
+- `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
 
 Encoding format:
@@ -529,25 +560,25 @@ Encoding format:
 
 `%VAR%` in `filename` / `root` are expanded if any (see Expanding Variable for more details).
 
-#### `Write(filename: string, data: string, format?: string = "utf8") error`
+#### `Write(filename: string, data: string, format?: string = "utf8") Failure`
 
 Overwrite text data with specified format encoding (default to utf8).<br /> 
 Create target parent dir if doesn't exist.<br />
 File is created if doesn't exist.
 
-#### `Read(filename: string, format?: string = "utf8") string, error`
+#### `Read(filename: string, format?: string = "utf8") string, Failure`
 
 Read text data as specified format encoding (default to utf8).
 
-#### `Remove(path: string) error`
+#### `Remove(path: string) Failure`
 
 Delete file or directory and any children it contains at the given path.
 
-#### `Version(filename: string) {Major, Minor, Build, Revision: number}, error`
+#### `Version(filename: string) {Major, Minor, Build, Revision: number}, Failure`
 
 Retrieves version information for the specified file. Binary only (exe/dll).
 
-#### `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, err`
+#### `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
 
 Returns the names of all files matching pattern. The pattern syntax is the same as in Go [path/filepath Match](https://pkg.go.dev/path/filepath#Match).
 With the addition that, to return only directories the pattern should end with `/`.
@@ -566,7 +597,7 @@ file.Basename("/foo/bar/quux.html", false);
 -- Returns: "quux" 
 ```
 
-### 📦 Config
+### Config
 
 This is a module to parse/stringify config files.
 
@@ -579,20 +610,20 @@ local XML  = require("config/xml")
 ```
 
 - `JSON`
-  + `Parse(data: string) table, err`
-  + `Stringify(data: table, pretty?: bool = true) string, err`
+  + `Parse(data: string) table, Failure`
+  + `Stringify(data: table, pretty?: bool = true) string, Failure`
 - `TOML`
-  + `Parse(data: string) table, err`
-  + `Stringify(data: table) string, err`
+  + `Parse(data: string) table, Failure`
+  + `Stringify(data: table) string, Failure`
 - `INI`
   + `Parse(data: string, options?: table) table`
   + `Stringify(data: table, options?: table) string`
 - `YAML`
-  + `Parse(data: string) table, err`
-  + `Stringify(data: table) string, err`
+  + `Parse(data: string) table, Failure`
+  + `Stringify(data: table) string, Failure`
 - `XML`
-  + `Parse(data: string) table, err`
-  + `Stringify(data: table, pretty?: bool = true) string, err`
+  + `Parse(data: string) table, Failure`
+  + `Stringify(data: table, pretty?: bool = true) string, Failure`
   
 ⚠️ Due to GoLang using hashmap the key order is not guaranteed !
 
@@ -613,7 +644,7 @@ Stringify options:
 - `quote?: bool (false)` quote string with `"`
 - `eol?: string (system)` Either `\n` or `\r\n`
 
-### 📦 Http
+### Http
 
 This is a module to do http request.
 
@@ -623,10 +654,10 @@ This is a module to do http request.
 local http = require("http")
 ```
 
-- `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, err`
-- `Download(url: string, destDir: string) string, err`
+- `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, Failure`
+- `Download(url: string, destDir: string) string, Failure`
 
-#### `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, err`
+#### `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, Failure`
 
 A [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) like API.
 
@@ -639,7 +670,7 @@ local JSON = require("config/json")
 local repo = "xan105/Mini-Launcher"
 local url = "https://api.github.com/repos/" .. repo .. "/releases/latest"
 
-local res, err = http.Fetch(url, {
+local res, Failure = http.Fetch(url, {
   method = "GET",
   headers = {
     ["Accept"] = "application/vnd.github.v3+json",
@@ -658,7 +689,7 @@ end
 local latestRelease = github["tag_name"]
 ```
 
-#### `Download(url: string, destDir: string) string, err`
+#### `Download(url: string, destDir: string) string, Failure`
 
 Download a file. Filename is determined by the `Content-Disposition` header.
 Create target parent dir if doesn't exist.<br />
@@ -680,7 +711,7 @@ else
 end
 ```
 
-### 📦 Archive
+### Archive
 
 This is a module to decompress archive file.
 
@@ -690,15 +721,15 @@ This is a module to decompress archive file.
 local archive = require("archive")
 ```
 
-- `Unzip(filePath: string, destDir: string) err`
+- `Unzip(filePath: string, destDir: string) Failure`
 
-#### `Unzip(filePath: string, destDir: string) err`
+#### `Unzip(filePath: string, destDir: string) Failure`
 
 Extract `.zip` archive to `destDir`. Overwriting existing files.
 
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-### 📦 User
+### User
 
 This is a module to get info about the current user.
 
@@ -713,7 +744,7 @@ local user = require("user")
   + `code: string`: language code (ex: `en`, `fr`, `de`)
   + `region: string`: language region (ex: `US`, `BE`, `DE`)
   
-### 📦 Video
+### Video
 
 This is a module to get info about the current display mode.
 
@@ -721,9 +752,9 @@ This is a module to get info about the current display mode.
 local video = require("video")
 ```
 
-- `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, err`
+- `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, Failure`
 
-### 📦 Process
+### Process
 
 This is a module to get info about the current Mini-Launcher process.
 
@@ -742,7 +773,7 @@ local process = require("process")
 
 - `will-quit` : Fired when process is about to terminate.
 
-### 📦 Shell
+### Shell
 
 This is a module to execute shell command. 
 
@@ -752,9 +783,9 @@ This is a module to execute shell command.
 local shell = require("shell")
 ```
 
-- `Run(command: string) {stdout: string, stderr: string}, err`
+- `Run(command: string) {stdout: string, stderr: string}, Failure`
 
-#### `Run(command: string) {stdout: string, stderr: string}, err`
+#### `Run(command: string) {stdout: string, stderr: string}, Failure`
 
 Spawns a shell then execute the command within that shell (ComSpec).
 

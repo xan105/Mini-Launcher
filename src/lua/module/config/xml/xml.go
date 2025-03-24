@@ -4,12 +4,13 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package json
+package xml
 
 import (
-  "encoding/json"
+  "github.com/clbanning/mxj/v2"
   "github.com/yuin/gopher-lua"
-  "launcher/lua/config"
+  "launcher/lua/module/config"
+  "launcher/lua/type/failure"
 )
 
 func Loader(L *lua.LState) int {
@@ -24,12 +25,12 @@ func Loader(L *lua.LState) int {
 }
 
 func Parse(L *lua.LState) int {
-  jsonStr := L.CheckString(1)
+  xmlStr := L.CheckString(1)
 
-  var data map[string]interface{}
-  if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {
+  data, err := mxj.NewMapXml([]byte(xmlStr)) 
+  if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_XML_PARSE", err.Error()))
     return 2
   }
 
@@ -51,13 +52,15 @@ func Stringify(L *lua.LState) int {
   }
   
   data := config.ToGoMap(luaTable)
-  jsonBytes, err := json.MarshalIndent(data, "", indent)
+  m := mxj.Map(data)
+  
+  xmlBytes, err := m.XmlIndent("", indent)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_XML_PARSE", err.Error()))
     return 2
   }
 
-  L.Push(lua.LString(jsonBytes))
+  L.Push(lua.LString(xmlBytes))
   return 1
 }

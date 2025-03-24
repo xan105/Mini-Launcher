@@ -13,6 +13,7 @@ import (
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/version"
+  "launcher/lua/type/failure"
 )
 
 func Loader(L *lua.LState) int {
@@ -45,7 +46,7 @@ func Write(L *lua.LState) int {
     format,
   )
   if err != nil {
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 1
   }
     
@@ -66,7 +67,7 @@ func Read(L *lua.LState) int {
   )
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 
@@ -79,7 +80,7 @@ func Remove(L *lua.LState) int {
   
   err := fs.Remove(fs.Resolve(expand.ExpandVariables(path)))
   if err != nil {
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 1
   }
   
@@ -94,7 +95,7 @@ func Version(L *lua.LState) int {
   )
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 
@@ -132,7 +133,7 @@ func Glob(L *lua.LState) int {
   matches, err := fs.Glob(fs.Resolve(expand.ExpandVariables(root)), pattern, recursive, absolute)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 

@@ -16,6 +16,7 @@ import (
   "github.com/yuin/gopher-lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
+  "launcher/lua/type/failure"
 )
 
 func Download(L *lua.LState) int {
@@ -26,14 +27,14 @@ func Download(L *lua.LState) int {
     destDir = fs.Resolve(expand.ExpandVariables(destDir))
   } else {
     L.Push(lua.LNil)
-    L.Push(lua.LString("Destination dir is empty!"))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", "Destination dir is empty!"))
     return 1
   }
   
   resp, err := http.Get(url)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_NET_HTTP", err.Error()))
     return 2
   }
   defer resp.Body.Close()
@@ -53,14 +54,14 @@ func Download(L *lua.LState) int {
   //Create
   if err := os.MkdirAll(destDir, 0755); err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
   filePath := filepath.Join(destDir, filename)
   out, err := os.Create(filePath)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
   defer out.Close()
@@ -69,7 +70,7 @@ func Download(L *lua.LState) int {
   _, err = io.Copy(out, resp.Body)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 

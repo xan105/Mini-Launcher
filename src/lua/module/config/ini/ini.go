@@ -9,7 +9,7 @@ package ini
 import (
   "github.com/yuin/gopher-lua"
   "launcher/internal/ini"
-  "launcher/lua/config"
+  "launcher/lua/module/config"
 )
 
 func Loader(L *lua.LState) int {

@@ -11,6 +11,7 @@ import (
   "bytes"
   "net/http"
   "github.com/yuin/gopher-lua"
+  "launcher/lua/type/failure"
 )
 
 func Fetch(L *lua.LState) int {
@@ -54,7 +55,7 @@ func Fetch(L *lua.LState) int {
   req, err := http.NewRequest(method, url, body)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_NET_HTTP", err.Error()))
     return 2
   }
 
@@ -68,7 +69,7 @@ func Fetch(L *lua.LState) int {
   resp, err := client.Do(req)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_NET_HTTP", err.Error()))
     return 2
   }
   defer resp.Body.Close()
@@ -77,7 +78,7 @@ func Fetch(L *lua.LState) int {
   respBody, err := io.ReadAll(resp.Body)
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_NET_HTTP", err.Error()))
     return 2
   }
 

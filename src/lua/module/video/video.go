@@ -9,6 +9,7 @@ package video
 import (
   "launcher/internal/video"
   "github.com/yuin/gopher-lua"
+  "launcher/lua/type/failure"
 )
 
 func Loader(L *lua.LState) int {
@@ -26,7 +27,7 @@ func Current(L *lua.LState) int {
   display, err := video.GetCurrentDisplayMode()
   if err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_WIN32_API", err.Error()))
     return 2
   }
 

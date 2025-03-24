@@ -47,6 +47,13 @@ func format(L *lua.LState, val lua.LValue, depth int) string {
     return bold + "nil" + reset
   case *lua.LFunction, *lua.LState, *lua.LChannel:
     return cyan + v.String() + reset
+  case *lua.LUserData:
+    meta := L.ToStringMeta(val).String() //`ToStringMeta` call `__tostring` metamethod
+    if meta == v.String() { 
+        return cyan + meta + reset
+    } else { 
+        return green + "\"" + meta + "\"" + reset 
+    }
   default:
     return grey + val.String() + reset
   }

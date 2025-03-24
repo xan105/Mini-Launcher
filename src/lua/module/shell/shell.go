@@ -13,6 +13,7 @@ import (
   "bytes"
   "path/filepath"
   "github.com/yuin/gopher-lua"
+  "launcher/lua/type/failure"
 )
 
 func Loader(L *lua.LState) int {
@@ -40,7 +41,7 @@ func Run(L *lua.LState) int {
   
   if err := cmd.Start(); err != nil {
     L.Push(lua.LNil)
-    L.Push(lua.LString(err.Error()))
+    L.Push(failure.LValue(L, "ERR_SPAWN_PROCESS", err.Error()))
     return 2
   }
   
