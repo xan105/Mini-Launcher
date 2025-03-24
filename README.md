@@ -480,7 +480,7 @@ end
 
 ## 📦 Modules
 
-### Regedit
+### `📦 Regedit`
 
 This is a module to read and write from/to the registry.
 
@@ -515,7 +515,7 @@ local regedit = require("regedit")
 
 NB: `REG_DWORD` & `REG_QWORD` are represented as string due to floating-point precision limits, if you need to perform arithmetic on them in Lua use `tonumber()`.
 
-### Random
+### `📦 Random`
 
 This is a module to generate random things.
 
@@ -534,7 +534,7 @@ Generate a random alpha numeric string of specified length.
 
 Picks a random PID from the user-owned processes.
 
-### File
+### `📦 File`
 
 This is a module to read and write text data from/to file.
 
@@ -597,7 +597,7 @@ file.Basename("/foo/bar/quux.html", false);
 -- Returns: "quux" 
 ```
 
-### Config
+### `📦 Config`
 
 This is a module to parse/stringify config files.
 
@@ -644,7 +644,7 @@ Stringify options:
 - `quote?: bool (false)` quote string with `"`
 - `eol?: string (system)` Either `\n` or `\r\n`
 
-### Http
+### `📦 Http`
 
 This is a module to do http request.
 
@@ -711,7 +711,7 @@ else
 end
 ```
 
-### Archive
+### `📦 Archive`
 
 This is a module to decompress archive file.
 
@@ -729,7 +729,7 @@ Extract `.zip` archive to `destDir`. Overwriting existing files.
 
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-### User
+### `📦 User`
 
 This is a module to get info about the current user.
 
@@ -744,7 +744,7 @@ local user = require("user")
   + `code: string`: language code (ex: `en`, `fr`, `de`)
   + `region: string`: language region (ex: `US`, `BE`, `DE`)
   
-### Video
+### `📦 Video`
 
 This is a module to get info about the current display mode.
 
@@ -754,7 +754,7 @@ local video = require("video")
 
 - `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, Failure`
 
-### Process
+### `📦 Process`
 
 This is a module to get info about the current Mini-Launcher process.
 
@@ -773,7 +773,7 @@ local process = require("process")
 
 - `will-quit` : Fired when process is about to terminate.
 
-### Shell
+### `📦 Shell`
 
 This is a module to execute shell command. 
 
