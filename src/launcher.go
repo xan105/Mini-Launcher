@@ -126,7 +126,7 @@ func main(){
     panic("Launcher", err.Error()) 
   }
   
-  loadAddons(cmd.Process, config.Addons)
+  loadAddons(binary, cmd.Process, config.Addons)
   displaySplash(cmd.Process.Pid, config.Splash)
   
   if config.Wait {
