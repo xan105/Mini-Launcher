@@ -13,6 +13,7 @@ import(
   "errors"
   "launcher/internal/fs"
   "launcher/internal/expand"
+  "launcher/internal/trust"
 )
 
 func verifyIntegrity(binary string, files []File) {
@@ -31,10 +32,8 @@ func verifyIntegrity(binary string, files []File) {
         }
         panic("Integrity failure", err.Error())  
       }
-      if file.Size > 0 {
-        if stats.Size() != file.Size { 
-          panic("Integrity failure", "Size mismatch: \"" + target + "\"") 
-        }
+      if file.Size > 0 && stats.Size() != file.Size { 
+        panic("Integrity failure", "Size mismatch: \"" + target + "\"") 
       }
       
       re := regexp.MustCompile(`(?i)^(sha(?:256|384|512)-[A-Za-z0-9+/=]{43,}={0,2})$`)
@@ -55,6 +54,13 @@ func verifyIntegrity(binary string, files []File) {
               "Hash mismatch: \"" + target + "\"\n" +
               "SRI: " + algo + "-" + sum)
       }
+      
+      if file.Signed {
+        if ok, err := trust.VerifySignature(target); !ok {
+          panic("Integrity failure", "File is not signed: \"" + target + "\"\n\nError: " + err.Error())   
+        }
+      }
+
     }
   }
 }

@@ -15,6 +15,7 @@ type File struct {
   Path           string               `json:"path"`
   SRI            string               `json:"sri"` 
   Size           int64                `json:"size"`
+  Signed         bool                 `json:"signed"`
 }
 
 type Splash struct {

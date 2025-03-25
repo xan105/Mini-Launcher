@@ -60,7 +60,8 @@ Config file
   integrity?: []{
     sri: string, 
     path?: string, 
-    size?: number
+    size?: number,
+    signed?: bool
   },
   splash?: {
     show: bool,
@@ -186,7 +187,7 @@ Example:
 > [!IMPORTANT]
 > This launcher does not support Wow64 injection so make sure the launcher, the executable and the addon are all the same arch (x86 or x64).
 
-### `integrity?: []{sri: string, path?: string, size?: number}` (none)
+### `integrity?: []{sri: string, path?: string, size?: number, signed?: bool}` (none)
 
 Check file(s) integrity before starting the executable.
 
@@ -199,6 +200,9 @@ Check file(s) integrity before starting the executable.
 
 - `size?: number`
   optional file size (in bytes), to accelerate sum comparison.
+  
+- `signed?: bool` (false)
+  When true, will check if the file is signed and trusted.
   
 ### `splash?: { show: bool, image: []string, timeout?: number }` (none)
 
