@@ -8,6 +8,7 @@ package main
 
 import(
   "os"
+  "strings"
   "runtime"
   "path/filepath"
   "launcher/internal/fs"
@@ -22,7 +23,7 @@ func loadAddons(binary string, process *os.Process, addons []Addon) {
     for _, addon := range addons {
       if len(addon.Path) > 0 {
         dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
-        if filepath.Ext(dylib) == ".dll" {
+        if strings.ToLower(filepath.Ext(dylib)) == ".dll" {
           if ok, _ := fs.FileExist(dylib); ok {
 
             if targetArch != runtime.GOARCH {

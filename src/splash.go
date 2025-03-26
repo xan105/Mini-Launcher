@@ -22,7 +22,7 @@ func displaySplash(pid int, screen Splash) {
     image := screen.Images[rand.Intn(len(screen.Images))]
     if len(image) > 0 {
       image = fs.Resolve(expand.ExpandVariables(image))
-      if filepath.Ext(image) == ".bmp" {
+      if strings.ToLower(filepath.Ext(image)) == ".bmp" {
         if ok, _ := fs.FileExist(image); ok {
         
           var timeout uint = 10
