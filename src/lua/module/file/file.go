@@ -32,8 +32,8 @@ func Loader(L *lua.LState) int {
 }
 
 func Write(L *lua.LState) int {
-  filename := L.ToString(1)  
-  data     := L.ToString(2)
+  filename := L.CheckString(1)  
+  data     := L.CheckString(2)
   format   := L.ToString(3)
 
   if len(format) == 0 {
@@ -54,7 +54,7 @@ func Write(L *lua.LState) int {
 }
 
 func Read(L *lua.LState) int {
-  filename := L.ToString(1)  
+  filename := L.CheckString(1)  
   format   := L.ToString(2)
 
   if len(format) == 0 {
@@ -66,7 +66,7 @@ func Read(L *lua.LState) int {
     format,
   )
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
@@ -76,7 +76,7 @@ func Read(L *lua.LState) int {
 }
 
 func Remove(L *lua.LState) int {
-  path := L.ToString(1)
+  path := L.CheckString(1)
   
   err := fs.Remove(fs.Resolve(expand.ExpandVariables(path)))
   if err != nil {
@@ -88,7 +88,7 @@ func Remove(L *lua.LState) int {
 }
 
 func Version(L *lua.LState) int {
-  filename := L.ToString(1)  
+  filename := L.CheckString(1)  
 
   fileInfo, err := version.FromFile(
     fs.Resolve(expand.ExpandVariables(filename)),

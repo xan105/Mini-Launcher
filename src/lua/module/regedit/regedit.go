@@ -43,16 +43,16 @@ func Loader(L *lua.LState) int {
 }
 
 func KeyExists(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
 
   L.Push(lua.LBool(regedit.KeyExists(root, path)))
   return 1
 }
 
 func ListAllSubkeys(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
   
   values := regedit.ListAllSubkeys(root, path)
   table := L.NewTable()
@@ -65,8 +65,8 @@ func ListAllSubkeys(L *lua.LState) int {
 }
 
 func ListAllValues(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
   
   values := regedit.ListAllValues(root, path)
   table := L.NewTable()
@@ -79,9 +79,9 @@ func ListAllValues(L *lua.LState) int {
 }
 
 func QueryValueType(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
-  key  := L.ToString(3)  
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
+  key  := L.CheckString(3)  
 
   value := regedit.QueryValueType(root, path, key)          
   L.Push(lua.LString(value))
@@ -89,9 +89,9 @@ func QueryValueType(L *lua.LState) int {
 }
 
 func QueryStringValue(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
-  key  := L.ToString(3)  
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
+  key  := L.CheckString(3)  
 
   value := regedit.QueryStringValue(root, path, key)          
   L.Push(lua.LString(value))
@@ -99,9 +99,9 @@ func QueryStringValue(L *lua.LState) int {
 }
 
 func QueryMultiStringValue(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
-  key  := L.ToString(3)  
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
+  key  := L.CheckString(3)  
 
   values := regedit.QueryMultiStringValue(root, path, key)   
   table := L.NewTable()
@@ -114,9 +114,9 @@ func QueryMultiStringValue(L *lua.LState) int {
 }
 
 func QueryBinaryValue(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
-  key  := L.ToString(3)  
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
+  key  := L.CheckString(3)  
 
   value := regedit.QueryBinaryValue(root, path, key)          
   L.Push(lua.LString(hex.EncodeToString(value)))
@@ -124,9 +124,9 @@ func QueryBinaryValue(L *lua.LState) int {
 }
 
 func QueryIntegerValue(L *lua.LState) int {
-  root := L.ToString(1)  
-  path := L.ToString(2)
-  key  := L.ToString(3)  
+  root := L.CheckString(1)  
+  path := L.CheckString(2)
+  key  := L.CheckString(3)  
 
   value := regedit.QueryIntegerValue(root, path, key)
   L.Push(lua.LString(strconv.FormatUint(value, 10)))
@@ -134,45 +134,45 @@ func QueryIntegerValue(L *lua.LState) int {
 }
 
 func WriteKey(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
 
   regedit.WriteKey(root, path)   
   return 0
 }
 
 func DeleteKey(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
 
   regedit.DeleteKey(root, path)   
   return 0
 }
 
 func WriteStringValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
-  value := L.ToString(4)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
+  value := L.CheckString(4)
 
   regedit.WriteStringValue(root, path, key, expand.ExpandVariables(value))   
   return 0
 }
 
 func WriteExpandStringValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
-  value := L.ToString(4)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
+  value := L.CheckString(4)
 
   regedit.WriteExpandStringValue(root, path, key, value)   
   return 0
 }
 
 func WriteMultiStringValue(L *lua.LState) int {
-  root   := L.ToString(1)  
-  path   := L.ToString(2)
-  key    := L.ToString(3)
+  root   := L.CheckString(1)  
+  path   := L.CheckString(2)
+  key    := L.CheckString(3)
   table  := L.ToTable(4)
   
   var values []string
@@ -187,10 +187,10 @@ func WriteMultiStringValue(L *lua.LState) int {
 }
 
 func WriteBinaryValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
-  value := L.ToString(4)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
+  value := L.CheckString(4)
 
   x, _ := hex.DecodeString(value)
   regedit.WriteBinaryValue(root, path, key, x)   
@@ -198,10 +198,10 @@ func WriteBinaryValue(L *lua.LState) int {
 }
 
 func WriteDwordValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
-  value := L.ToString(4)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
+  value := L.CheckString(4)
 
   i, _ := strconv.ParseUint(value, 10, 32)
   regedit.WriteDwordValue(root, path, key, uint32(i))   
@@ -209,10 +209,10 @@ func WriteDwordValue(L *lua.LState) int {
 }
 
 func WriteQwordValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
-  value := L.ToString(4)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
+  value := L.CheckString(4)
 
   i, _ := strconv.ParseUint(value, 10, 64)
   regedit.WriteQwordValue(root, path, key, i)   
@@ -220,9 +220,9 @@ func WriteQwordValue(L *lua.LState) int {
 }
 
 func DeleteKeyValue(L *lua.LState) int {
-  root  := L.ToString(1)  
-  path  := L.ToString(2)
-  key   := L.ToString(3)
+  root  := L.CheckString(1)  
+  path  := L.CheckString(2)
+  key   := L.CheckString(3)
 
   regedit.DeleteKeyValue(root, path, key)   
   return 0

@@ -35,7 +35,7 @@ func randAlphaNumString(length int) string {
 }
 
 func AlphaNumString(L *lua.LState) int {
-  length := L.ToInt(1)  
+  length := L.CheckInt(1)  
 
   value := randAlphaNumString(length)
   L.Push(lua.LString(value))

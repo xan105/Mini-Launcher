@@ -26,14 +26,14 @@ func Download(L *lua.LState) int {
   if len(destDir) > 0{
     destDir = fs.Resolve(expand.ExpandVariables(destDir))
   } else {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", "Destination dir is empty!"))
     return 1
   }
   
   resp, err := http.Get(url)
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_NET_HTTP", err.Error()))
     return 2
   }
@@ -53,14 +53,14 @@ func Download(L *lua.LState) int {
 
   //Create
   if err := os.MkdirAll(destDir, 0755); err != nil {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
   filePath := filepath.Join(destDir, filename)
   out, err := os.Create(filePath)
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
@@ -69,7 +69,7 @@ func Download(L *lua.LState) int {
   //Write the body to file
   _, err = io.Copy(out, resp.Body)
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(lua.LString(""))
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
