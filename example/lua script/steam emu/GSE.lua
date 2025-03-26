@@ -6,7 +6,7 @@ local path = "%APPDATA%/Goldberg SteamEmu Saves/settings/"
 -- User name
 
 local account_name = file.Read(path .. "account_name.txt")
-if not account_name or account_name == "" or account_name == "Noob" then
+if account_name == "" or account_name == "Noob" then
   file.Write(path .. "account_name.txt", user.name)
 end
 
@@ -22,7 +22,7 @@ local steam_languages = {
 }
 
 local language = file.Read(path .. "language.txt")
-if not language or language == "" then
+if language == "" then
   language = user.language
   if not Array.includes(steam_languages, language) then
     language = "english"
