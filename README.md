@@ -551,7 +551,7 @@ local file = require("file")
 - `Write(filename: string, data: string, format?: string = "utf8") Failure`
 - `Read(filename: string, format?: string = "utf8") string, Failure`
 - `Remove(path: string) Failure`
-- `Info(filename: string) {size, mtime: number, version?: { major, minor, build, revision: number }, signed?: bool}, Failure`
+- `Info(filename: string) object, Failure`
 - `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
 
@@ -578,12 +578,29 @@ Read text data as specified format encoding (default to utf8).
 
 Delete file or directory and any children it contains at the given path.
 
-#### `Info(filename: string) {size, mtime: number, version?: { major, minor, build, revision: number }, signed?: bool}, Failure`
+#### `Info(filename: string) object, Failure`
 
 Retrieves information for the specified path.<br/>
+Time information are represented as Unix epoch time (seconds).<br/>
 If the target is a file and has extension `.exe` or `.dll` this will also include the file version information and whether the file is signed and trusted or not.
 
-NB: `mtime` is represented as Unix epoch time (seconds).
+```ts
+{
+  size: number, 
+  time: { 
+    modification: number, 
+    creation?: number, 
+    access?: number
+  }, 
+  version?: { 
+    major?: number, 
+    minor?: number, 
+    build?: number, 
+    revision:?: number 
+  }, 
+  signed?: bool
+}
+```
 
 #### `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
 

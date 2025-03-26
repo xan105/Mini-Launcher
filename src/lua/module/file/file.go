@@ -10,6 +10,7 @@ import (
   "os"
   "slices"
   "strings"
+  "syscall"
   "path/filepath"
   "github.com/yuin/gopher-lua"
   "launcher/internal/fs"
@@ -103,7 +104,14 @@ func Info(L *lua.LState) int {
 
   info := L.NewTable()
   L.SetField(info, "size", lua.LNumber(fileInfo.Size()))
-  L.SetField(info, "mtime", lua.LNumber(fileInfo.ModTime().Unix()))
+  
+  time := L.NewTable()
+  L.SetField(time, "modification", lua.LNumber(fileInfo.ModTime().Unix()))
+  if sysInfo, ok := fileInfo.Sys().(*syscall.Win32FileAttributeData); ok {
+    L.SetField(time, "creation", lua.LNumber(sysInfo.CreationTime.Nanoseconds() / 1e9))
+    L.SetField(time, "access", lua.LNumber(sysInfo.LastAccessTime.Nanoseconds() / 1e9))
+  }
+  L.SetField(info, "time", time)
 
   if fileInfo.IsDir() || 
      !slices.Contains([]string{".exe", ".dll"}, strings.ToLower(filepath.Ext(filePath))) {
