@@ -8,9 +8,6 @@ package version
 
 import (
   "unsafe"
-  "slices"
-  "errors"
-  "path/filepath"
   "golang.org/x/sys/windows"
 )
 
@@ -22,10 +19,6 @@ type FileVersion struct {
 }
 
 func FromFile(filePath string) (FileVersion, error) {
-
-  if !slices.Contains([]string{".exe", ".dll"}, filepath.Ext(filePath)) {
-    return FileVersion{}, errors.New("Query version information only from binary (exe/dll)")
-  }
 
   size, err := windows.GetFileVersionInfoSize(filePath, nil)
   if err != nil {

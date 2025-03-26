@@ -7,6 +7,8 @@ found in the LICENSE file in the root directory of this source tree.
 package file
 
 import (
+  "os"
+  "slices"
   "strings"
   "path/filepath"
   "github.com/yuin/gopher-lua"
@@ -22,8 +24,7 @@ func Loader(L *lua.LState) int {
     "Write": Write,
     "Read": Read,
     "Remove": Remove,
-    "Version": Version,
-    "IsSigned": IsSigned,
+    "Info": Info,
     "Glob": Glob,
     "Basename": Basename,
   }
@@ -89,32 +90,45 @@ func Remove(L *lua.LState) int {
   return 0
 }
 
-func Version(L *lua.LState) int {
-  filename := L.CheckString(1)  
-
-  fileInfo, err := version.FromFile(
-    fs.Resolve(expand.ExpandVariables(filename)),
-  )
+func Info(L *lua.LState) int {
+  filename := L.CheckString(1)
+  filePath := fs.Resolve(expand.ExpandVariables(filename))
+  
+  fileInfo, err := os.Stat(filePath)
   if err != nil {
     L.Push(lua.LNil)
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 
-  fileVersion := L.NewTable()
-  L.SetField(fileVersion, "Major", lua.LNumber(fileInfo.Major))
-  L.SetField(fileVersion, "Minor", lua.LNumber(fileInfo.Minor))
-  L.SetField(fileVersion, "Build", lua.LNumber(fileInfo.Build))
-  L.SetField(fileVersion, "Revision", lua.LNumber(fileInfo.Revision))
+  info := L.NewTable()
+  L.SetField(info, "size", lua.LNumber(fileInfo.Size()))
+  L.SetField(info, "mtime", lua.LNumber(fileInfo.ModTime().Unix()))
 
-  L.Push(fileVersion)
-  return 1
-}
+  if fileInfo.IsDir() || 
+     !slices.Contains([]string{".exe", ".dll"}, strings.ToLower(filepath.Ext(filePath))) {
+    L.Push(info)
+    return 1
+  }
 
-func IsSigned(L *lua.LState) int {
-  filename := L.CheckString(1)
-  signed, _ := trust.VerifySignature(fs.Resolve(expand.ExpandVariables(filename)))
-  L.Push(lua.LBool(signed))
+  fileVersionInfo, err := version.FromFile(filePath)
+  if err != nil {
+    L.Push(info)
+    L.Push(failure.LValue(L, "ERR_WIN32_API", err.Error()))
+    return 2
+  }
+  
+  version := L.NewTable()
+  L.SetField(version, "major", lua.LNumber(fileVersionInfo.Major))
+  L.SetField(version, "minor", lua.LNumber(fileVersionInfo.Minor))
+  L.SetField(version, "build", lua.LNumber(fileVersionInfo.Build))
+  L.SetField(version, "revision", lua.LNumber(fileVersionInfo.Revision))
+  L.SetField(info, "version", version)
+  
+  signed, _ := trust.VerifySignature(filePath)
+  L.SetField(info, "signed", lua.LBool(signed))
+  
+  L.Push(info)
   return 1
 }
 
