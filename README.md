@@ -593,11 +593,11 @@ If the target is a file and has extension `.exe` or `.dll` this will also includ
     access?: number
   }, 
   version?: { 
-    major?: number, 
-    minor?: number, 
-    build?: number, 
-    revision:?: number 
-  }, 
+    major: number, 
+    minor: number, 
+    build: number, 
+    revision: number 
+  },
   signed?: bool
 }
 ```
@@ -694,7 +694,7 @@ local JSON = require("config/json")
 local repo = "xan105/Mini-Launcher"
 local url = "https://api.github.com/repos/" .. repo .. "/releases/latest"
 
-local res, Failure = http.Fetch(url, {
+local res, err = http.Fetch(url, {
   method = "GET",
   headers = {
     ["Accept"] = "application/vnd.github.v3+json",
@@ -812,6 +812,17 @@ local shell = require("shell")
 #### `Run(command: string) {stdout: string, stderr: string}, Failure`
 
 Spawns a shell then execute the command within that shell (ComSpec).
+
+### `📦 Time`
+
+This is a module to handle time conversion. 
+
+```lua
+local time = require("time")
+```
+
+- `ToUnix(datetime: string) number, Failure`
+- `ToIso8601(datetime: number) string`
 
 Build
 =====

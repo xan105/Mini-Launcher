@@ -25,6 +25,7 @@ import (
   "launcher/lua/module/config/xml"
   "launcher/lua/module/process"
   "launcher/lua/module/shell"
+  "launcher/lua/module/time"
 )
 
 type Permissions struct {
@@ -116,6 +117,7 @@ func LoadLua(filePath string, perm Permissions) error {
   L.PreloadModule("config/yaml", yaml.Loader)
   L.PreloadModule("config/xml", xml.Loader)
   L.PreloadModule("process", process.Loader)
+  L.PreloadModule("time", time.Loader)
   
   //Exec
   return L.DoFile(filePath);
