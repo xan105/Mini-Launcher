@@ -18,6 +18,14 @@ func ToLuaValue(L *lua.LState, value interface{}) lua.LValue {
       return lua.LBool(v)
     case float64:
       return lua.LNumber(v)
+    case map[string]interface{}:
+      return ToLuaTable(L, v)
+    case []interface{}:
+      arrayTable := L.NewTable()
+      for i, item := range v {
+        arrayTable.RawSetInt(i+1, ToLuaValue(L, item))
+      }
+    return arrayTable
     default:
       return lua.LNil
   }
@@ -27,16 +35,16 @@ func ToLuaTable(L *lua.LState, data map[string]interface{}) *lua.LTable {
   table := L.NewTable()
   for key, value := range data {
     switch v := value.(type) {
-    case map[string]interface{}:
-      table.RawSetString(key, ToLuaTable(L, v))
-    case []interface{}:
-      arrayTable := L.NewTable()
-      for i, item := range v {
-        arrayTable.RawSetInt(i+1, ToLuaValue(L, item))
-      }
-      table.RawSetString(key, arrayTable)
-    default:
-      table.RawSetString(key, ToLuaValue(L, v))
+      case map[string]interface{}:
+        table.RawSetString(key, ToLuaTable(L, v))
+      case []interface{}:
+        arrayTable := L.NewTable()
+        for i, item := range v {
+          arrayTable.RawSetInt(i+1, ToLuaValue(L, item))
+        }
+        table.RawSetString(key, arrayTable)
+      default:
+        table.RawSetString(key, ToLuaValue(L, v))
     }
   }
   return table
