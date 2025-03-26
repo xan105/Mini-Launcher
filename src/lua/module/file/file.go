@@ -13,6 +13,7 @@ import (
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/version"
+  "launcher/internal/trust"
   "launcher/lua/type/failure"
 )
 
@@ -22,6 +23,7 @@ func Loader(L *lua.LState) int {
     "Read": Read,
     "Remove": Remove,
     "Version": Version,
+    "IsSigned": IsSigned,
     "Glob": Glob,
     "Basename": Basename,
   }
@@ -106,6 +108,13 @@ func Version(L *lua.LState) int {
   L.SetField(fileVersion, "Revision", lua.LNumber(fileInfo.Revision))
 
   L.Push(fileVersion)
+  return 1
+}
+
+func IsSigned(L *lua.LState) int {
+  filename := L.CheckString(1)
+  signed, _ := trust.VerifySignature(fs.Resolve(expand.ExpandVariables(filename)))
+  L.Push(lua.LBool(signed))
   return 1
 }
 

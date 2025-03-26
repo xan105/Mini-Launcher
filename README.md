@@ -552,6 +552,7 @@ local file = require("file")
 - `Read(filename: string, format?: string = "utf8") string, Failure`
 - `Remove(path: string) Failure`
 - `Version(filename: string) {Major, Minor, Build, Revision: number}, Failure`
+- `IsSigned(filename: string) bool`
 - `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
 
