@@ -8,7 +8,6 @@ package file
 
 import (
   "os"
-  "slices"
   "strings"
   "syscall"
   "path/filepath"
@@ -113,29 +112,24 @@ func Info(L *lua.LState) int {
   }
   L.SetField(info, "time", time)
 
-  if fileInfo.IsDir() || 
-     !slices.Contains([]string{".exe", ".dll"}, strings.ToLower(filepath.Ext(filePath))) {
+  if fileInfo.IsDir() {
     L.Push(info)
     return 1
   }
 
   fileVersionInfo, err := version.FromFile(filePath)
-  if err != nil {
-    L.Push(info)
-    L.Push(failure.LValue(L, "ERR_WIN32_API", err.Error()))
-    return 2
+  if err == nil {
+    version := L.NewTable()
+    L.SetField(version, "major", lua.LNumber(fileVersionInfo.Major))
+    L.SetField(version, "minor", lua.LNumber(fileVersionInfo.Minor))
+    L.SetField(version, "build", lua.LNumber(fileVersionInfo.Build))
+    L.SetField(version, "revision", lua.LNumber(fileVersionInfo.Revision))
+    L.SetField(info, "version", version)
   }
-  
-  version := L.NewTable()
-  L.SetField(version, "major", lua.LNumber(fileVersionInfo.Major))
-  L.SetField(version, "minor", lua.LNumber(fileVersionInfo.Minor))
-  L.SetField(version, "build", lua.LNumber(fileVersionInfo.Build))
-  L.SetField(version, "revision", lua.LNumber(fileVersionInfo.Revision))
-  L.SetField(info, "version", version)
   
   signed, _ := trust.VerifySignature(filePath)
   L.SetField(info, "signed", lua.LBool(signed))
-  
+
   L.Push(info)
   return 1
 }
