@@ -13,6 +13,13 @@ import (
 
 func Sleep(L *lua.LState) int {
   interval := L.CheckInt(1)
-  time.Sleep(time.Millisecond * time.Duration(interval)) 
+  
+  wait := make(chan struct{})
+  go func() {
+      time.Sleep(time.Millisecond * time.Duration(interval))
+      close(wait)
+  }()
+  <-wait
+
   return 0
 }
