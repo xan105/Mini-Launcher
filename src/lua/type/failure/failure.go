@@ -56,7 +56,7 @@ func index(L *lua.LState) int {
 func tostring(L *lua.LState) int {
   ud := L.CheckUserData(1)
   if err, ok := ud.Value.(*Failure); ok {
-    L.Push(lua.LString(err.Message))
+    L.Push(lua.LString("[" + err.Code + "]: " + err.Message))
     return 1
   }
   return 0

@@ -472,7 +472,7 @@ Example:
 local err = Failure("ERR_NOT_FOUND", "The requested item was not found")
 print(err.code)    -- "ERR_NOT_FOUND"
 print(err.message) -- "The requested item was not found"
-print(err)         -- "The requested item was not found"
+print(err)         -- "[ERR_NOT_FOUND]: The requested item was not found"
 
 local value, err = Foo()
 if err and err.code == "ERR_UNKNOWN" then

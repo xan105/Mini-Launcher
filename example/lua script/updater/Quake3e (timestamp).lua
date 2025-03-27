@@ -12,7 +12,7 @@ local URL = "https://api.github.com/repos/" .. REPO .. "/releases/latest"
 
 local info, err = file.Info(FILEPATH)
 if err then
-  error(tostring(err))
+  error(err.message)
 end
 
 local res, err = http.Fetch(URL, {
@@ -23,12 +23,12 @@ local res, err = http.Fetch(URL, {
   }
 })
 if err then 
-  error(tostring(err))
+  error(err.message)
 end
 
 local github, err = JSON.Parse(res.body)
 if err then
-  error(tostring(err))
+  error(err.message)
 end
 
 local target = Array.find(github.assets, function(asset) return asset.name == ASSET end)
@@ -42,13 +42,13 @@ if(time.ToUnix(target.updated_at) > info.time.modification) then
   
   local path, err = http.Download(target.browser_download_url, TMP)
   if err then
-    error(tostring(err))
+    error(err.message)
   end
 
   local err = archive.Unzip(path, DIR)
   file.Remove(TMP)
   if err then
-    error(tostring(err))
+    error(err.message)
   end
   
 end

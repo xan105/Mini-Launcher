@@ -42,7 +42,7 @@ end
 
 local info, err = file.Info(FILEPATH)
 if err then
-  error(tostring(err))
+  error(err.message)
 end
 
 local res, err = http.Fetch(URL, {
@@ -53,12 +53,12 @@ local res, err = http.Fetch(URL, {
   }
 })
 if err then 
-  error(tostring(err))
+  error(err.message)
 end
 
 local github, err = JSON.Parse(res.body)
 if err then
-  error(tostring(err))
+  error(err.message)
 end
 
 local remote = parse_version(github["tag_name"])
@@ -73,13 +73,13 @@ if compare_versions(remote, info.version) then
   
   local path, err = http.Download(target.browser_download_url, TMP)
   if err then
-    error(tostring(err))
+    error(err.message)
   end
 
   local err = archive.Unzip(path, DIR, { "steam_api.dll" })
   file.Remove(TMP)
   if err then
-    error(tostring(err))
+    error(err.message)
   end
 
 end
