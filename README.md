@@ -823,8 +823,20 @@ local time = require("time")
 
 - `Current() number`: Current Unix time
 - `HumanizeDuration(seconds: number) string`
-- `ToUnix(datetime: string) number, Failure`
+- `ToUnix(datetime: string, format?: string = "ISO8601") number, Failure`
 - `ToIso8601(datetime: number) string`
+
+NB: `ToUnix()` supported formats are:
+- "ISO8601"
+- "YYYY-MM-DD"
+- "YYYY/MM/DD"
+- "YYYY_MM_DD"
+- "DD-MM-YYYY"
+- "DD/MM/YYYY"
+- "MM-DD-YYYY"
+- "MM/DD/YYYY"
+- "YYYY-MM-DD HH:MM:SS"
+- "YYYY/MM/DD HH:MM:SS"
 
 Build
 =====

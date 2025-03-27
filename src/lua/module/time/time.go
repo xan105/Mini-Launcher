@@ -51,8 +51,33 @@ func HumanizeDuration(L *lua.LState) int {
 
 func ToUnix(L *lua.LState) int {
   timestamp := L.CheckString(1)
+  format := L.ToString(2)
+  if len(format) == 0 {
+    format = "ISO8601"
+  }
 
-  t, err := time.Parse(time.RFC3339, timestamp)
+  //cf: https://pkg.go.dev/time#pkg-constants
+  var formats = map[string]string{
+    "ISO8601":     time.RFC3339,
+    "YYYY-MM-DD":  time.DateOnly,
+    "YYYY/MM/DD":  "2006/01/02",
+    "YYYY_MM_DD":  "2006_01_02",
+    "DD-MM-YYYY":  "02-01-2006",
+    "DD/MM/YYYY":  "02/01/2006",
+    "MM-DD-YYYY":  "01-02-2006",
+    "MM/DD/YYYY":  "01/02/2006",
+    "YYYY-MM-DD HH:MM:SS": time.DateTime,
+    "YYYY/MM/DD HH:MM:SS": "2006/01/02 15:04:05",
+  }
+  
+  layout, supported := formats[format]
+  if !supported {
+    L.Push(lua.LNumber(0))
+    L.Push(failure.LValue(L, "ERR_TIME_CONVERSION", "Unsupported format: "+ format))
+    return 1
+  }
+
+  t, err := time.Parse(layout, timestamp)
   if err != nil {
     L.Push(lua.LNumber(0))
     L.Push(failure.LValue(L, "ERR_TIME_CONVERSION", err.Error()))
