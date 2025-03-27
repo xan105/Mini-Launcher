@@ -582,7 +582,7 @@ Delete file or directory and any children it contains at the given path.
 
 Retrieves information for the specified path.<br/>
 Time information are represented as Unix epoch time (seconds).<br/>
-If the target is a file and has extension `.exe` or `.dll` this will also include the file version information and whether the file is signed and trusted or not.
+If the target is a file this will also include the file version information (if any) and whether the file is signed and trusted or not.
 
 ```ts
 {
@@ -821,6 +821,8 @@ This is a module to handle time conversion.
 local time = require("time")
 ```
 
+- `Current() number`: Current Unix time
+- `HumanizeDuration(seconds: number) string`
 - `ToUnix(datetime: string) number, Failure`
 - `ToIso8601(datetime: number) string`
 
