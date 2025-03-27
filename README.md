@@ -398,7 +398,8 @@ List of variables that will get expanded:
 Lua Scripting
 =============
 
-Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).
+Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).<br />
+See the `./example` directory for some examples.
 
 - Lua 5.1
 - Libraries:
@@ -746,10 +747,9 @@ local archive = require("archive")
 ```
 
 - `Unzip(filePath: string, destDir: string, excludeList?: []string) Failure`
+- `Un7z(filePath: string, destDir: string, excludeList?: []string) Failure`
 
-#### `Unzip(filePath: string, destDir: string) Failure`
-
-Extract `.zip` archive to `destDir`. Overwriting existing files.
+Extract `.zip` / `7.z` archive to `destDir`. Overwriting existing files.
 
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 

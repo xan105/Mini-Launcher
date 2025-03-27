@@ -10,21 +10,21 @@ import (
   "os"
   "io"
   "strings"
-  "archive/zip"
   "path/filepath"
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/lua/type/failure"
   "github.com/yuin/gopher-lua"
+  "github.com/bodgit/sevenzip"
 )
 
-func Unzip(L *lua.LState) int {
+func Un7z(L *lua.LState) int {
 
   path := L.CheckString(1)
   if len(path) > 0 {
     path = fs.Resolve(expand.ExpandVariables(path))
-    if filepath.Ext(path) != ".zip" {
-      L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", "Not a .zip file !"))
+    if filepath.Ext(path) != ".7z" {
+      L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", "Not a .7z file !"))
       return 1
     }
   } else {
@@ -50,7 +50,7 @@ func Unzip(L *lua.LState) int {
     })
   }
 
-  r, err := zip.OpenReader(path)
+  r, err := sevenzip.OpenReader(path)
   if err != nil {
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 1
@@ -95,13 +95,13 @@ func Unzip(L *lua.LState) int {
       L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
       return 1
     }
-    defer rc.Close()
-
+    
     _, err = io.Copy(outFile, rc)
+    rc.Close()
     if err != nil {
       L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
       return 1
-    }
+    } 
   }
 
   return 0
