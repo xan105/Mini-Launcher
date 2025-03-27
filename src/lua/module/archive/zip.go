@@ -31,7 +31,7 @@ func Loader(L *lua.LState) int {
 func Unzip(L *lua.LState) int {
 
   path := L.CheckString(1)
-  if len(path) > 0{
+  if len(path) > 0 {
     path = fs.Resolve(expand.ExpandVariables(path))
     if filepath.Ext(path) != ".zip" {
       L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", "Not a .zip file !"))
@@ -50,6 +50,16 @@ func Unzip(L *lua.LState) int {
     return 1
   }
 
+  excludeList := make(map[string]struct{})
+  if L.GetTop() >= 3 {
+    list := L.CheckTable(3)
+    list.ForEach(func(_, value lua.LValue) {
+      if str, ok := value.(lua.LString); ok {
+        excludeList[string(str)] = struct{}{}
+      }
+    })
+  }
+
   r, err := zip.OpenReader(path)
   if err != nil {
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
@@ -60,6 +70,10 @@ func Unzip(L *lua.LState) int {
   for _, file := range r.File {
     fpath := filepath.Join(destDir, file.Name)
 
+    if _, found := excludeList[file.Name]; found {
+      continue
+    }
+    
     if file.FileInfo().IsDir() {
       os.MkdirAll(fpath, os.ModePerm)
       continue
