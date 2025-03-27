@@ -10,9 +10,9 @@ local REPO = "ec-/Quake3e"
 local ASSET = "quake3e-windows-msvc-x86_64.zip"
 local URL = "https://api.github.com/repos/" .. REPO .. "/releases/latest"
 
-local info = file.Info(FILEPATH)
-if not info then
-  return 
+local info, err = file.Info(FILEPATH)
+if err then
+  error(tostring(err))
 end
 
 local res, err = http.Fetch(URL, {
@@ -23,12 +23,12 @@ local res, err = http.Fetch(URL, {
   }
 })
 if err then 
-  error(err)
+  error(tostring(err))
 end
 
 local github, err = JSON.Parse(res.body)
 if err then
-  error(err)
+  error(tostring(err))
 end
 
 local target = Array.find(github.assets, function(asset) return asset.name == ASSET end)
@@ -42,13 +42,13 @@ if(time.ToUnix(target.updated_at) > info.time.modification) then
   
   local path, err = http.Download(target.browser_download_url, TMP)
   if err then
-    error(err)
+    error(tostring(err))
   end
 
   local err = archive.Unzip(path, DIR)
   file.Remove(TMP)
   if err then
-    error(err)
+    error(tostring(err))
   end
   
 end

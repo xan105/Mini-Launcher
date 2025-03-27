@@ -1,0 +1,70 @@
+{
+  "bin": "AoE2DE_s.exe",
+  "args": "SKIPINTRO",
+  "env": {
+    "SteamAppId": "813780",
+    "SteamGameId": "813780",
+    "SteamClientLaunch": "1",
+    "SteamEnv": "1",
+    "SteamPath": "%CURRENTDIR%\\AoE2DE_s.exe",
+    "SRV_IP": "25.48.175.46"
+  },
+  "symlink": [
+    {
+      "path": "%USERPROFILE%/Games/Age of Empires 2 DE",
+      "dest": "%SAVEGAME%/PC/Age of Empires 2 DE"
+    }
+  ],
+  "addons": [
+    { "path": "AoE2DE_LAN.dll", "required": true }
+  ],
+  "script": {
+    "path": "launcher.lua",
+    "fs": true,
+    "reg": true
+  },
+  "wait": true,
+  "integrity": [
+    {
+      "sri": "sha384-clBFlzv8wZDMKpRwfq+I6PtSBxBe34FHnP6Y2UDpfm5mFqr0pDD3Bt1f7Dknhini",
+      "size": 82017824
+    },
+    {
+      "path": "launcher.lua",
+      "sri": "sha384-gzFYJJ96IBtESeziGez1EmqG/tk29shUz3a6UzZSzVjMjU6f+yTmr6svl6OrcYVp",
+      "size": 5279
+    },
+    {
+      "path": "manifest.json",
+      "sri": "sha384-vosdMWYbEnrJyYaxmSLjpAqY0EDKqYmEdJ4zfeQBw2vPg5B9WziuKpqfo1oJ6xwK",
+      "size": 990
+    },
+    {
+      "path": "steam_api.dll",
+      "sri": "sha384-1XE/89enWqW4GMUbYLnLYuIx1hZRBL2JtoaRkrhkGvgxFPMf9cmVYXGmX74kUWeX",
+      "size": 257312,
+      "signed": true
+    },
+    {
+      "path": "steam_api64.dll",
+      "sri": "sha384-3Z2YXmw48mwbUunEMGGB1bKZAAuHWKZ+MFCrVHaPe72MBIdry9fRfVx9yhoJZ3e3",
+      "size": 288032,
+      "signed": true
+    },
+    {
+      "path": "steamclient.dll",
+      "sri": "sha384-171iHtGQ9mSzmw/+SHWRRCp9jla86lrPVG+lLQoMX16hxZJFoNFSQjrxbp4f5qRl",
+      "size": 15125928
+    },
+    {
+      "path": "steamclient64.dll",
+      "sri": "sha384-UaFfn+ytWfbXiOvvl8QAoN+cY5PocIbHOTEa7l5Q6vv4ogHtC2atmy1b8cClEX7s",
+      "size": 16777128
+    },
+    {
+      "path": "AoE2DE_LAN.dll",
+      "sri": "sha384-EGqfJ45kPG+Cmc1MYRMnqusY4l630YhMeKcqjFzZAZUzfV4d2+10zynfgwpWHEyp",
+      "size": 40960
+    }
+  ]
+}

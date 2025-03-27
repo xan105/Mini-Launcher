@@ -745,7 +745,7 @@ This is a module to decompress archive file.
 local archive = require("archive")
 ```
 
-- `Unzip(filePath: string, destDir: string) Failure`
+- `Unzip(filePath: string, destDir: string, excludeList?: []string) Failure`
 
 #### `Unzip(filePath: string, destDir: string) Failure`
 
