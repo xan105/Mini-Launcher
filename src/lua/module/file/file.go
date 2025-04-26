@@ -27,6 +27,7 @@ func Loader(L *lua.LState) int {
     "Info": Info,
     "Glob": Glob,
     "Basename": Basename,
+    "SetAttributes": SetAttributes,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -184,4 +185,36 @@ func Basename(L *lua.LState) int {
   
   L.Push(lua.LString(filename))
   return 1
+}
+
+func SetAttributes(L *lua.LState) int {
+  filename := L.CheckString(1)
+  filePath := fs.Resolve(expand.ExpandVariables(filename))
+  readonly := false
+  hidden   := false
+  if L.GetTop() >= 2 {
+    table := L.CheckTable(2)
+    table.ForEach(func(key lua.LValue, value lua.LValue) {
+      switch key.String() {
+      case "readonly":
+        if b, ok := value.(lua.LBool); ok {
+          readonly = bool(b)
+        }
+      case "hidden":
+        if b, ok := value.(lua.LBool); ok {
+          hidden = bool(b)
+        }
+      }
+    })
+  }
+
+  if ok, _ := fs.FileExist(filePath); ok {   
+    err := fs.SetFileAttributes(filePath, readonly, hidden)
+    if err != nil {
+      L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
+      return 1
+    }
+  }
+
+  return 0
 }

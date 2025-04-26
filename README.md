@@ -333,6 +333,9 @@ Set file(s) attributes: read only and/or hidden.
 Path can be absolute or relative (to the current working dir).<br />
 `%VAR%` are expanded if any (see Expanding Variable for more details).
 
+💡NB: This is done before running any Lua Script.
+If you are dynamically creating/modifying file(s), consider the Lua API: `file.SetAttributes()` (see below).
+
 ### `menu?: object` (none)
 
 Show a very simple button menu where each key/value pair is a button label and its corresponding override config file.
@@ -553,8 +556,9 @@ local file = require("file")
 - `Read(filename: string, format?: string = "utf8") string, Failure`
 - `Remove(path: string) Failure`
 - `Info(filename: string) object, Failure`
-- `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
+- `Glob(root: string, pattern: string, options?: { recursive?: bool = false, absolute?: bool = false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
+- `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
 
 Encoding format:
 
@@ -603,7 +607,7 @@ If the target is a file this will also include the file version information (if 
 }
 ```
 
-#### `Glob(root: string, pattern: string, options?: { recursive?: false, absolute?: false }) []string, Failure`
+#### `Glob(root: string, pattern: string, options?: { recursive?: bool = false, absolute?: bool = false }) []string, Failure`
 
 Returns the names of all files matching pattern. The pattern syntax is the same as in Go [path/filepath Match](https://pkg.go.dev/path/filepath#Match).
 With the addition that, to return only directories the pattern should end with `/`.
@@ -621,6 +625,10 @@ file.Basename("/foo/bar/quux.html");
 file.Basename("/foo/bar/quux.html", false);
 -- Returns: "quux" 
 ```
+
+#### `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
+
+Set file attributes: read only and/or hidden.
 
 ### `📦 Config`
 
