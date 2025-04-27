@@ -23,7 +23,8 @@ func loadAddons(binary string, process *os.Process, addons []Addon) {
     for _, addon := range addons {
       if len(addon.Path) > 0 {
         dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
-        if strings.ToLower(filepath.Ext(dylib)) == ".dll" {
+        ext := strings.ToLower(filepath.Ext(dylib))
+        if ext == ".dll" || ext == ".asi" {
           if ok, _ := fs.FileExist(dylib); ok {
 
             if targetArch != runtime.GOARCH {

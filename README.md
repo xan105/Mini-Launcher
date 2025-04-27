@@ -170,6 +170,10 @@ See the `./example` directory for some examples.
 ### `addons?: []{ path: string, required?: boolean }` (none)
 
 List of addons to inject to the executable process.<br />
+Supported file extension:
+  - `.dll` (Dynamic link library)
+  - `.asi` (Commonly used in game modding; technically it's a `.dll` file with a different extension).
+
 When `required` is set to `true` and if the injection failed, alert the user and kill the process.
 
 Path can be absolute or relative (to the current working dir).<br />
