@@ -81,6 +81,7 @@ Config file
     aware?: bool
   },
   patch?: {
+    allow: bool,
     laa?: bool
   },
   prefix?: {
@@ -295,7 +296,10 @@ NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supers
 
 ### `patch?: object` (none)
 
-Patche(s) to apply to the executable.
+Patch(es) to apply to the executable.
+
+- `allow: bool` (false):<br/>
+  Because patching directly modify the executable, you must first allow/enable this feature.
 
 - `laa?: bool` (false):<br/>
   **Large Adress Aware**<br/>

@@ -45,6 +45,7 @@ type CompatFlags struct {
 }
 
 type Patch struct {
+  Allow           bool                `json:"allow"`
   LAA             bool                `json:"laa"`
 }
 
@@ -123,6 +124,7 @@ func mergeConfig(config *Config, override *Config) {
   if override.Compatibility.Invoker != config.Compatibility.Invoker { config.Compatibility.Invoker = override.Compatibility.Invoker }
   if override.Compatibility.Aware != config.Compatibility.Aware { config.Compatibility.Aware = override.Compatibility.Aware }
   
+  if override.Patch.Allow != config.Patch.Allow { config.Patch.Allow = override.Patch.Allow }
   if override.Patch.LAA != config.Patch.LAA { config.Patch.LAA = override.Patch.LAA }
   
   if len(override.Prefix.WinVer) > 0 { config.Prefix.WinVer = override.Prefix.WinVer }
