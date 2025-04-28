@@ -80,6 +80,9 @@ Config file
     invoker?: bool,
     aware?: bool
   },
+  patch?: {
+    laa?: bool
+  },
   prefix?: {
     winver?: string,
     dpi?: number,
@@ -289,6 +292,17 @@ PCA flag(s) are set in `HKCU/Software/Microsoft/Windows NT/CurrentVersion/AppCom
   Override high DPI scaling behavior (Application).
 
 NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supersede `invoker`.
+
+### `patch?: object` (none)
+
+Patche(s) to apply to the executable.
+
+- `laa?: bool` (false):<br/>
+  **Large Adress Aware**<br/>
+  Set (true) or unset (false) the LAA flag bit in the PE Header.<br/>
+  Allow x86 binary to access up to 4GB of virtual memory (instead of only 2) on x64 Windows.
+  
+NB: Patching is done prior to any integrity check.
 
 ### `prefix?: {winver?: string, dpi?: number, overrides?: object}` (none)
 

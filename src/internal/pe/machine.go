@@ -15,15 +15,7 @@ import (
 func GetArchFromMachineType(path string) (string, error) {
   
   const location = 0x3C
-  
-  const (
-    IMAGE_FILE_MACHINE_UNKNOWN  uint16 = 0x0000
-    IMAGE_FILE_MACHINE_I386     uint16 = 0x014c
-    IMAGE_FILE_MACHINE_AMD64    uint16 = 0x8664
-    IMAGE_FILE_MACHINE_ARM64    uint16 = 0xAA64
-    IMAGE_FILE_MACHINE_ARM      uint16 = 0x01C0 
-  )
-  
+
   var machineTypes = map[uint16]string{
     IMAGE_FILE_MACHINE_I386:  "386",
     IMAGE_FILE_MACHINE_AMD64: "amd64",

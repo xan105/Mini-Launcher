@@ -44,6 +44,10 @@ type CompatFlags struct {
   Aware           bool                `json:"aware"`
 }
 
+type Patch struct {
+  LAA             bool                `json:"laa"`
+}
+
 type WinePrefix struct {
   WinVer          string              `json:"winver"`
   DllOverrides    map[string]string   `json:"overrides"`
@@ -51,11 +55,11 @@ type WinePrefix struct {
 }
 
 type Script struct {
-  Path            string               `json:"path"`
-  Fs              bool                 `json:"fs"`
-  Net             bool                 `json:"net"`
-  Reg             bool                 `json:"reg"`
-  Exec            bool                 `json:"exec"`
+  Path            string              `json:"path"`
+  Fs              bool                `json:"fs"`
+  Net             bool                `json:"net"`
+  Reg             bool                `json:"reg"`
+  Exec            bool                `json:"exec"`
 }
 
 type Config struct {
@@ -72,6 +76,7 @@ type Config struct {
   Splash          Splash              `json:"splash"`
   Symlink         []Link              `json:"symlink"`
   Compatibility   CompatFlags         `json:"compatibility"`
+  Patch           Patch               `json:"patch"`
   Prefix          WinePrefix          `json:"prefix"`
   Attrib          []Attrib            `json:"attrib"`
   Menu            map[string]string   `json:"menu"`
@@ -117,6 +122,8 @@ func mergeConfig(config *Config, override *Config) {
   if override.Compatibility.Admin != config.Compatibility.Admin { config.Compatibility.Admin = override.Compatibility.Admin }
   if override.Compatibility.Invoker != config.Compatibility.Invoker { config.Compatibility.Invoker = override.Compatibility.Invoker }
   if override.Compatibility.Aware != config.Compatibility.Aware { config.Compatibility.Aware = override.Compatibility.Aware }
+  
+  if override.Patch.LAA != config.Patch.LAA { config.Patch.LAA = override.Patch.LAA }
   
   if len(override.Prefix.WinVer) > 0 { config.Prefix.WinVer = override.Prefix.WinVer }
   if override.Prefix.DPI > 0 { config.Prefix.DPI = override.Prefix.DPI }

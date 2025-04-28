@@ -91,6 +91,7 @@ func main(){
   binary := fs.Resolve(expand.ExpandVariables(config.Bin))
   cmd := buildCommand(binary, config)
   
+  applyPatches(binary, config.Patch)
   verifyIntegrity(binary, config.Integrity)
   makeLink(config.Symlink)
   applyFileAttributes(config.Attrib)
@@ -111,6 +112,11 @@ func main(){
           panic("Lua", err.Error())
         }
       }
+      /*
+      case ".wasm": {
+        //wazero ? (Pure Go -- does NOT require CGO)
+      }
+      */
       default: {
         panic("Launcher", "Unsupported script: \""+ ext +"\"")  
       }

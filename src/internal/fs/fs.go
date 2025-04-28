@@ -311,7 +311,7 @@ func SetFileAttributes(filePath string, readonly bool, hidden bool) error {
   attrs, err := windows.GetFileAttributes(windows.StringToUTF16Ptr(filePath))
   if err != nil { return err }
 
-  if current := attrs & windows.FILE_ATTRIBUTE_READONLY != 0; readonly != current {
+  if current := (attrs & windows.FILE_ATTRIBUTE_READONLY) != 0; readonly != current {
     if readonly {
       attrs |= windows.FILE_ATTRIBUTE_READONLY //add
     } else {
@@ -319,7 +319,7 @@ func SetFileAttributes(filePath string, readonly bool, hidden bool) error {
     }
   }
 
-  if current := attrs & windows.FILE_ATTRIBUTE_HIDDEN != 0; hidden != current {
+  if current := (attrs & windows.FILE_ATTRIBUTE_HIDDEN) != 0; hidden != current {
     if hidden {
       attrs |= windows.FILE_ATTRIBUTE_HIDDEN //add
     } else {
