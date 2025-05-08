@@ -18,7 +18,7 @@ import(
 )
 
 func displaySplash(pid int, screen Splash) {
-  if screen.Show && screen.Images != nil && len(screen.Images) > 0 {
+  if screen.Show != nil && *screen.Show && screen.Images != nil && len(screen.Images) > 0 {
     image := screen.Images[rand.Intn(len(screen.Images))]
     if len(image) > 0 {
       image = fs.Resolve(expand.ExpandVariables(image))

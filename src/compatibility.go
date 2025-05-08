@@ -17,13 +17,23 @@ func setCompatFlags(binary string, flags CompatFlags) {
   //Win10: "~ [Fullscreen Optimization] + [Privilege Level] + [Flags...] + [Compatibility Mode]"
 
   const path = "Software/Microsoft/Windows NT/CurrentVersion/AppCompatFlags/Layers"
+  template := []string{}
+    
+  if flags.Fullscreen != nil && *flags.Fullscreen {
+    template = append(template, "DISABLEDXMAXIMIZEDWINDOWEDMODE")
+  }
 
-  if len(flags.Version) > 0 || 
-     flags.Fullscreen || 
-     flags.Admin ||
-     flags.Invoker ||
-     flags.Aware {
-
+  if flags.Admin != nil && *flags.Admin {
+    template = append(template, "RUNASADMIN")
+  } else if flags.Invoker != nil && *flags.Invoker {
+    template = append(template, "RUNASINVOKER")
+  }
+    
+  if flags.Aware != nil && *flags.Aware {
+    template = append(template, "HIGHDPIAWARE")
+  }
+    
+  if len(flags.Version) > 0 {
     versions := []string{
       "WIN95",
       "WIN98", 
@@ -38,30 +48,17 @@ func setCompatFlags(binary string, flags CompatFlags) {
       "WIN7RTM",
       "WIN8RTM",
     }
-
-    template := []string{ "~" }
-    
-    if flags.Fullscreen {
-      template = append(template, "DISABLEDXMAXIMIZEDWINDOWEDMODE")
-    }
-
-    if flags.Admin {
-      template = append(template, "RUNASADMIN")
-    } else if flags.Invoker {
-      template = append(template, "RUNASINVOKER")
-    }
-    
-    if flags.Aware {
-      template = append(template, "HIGHDPIAWARE")
-    }
-    
     if slices.Contains(versions, flags.Version) {
       template = append(template, flags.Version)
     }
+  }
 
+  if len(template) > 0 {
+    slices.Insert(template, 0, "~")
     regedit.WriteStringValue("HKCU", path, binary, strings.Join(template, " "))
-    
-  } else { regedit.DeleteKeyValue("HKCU", path, binary) }
+  } else {
+    regedit.DeleteKeyValue("HKCU", path, binary)
+  }
 }
 
 func updatePrefixSettings(prefix WinePrefix) {

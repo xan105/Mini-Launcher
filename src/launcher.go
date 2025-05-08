@@ -21,7 +21,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
   
   var cmd *exec.Cmd
   
-  if config.Shell {
+  if config.Shell != nil && *config.Shell {
     shell := os.Getenv("COMSPEC")
     if len(shell) == 0 {
       shell = filepath.Join(os.Getenv("WINDIR") + "System32/cmd.exe")
@@ -37,7 +37,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "),
-      HideWindow: config.Hide,
+      HideWindow: config.Hide != nil && *config.Hide,
     }
   } else {
     cmd = exec.Command(binary)
@@ -47,7 +47,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     }
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "), //verbatim arguments
-      HideWindow: config.Hide,
+      HideWindow: config.Hide != nil && *config.Hide,
     }
   }
   
@@ -104,10 +104,10 @@ func main(){
     switch ext {
       case ".lua": {
         if err := lua.LoadLua(script, lua.Permissions{
-          Fs: config.Script.Fs,
-          Net: config.Script.Net,
-          Reg: config.Script.Reg,
-          Exec: config.Script.Exec,
+          Fs: config.Script.Fs != nil && *config.Script.Fs,
+          Net: config.Script.Net != nil && *config.Script.Net,
+          Reg: config.Script.Reg != nil && *config.Script.Reg,
+          Exec: config.Script.Exec != nil && *config.Script.Exec,
         }); err != nil {
           panic("Lua", err.Error())
         }
@@ -135,7 +135,7 @@ func main(){
   loadAddons(binary, cmd.Process, config.Addons)
   displaySplash(cmd.Process.Pid, config.Splash)
   
-  if config.Wait {
+  if config.Wait != nil && *config.Wait {
     cmd.Wait()
   }
   

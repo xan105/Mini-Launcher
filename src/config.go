@@ -7,19 +7,19 @@ found in the LICENSE file in the root directory of this source tree.
 package main
 
 type Addon struct {
-  Path           string               `json:"path"`
-  Required       bool                 `json:"required"`
+  Path            string               `json:"path"`
+  Required        bool                 `json:"required"`
 }
 
 type File struct {
-  Path           string               `json:"path"`
-  SRI            string               `json:"sri"` 
-  Size           int64                `json:"size"`
-  Signed         bool                 `json:"signed"`
+  Path            string               `json:"path"`
+  SRI             string               `json:"sri"` 
+  Size            int64                `json:"size"`
+  Signed          bool                 `json:"signed"`
 }
 
 type Splash struct {
-  Show            bool                `json:"show"`
+  Show            *bool               `json:"show"`
   Images          []string            `json:"image"`
   Timeout         uint                `json:"timeout"`
   Wait            string              `json:"wait"`
@@ -31,22 +31,22 @@ type Link struct {
 }
 
 type Attrib struct {
-  Path           string               `json:"path"`
-  Hidden         bool                 `json:"hidden"` 
-  ReadOnly       bool                 `json:"readonly"`
+  Path            string               `json:"path"`
+  Hidden          bool                 `json:"hidden"` 
+  ReadOnly        bool                 `json:"readonly"`
 }
 
 type CompatFlags struct {
   Version         string              `json:"version"`
-  Fullscreen      bool                `json:"fullscreen"`
-  Admin           bool                `json:"admin"`
-  Invoker         bool                `json:"invoker"`
-  Aware           bool                `json:"aware"`
+  Fullscreen      *bool               `json:"fullscreen"`
+  Admin           *bool               `json:"admin"`
+  Invoker         *bool               `json:"invoker"`
+  Aware           *bool               `json:"aware"`
 }
 
 type Patch struct {
-  Allow           bool                `json:"allow"`
-  LAA             bool                `json:"laa"`
+  Allow           *bool               `json:"allow"`
+  LAA             *bool               `json:"laa"`
 }
 
 type WinePrefix struct {
@@ -57,10 +57,10 @@ type WinePrefix struct {
 
 type Script struct {
   Path            string              `json:"path"`
-  Fs              bool                `json:"fs"`
-  Net             bool                `json:"net"`
-  Reg             bool                `json:"reg"`
-  Exec            bool                `json:"exec"`
+  Fs              *bool               `json:"fs"`
+  Net             *bool               `json:"net"`
+  Reg             *bool               `json:"reg"`
+  Exec            *bool               `json:"exec"`
 }
 
 type Config struct {
@@ -68,9 +68,9 @@ type Config struct {
   Cwd             string              `json:"cwd"`
   Args            string              `json:"args"`
   Env             map[string]string   `json:"env"`
-  Hide            bool                `json:"hide"`
-  Shell           bool                `json:"shell"`
-  Wait            bool                `json:"wait"`
+  Hide            *bool               `json:"hide"`
+  Shell           *bool               `json:"shell"`
+  Wait            *bool               `json:"wait"`
   Script          Script              `json:"script"`
   Addons          []Addon             `json:"addons"`
   Integrity       []File              `json:"integrity"`
@@ -91,9 +91,9 @@ func mergeConfig(config *Config, override *Config) {
   if len(override.Args) > 0 { config.Args = override.Args }
   
   //bool
-  if override.Hide != config.Hide { config.Hide = override.Hide }
-  if override.Shell != config.Shell { config.Shell = override.Shell }
-  if override.Wait != config.Wait { config.Wait = override.Wait }
+  if override.Hide != nil { config.Hide = override.Hide }
+  if override.Shell != nil { config.Shell = override.Shell }
+  if override.Wait != nil { config.Wait = override.Wait }
   
   //map
   if len(override.Env) > 0 {
@@ -108,24 +108,24 @@ func mergeConfig(config *Config, override *Config) {
   
   //Nested
   if len(override.Script.Path) > 0 { config.Script.Path = override.Script.Path }
-  if override.Script.Fs != config.Script.Fs { config.Script.Fs = override.Script.Fs }
-  if override.Script.Net != config.Script.Net { config.Script.Net = override.Script.Net }
-  if override.Script.Reg != config.Script.Reg { config.Script.Reg = override.Script.Reg }
-  if override.Script.Exec != config.Script.Exec { config.Script.Exec = override.Script.Exec }
+  if override.Script.Fs != nil { config.Script.Fs = override.Script.Fs }
+  if override.Script.Net != nil { config.Script.Net = override.Script.Net }
+  if override.Script.Reg != nil { config.Script.Reg = override.Script.Reg }
+  if override.Script.Exec != nil { config.Script.Exec = override.Script.Exec }
 
-  if override.Splash.Show != config.Splash.Show { config.Splash.Show = override.Splash.Show }
+  if override.Splash.Show != nil { config.Splash.Show = override.Splash.Show }
   if override.Splash.Images != nil && len(override.Splash.Images) > 0 { config.Splash.Images = override.Splash.Images }
   if override.Splash.Timeout > 0 { config.Splash.Timeout = override.Splash.Timeout }
   if len(override.Splash.Wait) > 0 { config.Splash.Wait = override.Splash.Wait }
   
   if len(override.Compatibility.Version) > 0 { config.Compatibility.Version = override.Compatibility.Version }
-  if override.Compatibility.Fullscreen != config.Compatibility.Fullscreen  { config.Compatibility.Fullscreen = override.Compatibility.Fullscreen }
-  if override.Compatibility.Admin != config.Compatibility.Admin { config.Compatibility.Admin = override.Compatibility.Admin }
-  if override.Compatibility.Invoker != config.Compatibility.Invoker { config.Compatibility.Invoker = override.Compatibility.Invoker }
-  if override.Compatibility.Aware != config.Compatibility.Aware { config.Compatibility.Aware = override.Compatibility.Aware }
+  if override.Compatibility.Fullscreen != nil  { config.Compatibility.Fullscreen = override.Compatibility.Fullscreen }
+  if override.Compatibility.Admin != nil { config.Compatibility.Admin = override.Compatibility.Admin }
+  if override.Compatibility.Invoker != nil { config.Compatibility.Invoker = override.Compatibility.Invoker }
+  if override.Compatibility.Aware != nil { config.Compatibility.Aware = override.Compatibility.Aware }
   
-  if override.Patch.Allow != config.Patch.Allow { config.Patch.Allow = override.Patch.Allow }
-  if override.Patch.LAA != config.Patch.LAA { config.Patch.LAA = override.Patch.LAA }
+  if override.Patch.Allow != nil { config.Patch.Allow = override.Patch.Allow }
+  if override.Patch.LAA != nil { config.Patch.LAA = override.Patch.LAA }
   
   if len(override.Prefix.WinVer) > 0 { config.Prefix.WinVer = override.Prefix.WinVer }
   if override.Prefix.DPI > 0 { config.Prefix.DPI = override.Prefix.DPI }
