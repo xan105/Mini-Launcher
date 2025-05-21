@@ -12,8 +12,6 @@ import(
 )
 
 func applyPatches(binary string, patches Patch) {
-  if patches.Allow == nil || !*patches.Allow { return }
-  
   if patches.LAA != nil {
     if err := pe.PatchLargeAddress(binary, *patches.LAA); err != nil {
       panic("Patch (Large Address Aware)", "\"" + filepath.Base(binary) + "\": " + err.Error())

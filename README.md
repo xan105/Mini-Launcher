@@ -6,6 +6,7 @@ Mini-Launcher is an application launcher with the following features:
   - DLL Injection
   - Lua Scripting
   - Splash Screen (optional)
+  - Large Address Aware patching
   - File Integrity
   - Expanding Variables
   - Verbatim Arguments
@@ -81,7 +82,6 @@ Config file
     aware?: bool
   },
   patch?: {
-    allow: bool,
     laa?: bool
   },
   prefix?: {
@@ -298,15 +298,14 @@ NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supers
 
 Patch(es) to apply to the executable.
 
-- `allow: bool` (false):<br/>
-  Because patching directly modify the executable, you must first allow/enable this feature.
+Does nothing by default; You must explicitly set a patch to `true` or `false`.
 
-- `laa?: bool` (false):<br/>
+- `laa?: bool`:<br/>
   **Large Adress Aware**<br/>
-  Set (true) or unset (false) the LAA flag bit in the PE Header.<br/>
-  Allow x86 binary to access up to 4GB of virtual memory (instead of only 2) on x64 Windows.
+  Allow x86 binary to access up to 4GB of virtual memory (instead of only 2) on x64 Windows.<br/>
+  This option set (`true`) or unset (`false`) the LAA flag bit in the PE Header.<br/>
   
-NB: Patching is done prior to any integrity check.
+NB: Patching is done prior to any integrity check because it directly modifies the executable.
 
 ### `prefix?: {winver?: string, dpi?: number, overrides?: object}` (none)
 
