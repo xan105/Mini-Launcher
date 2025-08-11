@@ -870,7 +870,7 @@ NB: `ToUnix()` supported formats are:
 Build
 =====
 
-- Golang v1.24.1
+- Golang v1.24.x
 - [go-winres](https://github.com/tc-hib/go-winres) installed in `%PATH%` env var for win32 manifest & cie
 
 Run `build.cmd` on Windows<br/>
