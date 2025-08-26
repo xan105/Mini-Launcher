@@ -1,6 +1,11 @@
 About
 =====
 
+<p align="center">
+  <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png"/>
+  <em>To the moon with Go + Lua ✨</em>
+</p>
+
 Mini-Launcher is an application launcher with the following features:
 
   - DLL Injection
