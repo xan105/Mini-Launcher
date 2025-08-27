@@ -16,6 +16,8 @@ import (
 
 func createMenuWindow(labels []string, button chan int) { 
   runtime.LockOSThread() //GetMessageW() must be called in the same thread
+  defer runtime.UnlockOSThread()
+  
   slog.Info("Create Menu Window")
   
   const (

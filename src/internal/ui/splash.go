@@ -16,6 +16,8 @@ import (
 
 func createSplashWindow(splashImage string, waitEvent string, pid int, exit chan bool) { 
   runtime.LockOSThread() //GetMessageW() must be called in the same thread
+  defer runtime.UnlockOSThread()
+  
   slog.Info("Create Splash Window")
   
   const classNameGUID = "D2FF2B71-7532-4BA6-8025-4D044372B710"  //Random GUID
