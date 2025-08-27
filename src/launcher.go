@@ -97,6 +97,7 @@ func main(){
   applyFileAttributes(config.Attrib)
   setCompatFlags(binary, config.Compatibility)
   updatePrefixSettings(config.Prefix)
+  makeShortcut(binary, config.Shortcut)
 
   if len(config.Script.Path) > 0 {
     script := fs.Resolve(expand.ExpandVariables(config.Script.Path))

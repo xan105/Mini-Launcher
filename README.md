@@ -79,6 +79,11 @@ Config file
     path: string,
     dest: string
   },
+  shortcut?: {
+    name: string,
+    desktop?: bool,
+    startmenu?: bool
+  },
   compatibility?: {
     version?: string,
     fullscreen?: bool,
@@ -261,6 +266,10 @@ Path can be absolute or relative (to the current working dir).<br />
 
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
+
+### `shortcut?: { name: string, desktop?: bool, startmenu?: bool}` (none)
+
+Creates desktop / start menu shortcut(s) on launch.
 
 ### `compatibility?: object` (none)
 

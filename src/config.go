@@ -62,6 +62,12 @@ type Script struct {
   Exec            *bool               `json:"exec"`
 }
 
+type Shortcut struct {
+  Name            string              `json:"name"`
+  Desktop         *bool               `json:"desktop"`
+  StartMenu       *bool               `json:"startmenu"`
+}
+
 type Config struct {
   Bin             string              `json:"bin"`
   Cwd             string              `json:"cwd"`
@@ -80,6 +86,7 @@ type Config struct {
   Prefix          WinePrefix          `json:"prefix"`
   Attrib          []Attrib            `json:"attrib"`
   Menu            map[string]string   `json:"menu"`
+  Shortcut        Shortcut            `json:"shortcut"`
 }
 
 func mergeConfig(config *Config, override *Config) {
@@ -111,6 +118,10 @@ func mergeConfig(config *Config, override *Config) {
   if override.Script.Net != nil { config.Script.Net = override.Script.Net }
   if override.Script.Reg != nil { config.Script.Reg = override.Script.Reg }
   if override.Script.Exec != nil { config.Script.Exec = override.Script.Exec }
+  
+  if len(override.Shortcut.Name) > 0 { config.Shortcut.Name = override.Shortcut.Name }
+  if override.Shortcut.Desktop != nil { config.Shortcut.Desktop = override.Shortcut.Desktop }
+  if override.Shortcut.StartMenu != nil { config.Shortcut.StartMenu = override.Shortcut.StartMenu }
 
   if override.Splash.Show != nil { config.Splash.Show = override.Splash.Show }
   if override.Splash.Images != nil && len(override.Splash.Images) > 0 { config.Splash.Images = override.Splash.Images }
