@@ -54,10 +54,13 @@ if update then
     blankLine = true 
   })
   
+if update then
+  local data = INI.Stringify(steam, { 
+    whitespace = false, 
+    blankLine = true 
+  })
+  
   if data ~= "" then
-    local err = file.Write(filePath, data)
-    if err then
-      error(err.message)
-    end
+    file.Write(filePath, data)
   end
 end
