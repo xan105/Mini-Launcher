@@ -69,29 +69,24 @@ end
 
 -- Steam Loader
 
-local loader = false -- Set to true if needed
+local process = require("process")
+local steamclient = require("steamclient") -- steamclient.lua
 
-if loader then
-  local client = { -- change me
-    appid = "480",
-    dll = "%CURRENTDIR%\\steamclient.dll",
-    dll64 = "%CURRENTDIR%\\steamclient64.dll"
-  }
-  -- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
-  -- Example: 
-  -- "env": {
-  --    "SteamAppId": "480",
-  --    "SteamGameId": "480",
-  --    "SteamClientLaunch": "1",
-  --    "SteamEnv": "1",
-  --    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
-  -- }
-  
-  local process = require("process")
-  local steam = require("steam") -- steam.lua
-  local backup = steam.backup()
-  steam.load(client)
-  process.On("will-quit", function() -- You may need to use option `wait: true` in launcher.json depending on how the game behave
-    steam.restore(backup)
+-- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
+-- Example: 
+-- "env": {
+--    "SteamAppId": "480",
+--    "SteamGameId": "480",
+--    "SteamClientLaunch": "1",
+--    "SteamEnv": "1",
+--    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+-- }
+-- You need to use option `wait: true` in launcher.json if you want to restore modified values on game exit
+
+if steamclient.hasGenuineDLL() then
+  local backup = steamclient.backup()
+  steamclient.load({})
+  process.On("will-quit", function() 
+    steamclient.restore(backup)
   end)
  end
