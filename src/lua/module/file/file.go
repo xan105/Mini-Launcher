@@ -95,14 +95,13 @@ func Info(L *lua.LState) int {
   filename := L.CheckString(1)
   filePath := fs.Resolve(expand.ExpandVariables(filename))
   
+  info := L.NewTable()
   fileInfo, err := os.Stat(filePath)
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(info)
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
-
-  info := L.NewTable()
   L.SetField(info, "size", lua.LNumber(fileInfo.Size()))
   
   time := L.NewTable()
@@ -155,15 +154,15 @@ func Glob(L *lua.LState) int {
       }
     })
   }
-      
+  
+  table := L.NewTable()    
   matches, err := fs.Glob(fs.Resolve(expand.ExpandVariables(root)), pattern, recursive, absolute)
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(table)
     L.Push(failure.LValue(L, "ERR_FILE_SYSTEM", err.Error()))
     return 2
   }
 
-  table := L.NewTable()
   if matches != nil {
     for _, match := range matches {
       table.Append(lua.LString(match))
