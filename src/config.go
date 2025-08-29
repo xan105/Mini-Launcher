@@ -72,6 +72,7 @@ type Config struct {
   Bin             string              `json:"bin"`
   Cwd             string              `json:"cwd"`
   Args            string              `json:"args"`
+  Priority        string              `json:"priority"`
   Env             map[string]string   `json:"env"`
   Hide            *bool               `json:"hide"`
   Shell           *bool               `json:"shell"`
@@ -95,6 +96,7 @@ func mergeConfig(config *Config, override *Config) {
   if len(override.Bin) > 0 { config.Bin = override.Bin }
   if len(override.Cwd) > 0 { config.Cwd = override.Cwd }
   if len(override.Args) > 0 { config.Args = override.Args }
+  if len(override.Priority) > 0 { config.Priority = override.Priority }
   
   //bool
   if override.Hide != nil { config.Hide = override.Hide }

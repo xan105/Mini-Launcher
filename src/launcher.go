@@ -15,6 +15,7 @@ import(
   "launcher/lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
+  "launcher/internal/priority"
 )
 
 func buildCommand(binary string, config Config) *exec.Cmd {
@@ -38,6 +39,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "),
       HideWindow: config.Hide != nil && *config.Hide,
+      CreationFlags: priority.GetPriorityClass(config.Priority),
     }
   } else {
     cmd = exec.Command(binary)
@@ -48,6 +50,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     cmd.SysProcAttr = &syscall.SysProcAttr{ 
       CmdLine: strings.Join(argv, " "), //verbatim arguments
       HideWindow: config.Hide != nil && *config.Hide,
+      CreationFlags: priority.GetPriorityClass(config.Priority),
     }
   }
   

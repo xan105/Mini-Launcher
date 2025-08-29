@@ -49,6 +49,7 @@ Config file
   cwd?: string,
   args?: string,
   env?: object,
+  priority?: string,
   hide?: bool,
   shell?: bool,
   wait?: bool,
@@ -145,6 +146,20 @@ Example:
 ```
 
 `%VAR%` in value are expanded if any (see Expanding Variable for more details).
+
+### `priority?: string` (none)
+
+Set the executable process priority class:
+
+- `IDLE`:          Threads run only when the system is idle.
+- `BELOW_NORMAL`:  _Above `IDLE` but below `NORMAL`._
+- `NORMAL`:        This is the default.
+- `ABOVE_NORMAL`:  _Above `NORMAL` but below `HIGH`._ 
+- `HIGH`:          Performs time-critical tasks that must be executed immediately. 
+- `REALTIME`:      Highest possible priority, higher than operating system processes performing important tasks.
+
+⚠️ Use extreme care when using `HIGH`, because a high-priority class application can use nearly all available CPU time.
+Even more so with `REALTIME` which can cause issues like disk cache not flushing or unresponsive mouse.
 
 ### `hide?: bool` (false)
 
