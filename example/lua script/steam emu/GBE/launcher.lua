@@ -1,0 +1,97 @@
+local user = require("user")
+local file = require("file")
+local INI = require("config/ini")
+
+local path = "%APPDATA%/GSE Saves/settings"
+
+local content = file.Read(path .. "/configs.user.ini")
+local steam = INI.Parse(content)
+local update = false
+
+if not steam["user::general"] then
+  steam["user::general"] = {}
+  update = true
+end
+    
+-- User name
+    
+if not steam["user::general"]["account_name"] or Array.includes({"", "Noob"}, steam["user::general"]["account_name"]) then
+  steam["user::general"]["account_name"] = user.name
+  update = true
+end
+    
+-- User Language
+    
+local steam_languages = {
+  "arabic", "bulgarian", "chinese", "czech",
+  "danish", "dutch", "english", "finnish", "french",
+  "german", "greek", "hungarian", "italian", "japanese", 
+  "korean", "norwegian", "polish", "portuguese",
+  "romanian", "russian", "spanish", "swedish",
+  "thai", "turkish", "ukrainian", "vietnamese"
+}
+    
+if not steam["user::general"]["language"] or steam["user::general"]["language"] == "" then
+  steam["user::general"]["language"] = user.language
+  if not Array.includes(steam_languages, steam["user::general"]["language"]) then
+    steam["user::general"]["language"] = "english"
+  elseif steam["user::general"]["language"] == "spanish" and user.locale.region ~= "ES" then
+    steam["user::general"]["language"] = "latam"
+  elseif steam["user::general"]["language"] == "portuguese" and user.locale.region == "BR" then
+    steam["user::general"]["language"] = "brazilian"
+  elseif steam["user::general"]["language"] == "chinese" then
+    if user.locale.region == "CN" or user.locale.region == "SG" then
+      steam["user::general"]["language"] = "schinese"
+    else
+      steam["user::general"]["language"] = "tchinese"
+    end
+  elseif steam["user::general"]["language"] == "korean" then
+    steam["user::general"]["language"] = "koreana"
+  end
+  update = true
+end
+
+-- User Region
+    
+if not steam["user::general"]["ip_country"] or steam["user::general"]["ip_country"] == "" then
+  steam["user::general"]["ip_country"] = user.locale.region
+  update = true
+end
+
+-- Save
+
+if update then
+  local data = INI.Stringify(steam)
+  if data ~= "" then
+    file.Write(path .. "/configs.user.ini", data)
+  end
+end
+
+-- Steam Loader
+
+local loader = false -- Set to true if needed
+
+if loader then
+  local client = { -- change me
+    appid = "480",
+    dll = "%CURRENTDIR%\\steamclient.dll",
+    dll64 = "%CURRENTDIR%\\steamclient64.dll"
+  }
+  -- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
+  -- Example: 
+  -- "env": {
+  --    "SteamAppId": "480",
+  --    "SteamGameId": "480",
+  --    "SteamClientLaunch": "1",
+  --    "SteamEnv": "1",
+  --    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+  -- }
+  
+  local process = require("process")
+  local steam = require("steam") -- steam.lua
+  local backup = steam.backup()
+  steam.load(client)
+  process.On("will-quit", function() -- You may need to use option `wait: true` in launcher.json depending on how the game behave
+    steam.restore(backup)
+  end)
+ end
