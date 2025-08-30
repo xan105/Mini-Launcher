@@ -82,6 +82,7 @@ local steamclient = require("steamclient") -- steamclient.lua
 --    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
 -- }
 -- You need to use option `wait: true` in launcher.json if you want to restore modified values on game exit
+-- To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option in launcher.json
 
 if steamclient.hasGenuineDLL() then
   local backup = steamclient.backup()
