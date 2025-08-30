@@ -462,8 +462,9 @@ See the `./example` directory for some examples.
   + String
   + Math
   + Coroutine
-  
+
 Some standard libraries are not enabled by design.<br />
+`goto` and `::label::` statements from Lua 5.2 are supported.<br />
 The followings modules are exposed to the Lua VM, I might add more later on.
 
 ## 🌐 Globals
