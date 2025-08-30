@@ -26,6 +26,7 @@ import (
   "launcher/lua/module/process"
   "launcher/lua/module/shell"
   "launcher/lua/module/time"
+  "launcher/lua/script"
 )
 
 type Permissions struct {
@@ -118,6 +119,10 @@ func LoadLua(filePath string, perm Permissions) error {
   L.PreloadModule("config/xml", xml.Loader)
   L.PreloadModule("process", process.Loader)
   L.PreloadModule("time", time.Loader)
+  
+  if err := script.ImportEmbeddedLuaScript(L); err != nil {
+    return err
+  }
   
   //Exec
   return L.DoFile(filePath);
