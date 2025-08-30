@@ -1,4 +1,4 @@
-Lua modules **written in Lua** located in the `lua_modules/` folder are embedded into the Go executable using [Go's embed](https://pkg.go.dev/embed) feature.
+Lua modules **written in Lua** located in the `lua_modules` folder are embedded into the Go executable using [Go's embed](https://pkg.go.dev/embed) feature.
 
 - The filename _(without `.lua`)_ is used as the module name:
 
