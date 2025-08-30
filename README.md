@@ -543,6 +543,25 @@ end
 
 ## 📦 Modules
 
+### `📦 Types`
+
+This is a module for type checking at runtime.
+
+```lua
+local types = require("types")
+```
+
+- `isString(value: any) bool`
+- `isNumber(value: any) bool`
+- `isSafeInteger(value: any) bool`
+- `isBoolean(value: any) bool`
+- `isNil(value: any) bool`
+- `isTable(value: any) bool`
+- `isFunction(value: any) bool`
+- `isUserData(value: any) bool`
+- `isThread(value: any) bool`
+- `isEmpty(value: any) bool`
+
 ### `📦 Regedit`
 
 This is a module to read and write from/to the registry.
