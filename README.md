@@ -606,7 +606,7 @@ local file = require("file")
 - `Write(filename: string, data: string, format?: string = "utf8") Failure`
 - `Read(filename: string, format?: string = "utf8") string, Failure`
 - `Remove(path: string) Failure`
-- `Info(filename: string) object, Failure`
+- `Info(filename: string) table, Failure`
 - `Glob(root: string, pattern: string, options?: { recursive?: bool = false, absolute?: bool = false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
 - `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
@@ -634,7 +634,7 @@ Read text data as specified format encoding (default to utf8).
 
 Delete file or directory and any children it contains at the given path.
 
-#### `Info(filename: string) object, Failure`
+#### `Info(filename: string) table, Failure`
 
 Retrieves information for the specified path.<br/>
 Time information are represented as Unix epoch time (seconds).<br/>
@@ -694,20 +694,20 @@ local XML  = require("config/xml")
 ```
 
 - `JSON`
-  + `Parse(data: string) table, Failure`
-  + `Stringify(data: table, pretty?: bool = true) string, Failure`
+  + `Parse(data: string) table | nil, Failure`
+  + `Stringify(data: table, pretty?: bool = true) string | nil, Failure`
 - `TOML`
-  + `Parse(data: string) table, Failure`
-  + `Stringify(data: table) string, Failure`
+  + `Parse(data: string) table | nil, Failure`
+  + `Stringify(data: table) string | nil, Failure`
 - `INI`
   + `Parse(data: string, options?: table) table`
   + `Stringify(data: table, options?: table) string`
 - `YAML`
-  + `Parse(data: string) table, Failure`
-  + `Stringify(data: table) string, Failure`
+  + `Parse(data: string) table | nil, Failure`
+  + `Stringify(data: table) string | nil, Failure`
 - `XML`
-  + `Parse(data: string) table, Failure`
-  + `Stringify(data: table, pretty?: bool = true) string, Failure`
+  + `Parse(data: string) table | nil, Failure`
+  + `Stringify(data: table, pretty?: bool = true) string | nil, Failure`
   
 ⚠️ Due to GoLang using hashmap the key order is not guaranteed !
 
@@ -738,10 +738,10 @@ This is a module to do http request.
 local http = require("http")
 ```
 
-- `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, Failure`
+- `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status: number , body: string, headers: table} | nil, Failure`
 - `Download(url: string, destDir: string) string, Failure`
 
-#### `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status, body, headers}, Failure`
+#### `Fetch(url: string, options?: {method?: string, headers?: table, body?: string }) {status: number , body: string, headers: table} | nil, Failure`
 
 A [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) like API.
 
@@ -835,7 +835,7 @@ This is a module to get info about the current display mode.
 local video = require("video")
 ```
 
-- `Current() { width: number (px), height: number (px), hz: number, scale: number (%)}, Failure`
+- `Current() { width?: number (px), height?: number (px), hz?: number, scale?: number (%)}, Failure`
 
 ### `📦 Process`
 
@@ -866,9 +866,9 @@ This is a module to execute shell command.
 local shell = require("shell")
 ```
 
-- `Run(command: string) {stdout: string, stderr: string}, Failure`
+- `Run(command: string) {stdout?: string, stderr?: string}, Failure`
 
-#### `Run(command: string) {stdout: string, stderr: string}, Failure`
+#### `Run(command: string) {stdout?: string, stderr?: string}, Failure`
 
 Spawns a shell then execute the command within that shell (ComSpec).
 

@@ -39,8 +39,9 @@ func Run(L *lua.LState) int {
   cmd.Stdout = &stdout
   cmd.Stderr = &stderr
   
+  result := L.NewTable()
   if err := cmd.Start(); err != nil {
-    L.Push(lua.LNil)
+    L.Push(result)
     L.Push(failure.LValue(L, "ERR_SPAWN_PROCESS", err.Error()))
     return 2
   }
@@ -51,7 +52,6 @@ func Run(L *lua.LState) int {
   }()
   <- wait
   
-  result := L.NewTable()
   L.SetField(result, "stdout", lua.LString(stdout.String()))
   L.SetField(result, "stderr", lua.LString(stderr.String()))
   L.Push(result)

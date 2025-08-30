@@ -23,15 +23,15 @@ func Loader(L *lua.LState) int {
 }
 
 func Current(L *lua.LState) int {
-
+  
+  displayMode := L.NewTable()
   display, err := video.GetCurrentDisplayMode()
   if err != nil {
-    L.Push(lua.LNil)
+    L.Push(displayMode)
     L.Push(failure.LValue(L, "ERR_WIN32_API", err.Error()))
     return 2
   }
 
-  displayMode := L.NewTable()
   L.SetField(displayMode, "width", lua.LNumber(display.Width))
   L.SetField(displayMode, "height", lua.LNumber(display.Height))
   L.SetField(displayMode, "hz", lua.LNumber(display.Hz))
