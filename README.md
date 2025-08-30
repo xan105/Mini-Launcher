@@ -158,8 +158,9 @@ Set the executable process priority class:
 - `HIGH`:          Performs time-critical tasks that must be executed immediately. 
 - `REALTIME`:      Highest possible priority, higher than operating system processes performing important tasks.
 
-⚠️ Use extreme care when using `HIGH`, because a high-priority class application can use nearly all available CPU time.
-Even more so with `REALTIME` which can cause issues like disk cache not flushing or unresponsive mouse.
+> [!WARNING] 
+> Use extreme care when using **HIGH**, because a high-priority class application can use nearly all available CPU time.
+> Even more so with **REALTIME** which can cause issues like disk cache not flushing or unresponsive mouse.
 
 ### `hide?: bool` (false)
 
@@ -281,6 +282,9 @@ Path can be absolute or relative (to the current working dir).<br />
 
 > [!CAUTION]
 > This requires elevated privileges ("Admin rights") or the `SeCreateSymbolicLinkPrivilege` privilege.
+
+> [!TIP]
+> On Windows the launcher will restart automatically with elevated privileges triggering an UAC prompt for the end user.
 
 ### `shortcut?: { name: string, desktop?: bool, startmenu?: bool}` (none)
 
