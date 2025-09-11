@@ -455,17 +455,17 @@ List of variables that will get expanded:
 Lua Scripting
 =============
 
-Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua).<br />
+Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua) (Lua 5.1).<br />
 See the `./example` directory for some examples.
 
-- Lua 5.1
-- Libraries:
-  + Package
-  + Basic
-  + Table
-  + String
-  + Math
-  + Coroutine
+Standard libs available are:
+
+  - Package
+  - Basic
+  - Table
+  - String
+  - Math
+  - Coroutine
 
 Some standard libraries are not enabled by design.<br />
 `goto` and `::label::` statements from Lua 5.2 are supported.<br />
