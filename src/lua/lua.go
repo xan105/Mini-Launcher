@@ -26,14 +26,15 @@ import (
   "launcher/lua/module/process"
   "launcher/lua/module/shell"
   "launcher/lua/module/time"
+  "launcher/lua/module/steamid"
   "launcher/lua/script"
 )
 
 type Permissions struct {
-  Fs    bool  //Filesystem
-  Net   bool  //Network request
-  Reg   bool  //Windows registry
-  Exec  bool  //Exec shell command
+  Fs      bool  //Filesystem
+  Net     bool  //Network request
+  Reg     bool  //Windows registry
+  Exec    bool  //Exec shell command
 }
 
 var L *lua.LState
@@ -68,8 +69,8 @@ func LoadLua(filePath string, perm Permissions) error {
       return err
     }
   }
-  
-  //Custom Type
+
+  //Custom Type (Global)
   failure.RegisterType(L)
   
   //Globals
@@ -119,11 +120,12 @@ func LoadLua(filePath string, perm Permissions) error {
   L.PreloadModule("config/xml", xml.Loader)
   L.PreloadModule("process", process.Loader)
   L.PreloadModule("time", time.Loader)
-  
+  L.PreloadModule("SteamID", steamid.Loader)
+
   if err := script.ImportEmbeddedLuaScript(L); err != nil {
     return err
   }
-  
+
   //Exec
   return L.DoFile(filePath);
 }
@@ -148,6 +150,7 @@ func TriggerEvent(module string, event string) error {
 }
 
 func permissionStub(L *lua.LState) int {
-  L.RaiseError("Module unavailable due to lack of permission !")
+  name := L.CheckString(1)
+  L.RaiseError("Module \"%s\" is unavailable due to lack of permission !", name)
   return 0
 }
