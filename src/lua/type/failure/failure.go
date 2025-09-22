@@ -24,6 +24,15 @@ func LValue(L *lua.LState, code string, message string) lua.LValue {
   return ud
 }
 
+func LCheckFailure(L *lua.LState, n int) *Failure {
+  ud := L.CheckUserData(n)
+  if err, ok := ud.Value.(*Failure); ok {
+    return err
+  }
+  L.ArgError(n, "UserData<Failure> type expected!")
+  return nil
+}
+
 func constructor(L *lua.LState) int {
   code := L.ToString(1)
   if len(code) == 0 { code = "ERR_UNKNOWN" }
@@ -36,30 +45,23 @@ func constructor(L *lua.LState) int {
 }
 
 func index(L *lua.LState) int {
-  ud  := L.CheckUserData(1)
+  err := LCheckFailure(L, 1)
   key := L.ToString(2)
-
-  if err, ok := ud.Value.(*Failure); ok {
-    switch key {
-      case "code":
-        L.Push(lua.LString(err.Code))
-      case "message":
-        L.Push(lua.LString(err.Message))
-      default:
-        L.Push(lua.LNil)
-    }
-    return 1
+  switch key {
+    case "code":
+      L.Push(lua.LString(err.Code))
+    case "message":
+      L.Push(lua.LString(err.Message))
+    default:
+      L.Push(lua.LNil)
   }
-  return 0
+  return 1
 }
 
 func tostring(L *lua.LState) int {
-  ud := L.CheckUserData(1)
-  if err, ok := ud.Value.(*Failure); ok {
-    L.Push(lua.LString("[" + err.Code + "]: " + err.Message))
-    return 1
-  }
-  return 0
+  err := LCheckFailure(L, 1)
+  L.Push(lua.LString("[" + err.Code + "]: " + err.Message))
+  return 1
 }
 
 func RegisterType(L *lua.LState) {
