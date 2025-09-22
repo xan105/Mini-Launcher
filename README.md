@@ -580,15 +580,15 @@ local regedit = require("regedit")
 - `QueryMultiStringValue(root: string, path: string, key: string) []string` //REG_MULTI_SZ
 - `QueryBinaryValue(root: string, path: string, key: string) string` //REG_BINARY
 - `QueryIntegerValue(root: string, path: string, key: string) string` //REG_DWORD & REG_QWORD
-- `WriteKey(root: string, path: string)`
-- `DeleteKey(root: string, path: string)`
+- `Create(root: string, path: string)`
+- `Delete(root: string, path: string)`
 - `WriteStringValue(root: string, path: string, key: string, value: string)` //REG_SZ
 - `WriteExpandStringValue(root: string, path: string, key: string, value: string)` //REG_EXPAND_SZ
 - `WriteMultiStringValue(root: string, path: string, key: string, value: []string)` //REG_MULTI_SZ
 - `WriteBinaryValue(root: string, path: string, key: string, value: string)` //REG_BINARY
 - `WriteDwordValue(root: string, path: string, key: string, value: string)` //REG_DWORD 
 - `WriteQwordValue(root: string, path: string, key: string, value: string)` //REG_QWORD
-- `DeleteKeyValue(root: string, path: string, key: string)`
+- `DeleteValue(root: string, path: string, key: string)`
 
 ✔️ `root` key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.<br />
 💡For the default key `@` use `key = ""`
@@ -919,6 +919,152 @@ NB: `ToUnix()` supported formats are:
 - "MM/DD/YYYY"
 - "YYYY-MM-DD HH:MM:SS"
 - "YYYY/MM/DD HH:MM:SS"
+
+### `📦 SteamID`
+
+This is a module to help working with Steam-related user identification.
+
+```lua
+local SteamID = require("SteamID")
+```
+
+#### `SteamID(userid: string) SteamID{...}`
+
+`SteamID` is a custom type (_userdata_) that represents a _Steam ID_ with its associated _universe_, _type_, _instance_, and _account ID_.
+
+It is created from a _"Steam2 ID"_ (STEAM_X:Y:Z), a _"Steam3 ID"_ ([U:1:Z])_ or a _"Steam64 ID"_ string.
+
+This provides a structured and easy way to handle conversion:
+
+- `universe: number`
+
+- `type: number`
+
+- `instance: number`
+
+- `accountid: number`
+
+- `:asSteam2() string`
+
+  Returns a "Steam2 ID": `STEAM_X:Y:Z`
+  
+  eg: `STEAM_1:0:354782281`
+
+- `:asSteam3() string`
+
+  Returns a "Steam3 ID": `[U:1:Z]`
+  
+  eg: `[U:1:709564562]`
+
+- `:asSteam64() string`
+  
+  Returns a "Steam64 ID"
+  
+  eg: `76561198669830290`
+
+
+Example:
+
+```lua
+local SteamID = require("SteamID")
+local id = SteamID("76561198669830290")
+
+print(id.accountid)   -- 709564562
+print(id:asSteam2())  -- STEAM_1:0:354782281
+print(id:asSteam3())  -- [U:1:709564562]
+print(id:asSteam64()) -- 76561198669830290
+```
+
+### `📦 Steam Client`
+
+This module provides utilities to help launching games that require the Steam client.
+
+These utilities can be used to create what is often referred to as a _"Steam loader"_.
+
+> [!IMPORTANT]
+> You also have to set Steam-related env. var. with `env:{key:value,...}` in the config file.
+
+```json
+{
+  "env": {
+    "SteamAppId": "480",
+    "SteamGameId": "480",
+    "SteamClientLaunch": "1",
+    "SteamEnv": "1",
+    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+  }
+}
+```
+
+> Requires the `reg` permission.
+
+```lua
+local steamclient = require("steamclient")
+```
+
+- `HasGenuineDLL() bool`
+
+  Recursively search, within the launcher's current working directory, for the presence of genuine (signed) Steam DLL(s): `steam_api(64).dll`.
+  
+- `Backup() table`
+
+  Backup the Steam-related registry values.
+  
+- `Restore(backup: table)`
+
+  Restore previously backed up Steam-related registry values.
+  
+  > [!TIP]
+  > Use the event _"will-quit"_ from the `process` module to restore the values later on.
+  > 
+  > You can also set the option `wait: true` in the config file so the event triggers when the game exits rather than when the launcher terminates.
+  
+- `Load(client?: { appid?: string, dll:? string, dll64?: string, user?: number })`
+
+  Write the Steam-related values to the registry.<br/>
+  You can specify the game's appid, steamclient dlls path and user account id.<br/>
+  If omitted they are set automatically by looking for `steam_appid.txt`, `steamclient(64).dll` within the launcher's current working directory.
+  
+  > [!TIP]
+  > To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option.
+ 
+
+**Full example:**
+
+```lua
+local process = require("process")
+local steamclient = require("steamclient")
+
+if steamclient.HasGenuineDLL() then
+  local backup = steamclient.Backup()
+  steamclient.Load()
+  process.On("will-quit", function() 
+    steamclient.Restore(backup)
+  end)
+ end
+```
+
+Config file
+
+```json
+{
+  "env": {
+    "SteamAppId": "480",
+    "SteamGameId": "480",
+    "SteamClientLaunch": "1",
+    "SteamEnv": "1",
+    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+  },
+  "wait": true,
+  "addons": [
+    { "path": "steamclient64.dll", "required": true},
+    { "path": "GameOverlayRenderer64.dll", "required": true}
+  ]
+}
+```
+
+> [!TIP]
+> 🐧 Linux/Proton: you may need to set the env. var. `PROTON_DISABLE_LSTEAMCLIENT=1` _(Linux environment)_ to disable Proton Steam client bridge shenanigans, otherwise it may conflict with the `steamclient(64).dll`.
 
 Build
 =====
