@@ -15,11 +15,11 @@ import (
 )
 
 var rootKeys = map[string]registry.Key{
-	"HKCU": registry.CURRENT_USER,
-	"HKLM": registry.LOCAL_MACHINE,
-	"HKU":  registry.USERS,
-	"HKCC": registry.CURRENT_CONFIG,
-	"HKCR": registry.CLASSES_ROOT,
+  "HKCU": registry.CURRENT_USER,
+  "HKLM": registry.LOCAL_MACHINE,
+  "HKU":  registry.USERS,
+  "HKCC": registry.CURRENT_CONFIG,
+  "HKCR": registry.CLASSES_ROOT,
 }
 
 func KeyExists(root string, path string) bool {
@@ -120,7 +120,7 @@ func Create(root string, path string) {
 func Delete(root string, path string) {
   subkeys := ListAllSubkeys(root, path)
   for _, subkey := range subkeys {
-    Delete(root, subkey)
+    Delete(root, path + "/" + subkey)
   }
   registry.DeleteKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path))
 }
