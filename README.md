@@ -932,7 +932,7 @@ local SteamID = require("SteamID")
 
 `SteamID` is a custom type (_userdata_) that represents a _Steam ID_ with its associated _universe_, _type_, _instance_, and _account ID_.
 
-It is created from a _"Steam2 ID"_ (STEAM_X:Y:Z), a _"Steam3 ID"_ ([U:1:Z])_ or a _"Steam64 ID"_ string.
+It is created from a _"Steam2 ID"_ (`STEAM_X:Y:Z`), a _"Steam3 ID"_ (`[U:1:Z]`) or a _"Steam64 ID"_ string.
 
 This provides a structured and easy way to handle conversion:
 
@@ -1004,7 +1004,7 @@ local steamclient = require("steamclient")
 
 - `HasGenuineDLL() bool`
 
-  Recursively search, within the launcher's current working directory, for the presence of genuine (signed) Steam DLL(s): `steam_api(64).dll`.
+  Recursively search, within the launcher's current working directory, for the presence of genuine (signed) `steam_api(64).dll`.
   
 - `Backup() table`
 
@@ -1014,10 +1014,10 @@ local steamclient = require("steamclient")
 
   Restore previously backed up Steam-related registry values.
   
-  > [!TIP]
-  > Use the event _"will-quit"_ from the `process` module to restore the values later on.
-  > 
-  > You can also set the option `wait: true` in the config file so the event triggers when the game exits rather than when the launcher terminates.
+> [!TIP]
+> Use the event _"will-quit"_ from the `process` module to restore the values later on.
+> 
+> You can also set the option `wait: true` in the config file so the event triggers when the game exits rather than when the launcher terminates.
   
 - `Load(client?: { appid?: string, dll:? string, dll64?: string, user?: number })`
 
@@ -1025,8 +1025,8 @@ local steamclient = require("steamclient")
   You can specify the game's appid, steamclient dlls path and user account id.<br/>
   If omitted they are set automatically by looking for `steam_appid.txt`, `steamclient(64).dll` within the launcher's current working directory.
   
-  > [!TIP]
-  > To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option.
+> [!TIP]
+> To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option.
  
 
 **Full example:**
