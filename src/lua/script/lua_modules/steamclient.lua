@@ -89,7 +89,7 @@ function steamclient.Load(client)
     end
   end
   
-  if type(client.user) ~= "number" or client.user % 1 ~= 0 or client.user < 1999874061 then
+  if type(client.user) ~= "number" or client.user % 1 ~= 0 or client.user == 0 then
     client.user = 1999874061
   end
 
