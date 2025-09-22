@@ -26,15 +26,15 @@ func Loader(L *lua.LState) int {
     "QueryMultiStringValue": QueryMultiStringValue,
     "QueryBinaryValue": QueryBinaryValue,
     "QueryIntegerValue": QueryIntegerValue,
-    "WriteKey": WriteKey,
-    "DeleteKey": DeleteKey,
+    "Create": Create,
+    "Delete": Delete,
     "WriteStringValue": WriteStringValue,
     "WriteExpandStringValue": WriteExpandStringValue,
     "WriteMultiStringValue": WriteMultiStringValue,
     "WriteBinaryValue": WriteBinaryValue,
     "WriteDwordValue": WriteDwordValue,
     "WriteQwordValue": WriteQwordValue,
-    "DeleteKeyValue": DeleteKeyValue,
+    "DeleteValue": DeleteValue,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
@@ -133,19 +133,19 @@ func QueryIntegerValue(L *lua.LState) int {
   return 1
 }
 
-func WriteKey(L *lua.LState) int {
+func Create(L *lua.LState) int {
   root  := L.CheckString(1)  
   path  := L.CheckString(2)
 
-  regedit.WriteKey(root, path)   
+  regedit.Create(root, path)   
   return 0
 }
 
-func DeleteKey(L *lua.LState) int {
+func Delete(L *lua.LState) int {
   root  := L.CheckString(1)  
   path  := L.CheckString(2)
 
-  regedit.DeleteKey(root, path)   
+  regedit.Delete(root, path)   
   return 0
 }
 
@@ -219,11 +219,11 @@ func WriteQwordValue(L *lua.LState) int {
   return 0
 }
 
-func DeleteKeyValue(L *lua.LState) int {
+func DeleteValue(L *lua.LState) int {
   root  := L.CheckString(1)  
   path  := L.CheckString(2)
   key   := L.CheckString(3)
 
-  regedit.DeleteKeyValue(root, path, key)   
+  regedit.DeleteValue(root, path, key)   
   return 0
 }

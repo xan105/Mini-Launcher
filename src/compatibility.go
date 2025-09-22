@@ -57,7 +57,7 @@ func setCompatFlags(binary string, flags CompatFlags) {
     slices.Insert(template, 0, "~")
     regedit.WriteStringValue("HKCU", path, binary, strings.Join(template, " "))
   } else {
-    regedit.DeleteKeyValue("HKCU", path, binary)
+    regedit.DeleteValue("HKCU", path, binary)
   }
 }
 
