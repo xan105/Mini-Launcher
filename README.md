@@ -58,7 +58,8 @@ Config file
     fs?: bool,
     net?: bool,
     reg?: bool,
-    exec?: bool
+    exec?: bool,
+    import?: bool
   },
   addons?: []{
     path: string, 
@@ -187,13 +188,14 @@ See the `./example` directory for some examples.
   Script file path can be absolute or relative (to the current working dir).<br />
   `%VAR%` are expanded if any (see Expanding Variable for more details).
 
-- `fs, net, reg, exec ?: bool` (false)
+- `fs, net, reg, exec, import ?: bool` (false)
 
   These flags act as a simple permissions system: 
   + `fs`: Filesystem operation
   + `net`: Network request
   + `reg`: Windows registry
   + `exec`: Shell command
+  + `import`: Load external Lua code (via require, loadfile, loadstring, ...)
 
   You must explicitly grant access to these resources.
 
@@ -469,7 +471,12 @@ Standard libs available are:
 
 Some standard libraries are not enabled by design.<br />
 `goto` and `::label::` statements from Lua 5.2 are supported.<br />
+
 The followings modules are exposed to the Lua VM, I might add more later on.
+
+> [!NOTE]
+By default the VM is mostly sandboxed: you can only _require_ from the available modules.
+If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
 
 ## 🌐 Globals
 

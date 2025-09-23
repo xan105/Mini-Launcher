@@ -60,6 +60,7 @@ type Script struct {
   Net             *bool               `json:"net"`
   Reg             *bool               `json:"reg"`
   Exec            *bool               `json:"exec"`
+  Import          *bool               `json:"import"`
 }
 
 type Shortcut struct {
@@ -120,6 +121,7 @@ func mergeConfig(config *Config, override *Config) {
   if override.Script.Net != nil { config.Script.Net = override.Script.Net }
   if override.Script.Reg != nil { config.Script.Reg = override.Script.Reg }
   if override.Script.Exec != nil { config.Script.Exec = override.Script.Exec }
+  if override.Script.Import != nil { config.Script.Import = override.Script.Import }
   
   if len(override.Shortcut.Name) > 0 { config.Shortcut.Name = override.Shortcut.Name }
   if override.Shortcut.Desktop != nil { config.Shortcut.Desktop = override.Shortcut.Desktop }

@@ -35,6 +35,7 @@ type Permissions struct {
   Net     bool  //Network request
   Reg     bool  //Windows registry
   Exec    bool  //Exec shell command
+  Import  bool  //Load external Lua code
 }
 
 var L *lua.LState
@@ -68,6 +69,18 @@ func LoadLua(filePath string, perm Permissions) error {
     }, lua.LString(builtin.name)); err != nil {
       return err
     }
+  }
+
+  if !perm.Import {
+    packageTbl := L.GetGlobal("package").(*lua.LTable)
+    packageTbl.RawSetString("path", lua.LString("")) //overwrite default package path search
+    loadersTbl := packageTbl.RawGetString("loaders").(*lua.LTable)
+    loadersTbl.RawSetInt(2, L.NewFunction(permissionStub)) //overwrite 2nd package loader (fs load)
+    //overwrite loading methods
+    L.SetGlobal("dofile", L.NewFunction(permissionStub))
+    L.SetGlobal("load", L.NewFunction(permissionStub))
+    L.SetGlobal("loadfile", L.NewFunction(permissionStub))
+    L.SetGlobal("loadstring", L.NewFunction(permissionStub))
   }
 
   //Custom Type (Global)
@@ -125,7 +138,7 @@ func LoadLua(filePath string, perm Permissions) error {
   if err := script.ImportEmbeddedLuaScript(L); err != nil {
     return err
   }
-
+  
   //Exec
   return L.DoFile(filePath);
 }
@@ -150,7 +163,14 @@ func TriggerEvent(module string, event string) error {
 }
 
 func permissionStub(L *lua.LState) int {
-  name := L.CheckString(1)
-  L.RaiseError("Module \"%s\" is unavailable due to lack of permission !", name)
+  if ar, ok := L.GetStack(1); ok {
+    if _, err := L.GetInfo("n", ar, lua.LNil); err == nil && ar.Name == "require" {
+      if name, ok := L.Get(1).(lua.LString); ok && len(name) > 0 {
+        L.RaiseError("Module \"%s\" unavailable due to lack of permission!", name)
+        return 0
+      }
+    }
+  }
+  L.RaiseError("Operation unavailable due to lack of permission!")
   return 0
 }

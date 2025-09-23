@@ -112,6 +112,7 @@ func main(){
           Net: config.Script.Net != nil && *config.Script.Net,
           Reg: config.Script.Reg != nil && *config.Script.Reg,
           Exec: config.Script.Exec != nil && *config.Script.Exec,
+          Import: config.Script.Import != nil && *config.Script.Import,
         }); err != nil {
           panic("Lua", err.Error())
         }
