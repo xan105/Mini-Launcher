@@ -25,7 +25,6 @@ var rootKeys = map[string]registry.Key{
 func KeyExists(root string, path string) bool {
   k, err := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE)
   defer k.Close()
-  
   if err != nil {
     return false
   } else {
@@ -36,7 +35,6 @@ func KeyExists(root string, path string) bool {
 func ListAllSubkeys(root string, path string) []string {
   k, _ := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE | registry.ENUMERATE_SUB_KEYS)
   defer k.Close()
-  
   list, _ := k.ReadSubKeyNames(-1)
   return list
 }
@@ -44,7 +42,6 @@ func ListAllSubkeys(root string, path string) []string {
 func ListAllValues(root string, path string) []string {
   k, _ := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE | registry.ENUMERATE_SUB_KEYS)
   defer k.Close()
-  
   list, _ := k.ReadValueNames(-1)
   return list
 }
@@ -92,7 +89,6 @@ func QueryMultiStringValue(root string, path string, key string) []string { //RE
   k, _ := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE)
   defer k.Close()
   list, _, _ := k.GetStringsValue(key)
-  
   return list
 }
 
@@ -100,7 +96,6 @@ func QueryBinaryValue(root string, path string, key string) []byte { //REG_BINAR
   k, _ := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE)
   defer k.Close()
   bytes, _, _ := k.GetBinaryValue(key)
-
   return bytes
 }
 
@@ -108,7 +103,6 @@ func QueryIntegerValue(root string, path string, key string) uint64 { //REG_DWOR
   k, _ := registry.OpenKey(rootKeys[strings.ToUpper(root)], filepath.FromSlash(path), registry.QUERY_VALUE)
   defer k.Close()
   i, _, _ := k.GetIntegerValue(key)
- 
   return i
 }
 

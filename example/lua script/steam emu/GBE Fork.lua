@@ -5,7 +5,9 @@ local INI = require("config/ini")
 local path = "%APPDATA%/GSE Saves/settings"
 
 local content = file.Read(path .. "/configs.user.ini")
-local steam = INI.Parse(content)
+local steam = INI.Parse(content, {
+  number = false
+})
 local update = false
 
 if not steam["user::general"] then
@@ -70,7 +72,8 @@ end
 -- Steam Loader
 
 local process = require("process")
-local steamclient = require("steamclient") -- steamclient.lua
+local steamclient = require("steamclient")
+local SteamID = require("SteamID")
 
 -- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
 -- Example: 
@@ -85,8 +88,14 @@ local steamclient = require("steamclient") -- steamclient.lua
 -- To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option in launcher.json
 
 if steamclient.hasGenuineDLL() then
+  local client = {}
+  local sid64 = steam["user::general"]["account_steamid"]
+  if sid64 ~= "" then
+    client.user = SteamID(sid64).accountid
+  end
+
   local backup = steamclient.backup()
-  steamclient.load({})
+  steamclient.load(client)
   process.On("will-quit", function() 
     steamclient.restore(backup)
   end)

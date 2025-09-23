@@ -1,0 +1,57 @@
+{
+  "menu": {
+    "F.E.A.R.": "",
+    "F.E.A.R. Extraction Point": "xp.json",
+    "F.E.A.R. Perseus Mandate": "xp2.json"
+  },
+  "bin": "First Encounter Assault Recon/FEAR.exe",
+  "env": {
+    "DSOAL_LOGLEVEL": "0",
+    "DSOAL_LOGFILE": ""
+  },
+  "script": {
+    "path": "launcher.lua",
+    "reg": true
+  },
+  "wait": true,
+  "patch": {
+    "LAA": true
+  },
+  "symlink": [
+    { 
+      "path": "%DOCUMENTS%/My Games/Monolith Productions/FEAR",
+      "dest": "%SAVEGAME%/FEAR"
+    }
+  ],
+  "prefix": {
+    "overrides": {
+      "dinput8": "native,builtin"
+    }
+  },
+  "integrity": [
+    {
+      "sri": "sha384-doh4gvVCSLwZZ1TjMi7Ytm3fPrQIkat/rEE4a+O8sw+2llBMSxtKWyZT6zxiMjzm",
+      "size": 1626112
+    },
+    {
+      "path": "First Encounter Assault Recon/dinput8.dll",
+      "sri": "sha384-nZVhClFs3FZkxy/GYnkFwIqwUtzm1QSXWGQkEQvjUbRygs5RhO+2xOO6GQe43GG6",
+      "size": 142848
+    },
+    {
+      "path": "First Encounter Assault Recon/dsound.dll",
+      "sri": "sha384-sQ+8FlRcCpH6XIlW7lfj/GpPMH3Fg/JEiZeBZJ5yZlyvmPWEDFSbYeVf204sVOma",
+      "size": 311808
+    },
+    {
+      "path": "First Encounter Assault Recon/dsoal-aldrv.dll",
+      "sri": "sha384-3Kv0NK14N4rSesVPs+p3FlYr613/xfRTvdyu1F6qQ42LJE2+mHzkNwIn7R4rvUJq",
+      "size": 1546240
+    },
+    {
+      "path": "First Encounter Assault Recon/xinput1_4.dll",
+      "sri": "sha384-cw4kHL6PZ07gHYfzIGuOAfY11+IbllKznGJY96opk9nhabITuQhZr4Vxvz5UkiX8",
+      "size": 1910784
+    }
+  ]
+}

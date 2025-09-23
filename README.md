@@ -176,7 +176,7 @@ When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 
 When enabled, will wait for the executable to terminate before exiting.
 
-### `script?: { path: string, fs, net, reg, exec?: bool }` (none)
+### `script?: { path: string, fs, net, reg, exec, import?: bool }` (none)
 
 Lua script to be run just before the executable (see **Lua Scripting** below for more details).
 
@@ -549,25 +549,6 @@ end
 ```
 
 ## 📦 Modules
-
-### `📦 Types`
-
-This is a module for type checking at runtime.
-
-```lua
-local types = require("types")
-```
-
-- `isString(value: any) bool`
-- `isNumber(value: any) bool`
-- `isSafeInteger(value: any) bool`
-- `isBoolean(value: any) bool`
-- `isNil(value: any) bool`
-- `isTable(value: any) bool`
-- `isFunction(value: any) bool`
-- `isUserData(value: any) bool`
-- `isThread(value: any) bool`
-- `isEmpty(value: any) bool`
 
 ### `📦 Regedit`
 

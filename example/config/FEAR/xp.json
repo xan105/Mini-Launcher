@@ -1,0 +1,29 @@
+{
+  "bin": "First Encounter Assault Recon/FEARXP/FEARXP.exe",
+  "integrity": [
+    {
+      "sri": "sha384-Tr6OghUoFpuNn5awyIB/CDoIMoupY7G9b9N3g9sRFZngDtSH526DAYR0TmAWtq4g",
+      "size": 9285632
+    },
+    {
+      "path": "First Encounter Assault Recon/FEARXP/dinput8.dll",
+      "sri": "sha384-nZVhClFs3FZkxy/GYnkFwIqwUtzm1QSXWGQkEQvjUbRygs5RhO+2xOO6GQe43GG6",
+      "size": 142848
+    },
+    {
+      "path": "First Encounter Assault Recon/FEARXP/dsound.dll",
+      "sri": "sha384-sQ+8FlRcCpH6XIlW7lfj/GpPMH3Fg/JEiZeBZJ5yZlyvmPWEDFSbYeVf204sVOma",
+      "size": 311808
+    },
+    {
+      "path": "First Encounter Assault Recon/FEARXP/dsoal-aldrv.dll",
+      "sri": "sha384-3Kv0NK14N4rSesVPs+p3FlYr613/xfRTvdyu1F6qQ42LJE2+mHzkNwIn7R4rvUJq",
+      "size": 1546240
+    },
+    {
+      "path": "First Encounter Assault Recon/FEARXP/xinput1_4.dll",
+      "sri": "sha384-cw4kHL6PZ07gHYfzIGuOAfY11+IbllKznGJY96opk9nhabITuQhZr4Vxvz5UkiX8",
+      "size": 1910784
+    }
+  ]
+}

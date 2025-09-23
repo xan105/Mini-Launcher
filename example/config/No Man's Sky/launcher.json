@@ -1,0 +1,70 @@
+{
+  "bin": "Binaries/NMS.exe",
+  "env": {
+    "SteamAppId": "275850",
+    "SteamGameId": "275850",
+    "SteamClientLaunch": "1",
+    "SteamEnv": "1",
+    "SteamPath": "%CURRENTDIR%\\Launcher.exe",
+    "GAMEPAD_API_XINPUT": "HOOK",
+    "ANYLUA_FILEPATH": "%CURRENTDIR%\\patch.lua"
+  },
+  "script": {
+    "path": "launcher.lua",
+    "fs": true,
+    "reg": true
+  },
+  "wait": true,
+  "addons": [
+    { "path": "Binaries/InputFusion.asi", "required": true },
+    { "path": "Binaries/AnyLua.asi", "required": true }
+  ],
+  "symlink": [
+    {
+      "path": "%APPDATA%/HelloGames/NMS",
+      "dest": "%SAVEGAME%/No Man's Sky"
+    }
+  ],
+  "shortcut": {
+    "name": "No Man's Sky",
+    "startmenu": true
+  },
+  "attrib": [
+    {
+      "path": "GAMEDATA/FullLog.txt",
+      "readonly": true
+    }
+  ],
+  "integrity": [
+    {
+      "sri": "sha384-7iKzzfcRG+OlGzlIIbvY4nYY18G5306DNNzhpuQaytFYgiUrF9moI4E1YX3dZNNQ",
+      "size": 83350016
+    },
+    {
+      "path": "Binaries/steam_api64.dll",
+      "sri": "sha384-sDhT+N8bhLlmSdY6QuoCuo0qhzXbc5fAv/4jEo4MykVofuwBh7qothtCTfAaiMXY",
+      "size": 298384,
+      "signed": true
+    },
+    {
+      "path": "Binaries/steamclient64.dll",
+      "sri": "sha384-BnU9KVh2DVsq0eMcNVCt+nDlHiBWoyyo9rO2UYRUoIx3ySVh5c609EVMaiNaBQde",
+      "size": 17849256
+    },
+    {
+      "path": "Binaries/GameOverlayRenderer64.dll",
+      "sri": "sha384-ZRnSMHuVT3aXYH8ix+K69PuH0Wr8n6gbmSsaRJLpfdXYxRB0EZkw588dQRyW7M7x",
+      "size": 1946536
+    },
+    {
+      "path": "Binaries/InputFusion.asi",
+      "sri": "sha384-IWkVWnCPbL9D/qKiV+uxMR7NZ778nR9eg3W935Om0GVpC46JjKKwKRm/wjBoSzf4",
+      "size": 2209280
+    },
+    {
+      "path": "Binaries/AnyLua.asi",
+      "sri": "sha384-ui9eZWcvT68zK2n4M4m7GggJSZ/smUypKVtU2MdTP7XovMpbC+GXWA3UWGgPasdf",
+      "size": 582656
+    }
+  ]
+}
