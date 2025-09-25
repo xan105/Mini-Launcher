@@ -39,7 +39,6 @@ jobs:
         shell: powershell
         run: |
           $name = "${{ github.repository }}" -split '/' | Select-Object -Last 1
-          Write-Output "name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
           $archivePath = ".\build\$name.7z"
 
           $tmp = ".\build\release"
@@ -62,11 +61,11 @@ jobs:
           & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"
 
           Remove-Item $tmp -Recurse -Force
-          
+
           Write-Output "filepath=$archivePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.create-archive.outputs.name }}
           path: ${{ steps.create-archive.outputs.filepath }}
+          compression-level: 0
