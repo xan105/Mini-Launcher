@@ -2,15 +2,10 @@ name: Build release on Windows
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'main'
-      - 'master'
 
 jobs:
   build-and-release:
     runs-on: windows-latest
-    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
       
