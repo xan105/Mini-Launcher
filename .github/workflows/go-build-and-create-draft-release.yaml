@@ -51,11 +51,17 @@ jobs:
             Write-Output "Using version from commit message: $version"
             Write-Output "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
+      - name: Extract repo name
+        id: repo_name
+        shell: powershell
+        run: |
+          $repoName = "${{ github.repository }}" -split '/' | Select-Object -Last 1
+          Write-Output "repo_name=$repo" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
       - name: Create 7z Archive for Release
         id: create-archive
         shell: powershell
         run: |
-          $repoName = "${{ github.repository }}" -split '/' | Select-Object -Last 1
           $archiveName = "build\$repoName.7z"
           Write-Output "Archive will be: $archiveName"
         
@@ -92,7 +98,7 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: ${{ github.repository.split('/')[1] }}
+          release_name: ${{ steps.repo_name.outputs.repo_name }}
           draft: true
           prerelease: false
         env:
@@ -103,5 +109,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.create-archive.outputs.archive }}
-          asset_name: ${{ steps.create-archive.outputs.archive | Split-Path -Leaf }}
+          asset_name: ${{ steps.repo_name.outputs.repo_name }}
           asset_content_type: application/x-7z-compressed
