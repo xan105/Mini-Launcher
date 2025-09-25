@@ -38,16 +38,14 @@ jobs:
         id: create-archive
         shell: powershell
         run: |
-          $repoName = "${{ github.repository }}" -split '/' | Select-Object -Last 1
-          $archivePath = ".\build\$repoName.7z"
-          Write-Output "Archive: $archivePath"
-        
-          # Create a temp folder
+          $name = "${{ github.repository }}" -split '/' | Select-Object -Last 1
+          Write-Output "name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          $archivePath = ".\build\$name.7z"
+
           $tmp = ".\build\release"
           Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $tmp | Out-Null
         
-          # Copy files to temp folder
           New-Item -ItemType Directory -Path $tmp\x86 | Out-Null
           Copy-Item ".\build\x86\Release\Launcher.exe" $tmp\x86 -Force
           Copy-Item ".\dist\launcher.json" $tmp\x86 -Force
@@ -61,8 +59,14 @@ jobs:
           Copy-Item ".\README.md" $tmp -Force
           Copy-Item ".\LICENSE" $tmp -Force
 
-          # Create archive
           & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"
 
-          # Clean up
           Remove-Item $tmp -Recurse -Force
+          
+          Write-Output "filepath=$archivePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.create-archive.outputs.name }}
+          path: ${{ steps.create-archive.outputs.filepath }}
