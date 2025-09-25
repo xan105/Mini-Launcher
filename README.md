@@ -595,6 +595,7 @@ local random = require("random")
 
 - `AlphaNumString(length: number) string`
 - `UserPID() number`
+- `SteamID() number`
 
 #### `AlphaNumString(length: number) string`
 
@@ -603,6 +604,10 @@ Generate a random alpha numeric string of specified length.
 #### `UserPID() number`
 
 Picks a random PID from the user-owned processes.
+
+#### `SteamID() number`
+
+Generate a random SteamID64.
 
 ### `📦 File`
 
@@ -1112,3 +1117,10 @@ Run `build.cmd` on Windows<br/>
 Run `build.sh` on Linux<br/>
 
 Output files are located in `./build/${platform}/${config}`
+
+## Github Actions
+
+- `.github/workflows/go-build-on-linux.yaml` 
+- `.github/workflows/go-build-on-windows.yaml`
+
+Produce a release artifact.

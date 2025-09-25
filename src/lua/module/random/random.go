@@ -14,6 +14,7 @@ func Loader(L *lua.LState) int {
   var exports = map[string]lua.LGFunction{
     "AlphaNumString": AlphaNumString,
     "UserPID": GetRandomUserPID,
+    "SteamID": SteamID,
   }
     
   mod := L.SetFuncs(L.NewTable(), exports)
