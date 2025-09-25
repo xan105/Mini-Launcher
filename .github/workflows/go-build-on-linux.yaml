@@ -33,7 +33,7 @@ jobs:
         run: go mod download
 
       - name: Run Linux build script
-        run: ./build.sh
+        run: chmod +x ./build.sh && ./build.sh
 
       - name: Create 7z Archive
         id: create-archive
