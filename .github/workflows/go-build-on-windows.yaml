@@ -1,0 +1,73 @@
+name: Build release on Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get Go version from go.mod
+        id: go_version
+        shell: powershell
+        run: |
+          $modPath = ".\src\go.mod"
+          $line = Get-Content $modPath | Where-Object { $_ -match '^go\s+\d' }
+          $version = ($line -split '\s+')[1]
+          Write-Output "go_version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ steps.go_version.outputs.go_version }}
+
+      - name: Install 7-Zip
+        run: choco install 7zip -y
+        
+      - name: Install go-winres
+        run: go install github.com/tc-hib/go-winres@latest
+
+      - name: Install dependencies
+        working-directory: src
+        run: go mod download
+
+      - name: Run Windows build script
+        run: .\build.cmd
+
+      - name: Create 7z Archive
+        id: create-archive
+        shell: powershell
+        run: |
+          $repoName = "${{ github.repository }}" -split '/' | Select-Object -Last 1
+          $archivePath = ".\build\$repoName.7z"
+          Write-Output "Archive: $archivePath"
+        
+          # Create a temp folder
+          $tmp = ".\build\release"
+          Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $tmp | Out-Null
+        
+          # Copy files to temp folder
+          New-Item -ItemType Directory -Path $tmp\x86 | Out-Null
+          Copy-Item ".\build\x86\Release\Launcher.exe" $tmp\x86 -Force
+          Copy-Item ".\dist\launcher.json" $tmp\x86 -Force
+          New-Item -ItemType Directory -Path $tmp\x64 | Out-Null
+          Copy-Item ".\build\x64\Release\Launcher.exe" $tmp\x64 -Force
+          Copy-Item ".\dist\launcher.json" $tmp\x64 -Force
+          New-Item -ItemType Directory -Path $tmp\lua | Out-Null
+          Copy-Item ".\dist\lua\Examples on GitHub.url" $tmp\lua -Force
+          Copy-Item ".\dist\lua\launcher.lua" $tmp\lua -Force
+          Copy-Item ".\dist\URL.url" $tmp -Force
+          Copy-Item ".\README.md" $tmp -Force
+          Copy-Item ".\LICENSE" $tmp -Force
+
+          # Create archive
+          & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"
+
+          # Clean up
+          Remove-Item $tmp -Recurse -Force
