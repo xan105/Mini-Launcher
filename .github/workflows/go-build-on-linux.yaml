@@ -46,9 +46,9 @@ jobs:
           rm -rf "$tmp"
           mkdir -p "$tmp/x86" "$tmp/x64" "$tmp/lua"
 
-          cp "./build/x86/Release/Launcher" "$tmp/x86/"
+          cp "./build/x86/Release/Launcher.exe" "$tmp/x86/"
           cp "./dist/launcher.json" "$tmp/x86/"
-          cp "./build/x64/Release/Launcher" "$tmp/x64/"
+          cp "./build/x64/Release/Launcher.exe" "$tmp/x64/"
           cp "./dist/launcher.json" "$tmp/x64/"
           cp "./dist/lua/Examples on GitHub.url" "$tmp/lua/"
           cp "./dist/lua/launcher.lua" "$tmp/lua/"
