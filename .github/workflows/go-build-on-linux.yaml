@@ -1,0 +1,69 @@
+name: Build release on Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Go version from go.mod
+        id: go_version
+        shell: bash
+        run: |
+          modPath="./src/go.mod"
+          line=$(grep '^go\s\+[0-9]' "$modPath")
+          version=$(echo $line | awk '{print $2}')
+          echo "go_version=$version" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ steps.go_version.outputs.go_version }}
+
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Install go-winres
+        run: go install github.com/tc-hib/go-winres@latest
+
+      - name: Install dependencies
+        working-directory: src
+        run: go mod download
+
+      - name: Run Linux build script
+        run: ./build.sh
+
+      - name: Create 7z Archive
+        id: create-archive
+        shell: bash
+        run: |
+          name=$(basename $GITHUB_REPOSITORY)
+          archivePath="./build/$name.7z"
+
+          tmp="./build/release"
+          rm -rf "$tmp"
+          mkdir -p "$tmp/x86" "$tmp/x64" "$tmp/lua"
+
+          cp "./build/x86/Release/Launcher" "$tmp/x86/"
+          cp "./dist/launcher.json" "$tmp/x86/"
+          cp "./build/x64/Release/Launcher" "$tmp/x64/"
+          cp "./dist/launcher.json" "$tmp/x64/"
+          cp "./dist/lua/Examples on GitHub.url" "$tmp/lua/"
+          cp "./dist/lua/launcher.lua" "$tmp/lua/"
+          cp "./dist/URL.url" "$tmp/"
+          cp "./README.md" "$tmp/"
+          cp "./LICENSE" "$tmp/"
+
+          7z a "$archivePath" "$tmp/*"
+
+          rm -rf "$tmp"
+
+          echo "filepath=$archivePath" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{ steps.create-archive.outputs.filepath }}
+          compression-level: 0
