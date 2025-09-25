@@ -52,11 +52,12 @@ jobs:
             $version = $json.RT_VERSION.'#1'.info.'0409'.FileVersion
             Write-Output "Using version from winres.json: $version"
             Write-Output "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
-          else
+          } else {
             $commit = '${{ github.event.head_commit.message }}'
             $version = $commit.Substring(1)  # remove leading 'v'
             Write-Output "Using version from commit message: $version"
             Write-Output "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          }
 
       - name: Extract repo name
         id: repo_name
