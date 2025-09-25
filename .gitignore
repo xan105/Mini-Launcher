@@ -1,4 +1,3 @@
 build/
-release/
 src/pkg/
 src/*.syso

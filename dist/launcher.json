@@ -1,0 +1,51 @@
+{
+  "bin": "path/to/string",
+  "cwd": "",
+  "args": "",
+  "env": {
+    "foo": "bar"
+  },
+  "priority": "NORMAL",
+  "hide": false,
+  "shell": false,
+  "wait": false,
+  "script": {
+    "path": "../lua/hello world.lua",
+    "fs": false,
+    "net": false,
+    "reg": false,
+    "exec": false
+  },
+  "addons": [
+    { "path": "path/to/dll/or/asi", "required": false }
+  ],
+  "splash": {
+    "show": false,
+    "image": ["path/to/bmp"],
+    "timeout": 10,
+    "wait": "FOREGROUND"
+  },
+  "symlink": [],
+  "shortcut": {
+    "name": "foo",
+    "desktop": false,
+    "startmenu": false
+  },
+  "compatibility": {
+    "fullscreen": false,
+    "admin": false,
+    "invoker": false,
+    "aware": false
+  },
+  "patch": {
+    "laa": false
+  },
+  "prefix": {
+    "winver": "win11",
+    "dpi": 192,
+    "overrides": {}
+  },
+  "attrib": [],
+  "menu": {},
+  "integrity": []
+}
