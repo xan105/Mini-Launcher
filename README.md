@@ -1100,6 +1100,8 @@ local types = require("types")
 print(types.is("string[]", {"hello", "foo", "bar"})) -- true
 ```
 
+</details>
+
 Build
 =====
 
