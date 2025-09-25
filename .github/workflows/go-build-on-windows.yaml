@@ -17,6 +17,7 @@ jobs:
           $line = Get-Content $modPath | Where-Object { $_ -match '^go\s+\d' }
           $version = ($line -split '\s+')[1]
           Write-Output "go_version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          
       - uses: actions/setup-go@v4
         with:
           go-version: ${{ steps.go_version.outputs.go_version }}
