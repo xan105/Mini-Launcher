@@ -1054,6 +1054,52 @@ Config file
 > [!TIP]
 > 🐧 Linux/Proton: you may need to set the env. var. `PROTON_DISABLE_LSTEAMCLIENT=1` _(Linux environment)_ to disable Proton Steam client bridge shenanigans, otherwise it may conflict with the `steamclient(64).dll`.
 
+### `📦 Types`
+
+This is module for type checking at runtime.
+
+```lua
+local types = require("types")
+```
+
+- `is(typestring: string, value: unknown) bool`
+- `as(typestring: string, value: unknown) unknown|nil`
+  
+  Return the given value when the condition is true otherwise nil.
+
+- `should(typestring: string, value: unknown) unknown`
+  
+  Return the given value when the condition is true otherwise raise an Error (similar to Lua's `assert()`).
+
+<details><summary>List of supported "type string":</summary>
+
+- string
+- str
+- number
+- nbr
+- int
+- integer
+- uint
+- boolean
+- bool
+- table
+- array
+- arr
+- function
+- func
+- fn
+- userdata
+- thread
+
+You can add the suffix `[]` for an array, and add a number for fixed length array.
+
+Example:
+
+```lua
+local types = require("types")
+print(types.is("string[]", {"hello", "foo", "bar"})) -- true
+```
+
 Build
 =====
 
