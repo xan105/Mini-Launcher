@@ -1120,7 +1120,7 @@ Output files are located in `./build/${platform}/${config}`
 
 ## Github Actions
 
-- `.github/workflows/go-build-on-linux.yaml` 
-- `.github/workflows/go-build-on-windows.yaml`
+- `./.github/workflows/go-build-on-linux.yaml` 
+- `./.github/workflows/go-build-on-windows.yaml`
 
-Produce a release artifact.
+Build all targets (debug and release) and create a release.

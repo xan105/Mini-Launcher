@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,9 +22,6 @@ jobs:
         with:
           go-version: ${{ steps.go_version.outputs.go_version }}
 
-      - name: Install 7-Zip
-        run: sudo apt-get update && sudo apt-get install -y p7zip-full
-
       - name: Install go-winres
         run: go install github.com/tc-hib/go-winres@latest
 
@@ -34,6 +31,29 @@ jobs:
 
       - name: Run Linux build script
         run: chmod +x ./build.sh && ./build.sh
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build/**/*.exe
+          compression-level: 0
+
+  package:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: build
+          merge-multiple: true
+          path: build
+
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
 
       - name: Create 7z Archive
         id: create-archive
@@ -62,8 +82,9 @@ jobs:
 
           echo "filepath=$archivePath" >> $GITHUB_OUTPUT
 
-      - name: Upload build artifact
+      - name: Upload release
         uses: actions/upload-artifact@v4
         with:
+          name: release
           path: ${{ steps.create-archive.outputs.filepath }}
           compression-level: 0
