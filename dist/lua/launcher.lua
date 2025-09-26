@@ -71,10 +71,6 @@ end
 
 -- Steam Loader
 
-local process = require("process")
-local steamclient = require("steamclient")
-local SteamID = require("SteamID")
-
 -- NB: You also have to set env var with `env:{key:value,...}` in launcher.json
 -- Example: 
 -- "env": {
@@ -86,6 +82,10 @@ local SteamID = require("SteamID")
 -- }
 -- You need to use option `wait: true` in launcher.json if you want to restore modified values on game exit
 -- To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option in launcher.json
+
+local process = require("process")
+local steamclient = require("steamclient")
+local SteamID = require("SteamID")
 
 if steamclient.hasGenuineDLL() then
   local client = {}

@@ -14,7 +14,8 @@
     "fs": false,
     "net": false,
     "reg": false,
-    "exec": false
+    "exec": false,
+    "import": false
   },
   "addons": [
     { "path": "path/to/dll/or/asi", "required": false }
