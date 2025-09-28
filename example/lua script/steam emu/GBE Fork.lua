@@ -87,16 +87,16 @@ local SteamID = require("SteamID")
 -- You need to use option `wait: true` in launcher.json if you want to restore modified values on game exit
 -- To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option in launcher.json
 
-if steamclient.hasGenuineDLL() then
+if steamclient.HasGenuineDLL() then
   local client = {}
   local sid64 = steam["user::general"]["account_steamid"]
   if sid64 ~= "" then
     client.user = SteamID(sid64).accountid
   end
 
-  local backup = steamclient.backup()
-  steamclient.load(client)
+  local backup = steamclient.Backup()
+  steamclient.Load(client)
   process.On("will-quit", function() 
-    steamclient.restore(backup)
+    steamclient.Restore(backup)
   end)
  end
