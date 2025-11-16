@@ -10,6 +10,7 @@ import(
   "slices"
   "strings"
   "launcher/internal/regedit"
+  "launcher/internal/wine"
 )
 
 func setCompatFlags(binary string, flags CompatFlags) {
@@ -63,7 +64,7 @@ func setCompatFlags(binary string, flags CompatFlags) {
 
 func updatePrefixSettings(prefix WinePrefix) {
 
-  if !regedit.KeyExists("HCKU", "HKCU/Software/Wine") { return }
+  if !wine.IsWineOrProton() { return }
 
   if len(prefix.WinVer) > 0 {
     versions := []string{

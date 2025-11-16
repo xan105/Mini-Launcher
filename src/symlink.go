@@ -12,7 +12,7 @@ import(
   "golang.org/x/sys/windows"
   "launcher/internal/fs"
   "launcher/internal/expand"
-  "launcher/internal/regedit"
+  "launcher/internal/wine"
   "launcher/internal/elevated"
 )
 
@@ -27,7 +27,7 @@ func makeLink(links []Link) {
         if err != nil {
           if linkErr, ok := err.(*os.LinkError); ok {
             if linkErr.Op == "symlink" {
-              if !regedit.KeyExists("HCKU", "HKCU/Software/Wine") { //We don't do that here
+              if !wine.IsWineOrProton() { //We don't do that here
                 if errors.Is(linkErr.Err, windows.Errno(windows.ERROR_ACCESS_DENIED)) || 
                   errors.Is(linkErr.Err, windows.Errno(windows.ERROR_PRIVILEGE_NOT_HELD)) { 
                   if !elevated.IsElevated(){
