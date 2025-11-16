@@ -65,6 +65,7 @@ Config file
     path: string, 
     required?: bool
   },
+  suspended?: bool,
   integrity?: []{
     sri: string, 
     path?: string, 
@@ -222,6 +223,12 @@ Example:
 
 > [!IMPORTANT]
 > This launcher does not support Wow64 injection so make sure the launcher, the executable and the addon are all the same arch (x86 or x64).
+
+### `suspended?: bool (false)`
+
+When enabled, the main thread of the executable process is created in a suspended state and does not run until resumed.
+
+The main thread will be automatically resumed after addons are injected to the executable process (see `addons` option above).
 
 ### `integrity?: []{sri: string, path?: string, size?: number, signed?: bool}` (none)
 
@@ -995,9 +1002,10 @@ These utilities can be used to create what is often referred to as a _"Steam loa
 local steamclient = require("steamclient")
 ```
 
-- `HasGenuineDLL() bool`
+- `HasGenuineDLL(root?: string) bool`
 
-  Recursively search, within the launcher's current working directory, for the presence of genuine (signed) `steam_api(64).dll`.
+  Recursively search, within the specified root directory, for the presence of genuine (signed) `steam_api(64).dll`.
+  If omitted then the launcher's current working directory is used.
   
 - `Backup() table`
 
