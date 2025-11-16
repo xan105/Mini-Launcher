@@ -11,16 +11,16 @@ import (
   "golang.org/x/sys/windows"
 )
 
-func GetPriorityClass(priority string) uint32 {
+var PRIORITY_CLASS = map[string]uint32{
+  "IDLE":          windows.IDLE_PRIORITY_CLASS,
+  "BELOW_NORMAL":  windows.BELOW_NORMAL_PRIORITY_CLASS,
+  "NORMAL":        windows.NORMAL_PRIORITY_CLASS,
+  "ABOVE_NORMAL":  windows.ABOVE_NORMAL_PRIORITY_CLASS,
+  "HIGH":          windows.HIGH_PRIORITY_CLASS,
+  "REALTIME":      windows.REALTIME_PRIORITY_CLASS,
+}
 
-  var PRIORITY_CLASS = map[string]uint32{
-    "IDLE":          windows.IDLE_PRIORITY_CLASS,
-    "BELOW_NORMAL":  windows.BELOW_NORMAL_PRIORITY_CLASS,
-    "NORMAL":        windows.NORMAL_PRIORITY_CLASS,
-    "ABOVE_NORMAL":  windows.ABOVE_NORMAL_PRIORITY_CLASS,
-    "HIGH":          windows.HIGH_PRIORITY_CLASS,
-    "REALTIME":      windows.REALTIME_PRIORITY_CLASS,
-  }
+func GetPriorityClass(priority string) uint32 {
 
   if code, found := PRIORITY_CLASS[strings.ToUpper(priority)]; found {
     return code

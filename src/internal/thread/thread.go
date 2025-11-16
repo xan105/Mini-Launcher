@@ -98,3 +98,56 @@ func CreateRemoteThread(pid int, path string) error {
 
   return nil
 }
+
+func ResumeThread(tid uint32) error {
+
+  hThread, err := windows.OpenThread(windows.THREAD_SUSPEND_RESUME, false, tid)
+  if err != nil {
+    return err
+  }
+  defer windows.CloseHandle(windows.Handle(hThread))
+
+  if _, err := windows.ResumeThread(hThread); err != nil {
+    return err
+  }
+  
+  windows.WaitForSingleObject(windows.Handle(hThread), windows.INFINITE)
+  
+  return nil
+}
+
+func ResumeMainThread(pid int) error {
+
+  /*
+  It is worth mentioning that this function resume the first thread found of the specified process.
+  Which _should_ be the main thread. But technically this is not _"correct"_.
+  
+  Why using `CreateToolhelp32Snapshot()` then you might ask?
+  Long story short, this is because `os/exec` does not return the handle of the main thread from `CreateProcessW()`.
+  And for once, I didn't feel like re-inventing the wheel, ie: doing my own os/exec and/or wrapper of `CreateProcessW()`, 
+  just to be able to create a suspended process and resume it.
+  */
+
+  hSnapshot, err := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPTHREAD, uint32(pid))
+  if err != nil {
+    return err
+  }
+  defer windows.CloseHandle(windows.Handle(hSnapshot))
+
+  var entry windows.ThreadEntry32
+  entry.Size = uint32(unsafe.Sizeof(entry))
+  if err := windows.Thread32First(hSnapshot, &entry); err != nil {
+    return err
+  }
+
+  for
+  {
+    if err := windows.Thread32Next(hSnapshot, &entry); err != nil {
+      return err
+    }
+    
+    if entry.OwnerProcessID == uint32(pid) && entry.ThreadID != 0 {
+      return ResumeThread(entry.ThreadID)
+    }
+  }
+}

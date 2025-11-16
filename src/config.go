@@ -78,6 +78,7 @@ type Config struct {
   Hide            *bool               `json:"hide"`
   Shell           *bool               `json:"shell"`
   Wait            *bool               `json:"wait"`
+  Suspended       *bool               `json:"suspended"`
   Script          Script              `json:"script"`
   Addons          []Addon             `json:"addons"`
   Integrity       []File              `json:"integrity"`
@@ -103,6 +104,7 @@ func mergeConfig(config *Config, override *Config) {
   if override.Hide != nil { config.Hide = override.Hide }
   if override.Shell != nil { config.Shell = override.Shell }
   if override.Wait != nil { config.Wait = override.Wait }
+  if override.Suspended != nil { config.Suspended = override.Suspended }
   
   //map
   if len(override.Env) > 0 {

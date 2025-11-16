@@ -12,10 +12,12 @@ import(
   "strings"
   "syscall"
   "path/filepath"
+  "golang.org/x/sys/windows"
   "launcher/lua"
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/priority"
+  "launcher/internal/thread"
 )
 
 func buildCommand(binary string, config Config) *exec.Cmd {
@@ -35,11 +37,8 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     }
     last := len(argv)-1
     argv[last] = argv[last] + "\""
-    
-    cmd.SysProcAttr = &syscall.SysProcAttr{ 
-      CmdLine: strings.Join(argv, " "),
-      HideWindow: config.Hide != nil && *config.Hide,
-      CreationFlags: priority.GetPriorityClass(config.Priority),
+    cmd.SysProcAttr = &syscall.SysProcAttr{
+      CmdLine: strings.Join(argv, " "), //verbatim arguments
     }
   } else {
     cmd = exec.Command(binary)
@@ -47,12 +46,18 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     if len(config.Args) > 0 {
       argv = append(argv, expand.ExpandVariables(config.Args))
     }
-    cmd.SysProcAttr = &syscall.SysProcAttr{ 
+    cmd.SysProcAttr = &syscall.SysProcAttr{
       CmdLine: strings.Join(argv, " "), //verbatim arguments
-      HideWindow: config.Hide != nil && *config.Hide,
-      CreationFlags: priority.GetPriorityClass(config.Priority),
     }
   }
+    
+  flags := priority.GetPriorityClass(config.Priority)
+  if config.Suspended != nil && *config.Suspended {
+    flags = flags | windows.CREATE_SUSPENDED
+  }
+  
+  cmd.SysProcAttr.CreationFlags = flags
+  cmd.SysProcAttr.HideWindow = config.Hide != nil && *config.Hide
   
   cmd.Dir = filepath.Dir(binary)
   if len(config.Cwd) > 0 {
@@ -138,6 +143,14 @@ func main(){
   }
   
   loadAddons(binary, cmd.Process, config.Addons)
+  
+  if config.Suspended != nil && *config.Suspended {
+    if err := thread.ResumeMainThread(cmd.Process.Pid); err != nil {
+      cmd.Process.Kill()
+      panic("Launcher", "Failed to resume process main thread: " + err.Error())
+    }
+  }
+
   displaySplash(cmd.Process.Pid, config.Splash)
   
   if config.Wait != nil && *config.Wait {
