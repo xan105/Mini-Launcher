@@ -8,11 +8,14 @@ local process = require("process")
 
 local steamclient = {}
 
-function steamclient.HasGenuineDLL()
+function steamclient.HasGenuineDLL(root)
+  root = root or process.Cwd()
+  assert(type(root) == "string" and root ~= "", "Expected a non-empty string!")
+  
   local dlls = {"steam_api64.dll", "steam_api.dll"}
   for _, dll in ipairs(dlls) do
-    local path = file.Glob(process.Cwd(), dll, { recursive = true })
-    if path[1] ~= "" then
+    local path = file.Glob(root, dll, { recursive = true })
+    if path[1] and path[1] ~= "" then
       local info = file.Info(path[1])
       return info.signed
     end
@@ -67,10 +70,11 @@ function steamclient.Load(client)
       absolute = true
     })
     for _, path in ipairs(paths) do
-      local info = file.Info(path)
-      if not info.signed then
-        client.dll = path
-        break
+        local info = file.Info(path)
+        if not info.signed then
+          client.dll = path
+          break
+        end
       end
     end
   end
