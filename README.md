@@ -2,7 +2,7 @@ About
 =====
 
 <p align="center">
-  <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png"/>
+  <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png" width="384" height="256"/>
   <br/><em>To the moon with Go + Lua ✨</em>
 </p>
 
