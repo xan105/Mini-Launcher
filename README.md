@@ -2,8 +2,7 @@ About
 =====
 
 <p align="center">
-  <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png"/>
-  <br/><em>To the moon with Go + Lua ✨</em>
+  <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png" width="384" height="256"/>
 </p>
 
 Mini-Launcher is a CLI application launcher with various gaming-related features.
@@ -36,13 +35,13 @@ Command Line
 File path to the json configuration file to use. Defaults to `launcher.json`.<br />
 Path can be absolute or relative (to the current working dir)
 
-### `--dry-run` (false)
+### `--dry-run`
 
 Program will exit before starting the executable.
 
 💡 This flag can come in handy when testing Lua Script.
 
-### `--help` (false)
+### `--help`
 
 Display a message box with all the command line arguments and a short description.
 
