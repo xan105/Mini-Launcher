@@ -79,6 +79,7 @@ type Config struct {
   Shell           *bool               `json:"shell"`
   Wait            *bool               `json:"wait"`
   Suspended       *bool               `json:"suspended"`
+  Affinity        []uint              `json:"affinity"`
   Script          Script              `json:"script"`
   Addons          []Addon             `json:"addons"`
   Integrity       []File              `json:"integrity"`
@@ -111,11 +112,12 @@ func mergeConfig(config *Config, override *Config) {
     for k, v := range override.Env { config.Env[k] = v }
   }
   
-  //[]struct
+  //Array
   if override.Addons != nil && len(override.Addons) > 0 { config.Addons = override.Addons }
   if override.Integrity != nil && len(override.Integrity) > 0 { config.Integrity = override.Integrity }
   if override.Symlink != nil && len(override.Symlink) > 0 { config.Symlink = override.Symlink }
   if override.Attrib != nil && len(override.Attrib) > 0 { config.Attrib = override.Attrib }
+  if override.Affinity != nil && len(override.Affinity) > 0 { config.Affinity = override.Affinity }
   
   //Nested
   if len(override.Script.Path) > 0 { config.Script.Path = override.Script.Path }

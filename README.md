@@ -5,7 +5,7 @@ About
   <img src="https://github.com/xan105/Mini-Launcher/raw/main/banner.png" width="384" height="256"/>
 </p>
 
-Mini-Launcher is a CLI application launcher with various gaming-related features. <br />
+Mini-Launcher is an application launcher with various gaming-related features. <br />
 I built this tool as part of my personal game preservation efforts.
 
 Here is a highlight of its features:
@@ -90,6 +90,7 @@ _Example:_
     required?: bool
   },
   suspended?: bool,
+  affinity?: []number,
   integrity?: []{
     sri: string, 
     path?: string, 
@@ -216,14 +217,11 @@ end)
 
 ### `script?: { path: string, fs, net, reg, exec, import?: bool }` (none)
 
-Lua script to be run just before the executable.
+Lua script to be run just before the executable.<br />
+See the `./example` directory for some examples.
 
 Originally this feature was for handling CD Key generation in old games.<br />
 The Lua API has since become quite extensive, so please kindly see the **Lua Scripting** section below for more details.
-
-It is quite handy for dealing with old games that requires a bunch of mods to function properly.
-
-See the `./example` directory for some examples.
 
 - `path: string`
 
@@ -271,14 +269,51 @@ Example:
 > [!IMPORTANT]
 > This launcher does not support Wow64 injection so make sure the launcher, the executable and the addon are all the same arch (x86 or x64).
 
-### `suspended?: bool (false)`
+### `suspended?: bool` (false)
 
 When enabled, the main thread of the executable process is created in a suspended state and does not run until resumed.
 
-The main thread will be automatically resumed after addons are injected to the executable process (see `addons` option above).
+The main thread will be automatically resumed after the process affinity and addons injection steps.
 
 > [!TIP]
 > Some addons may require the executable to be started in such state in order to function properly.
+
+### `affinity?: []number` (none)
+
+Set the CPU affinity (pinning to specific cores).<br />
+CPU indices are **logical** cores, exactly as shown in Windows' Task Manager.
+
+> [!IMPORTANT] 
+> This option requires the `suspended` option to be enabled (see above) otherwise it is skipped!.
+
+Process affinity is set before any addons injection occurs to ensure that all threads are pinned to the specified logical cores.
+
+Examples:
+
+Pinning to the first core
+
+```json
+{
+  "affinity": [0]
+}
+```
+
+Pinning to the 3rd and 4th cores
+
+```json
+{
+  "affinity": [2, 3]
+}
+```
+
+**When should I use this?**
+
+Some games behave better when restricted to specific CPU cores:
+
+  - Old games not designed for multi-core CPUs (ex: extreme gameplay speed on multi-core CPUs).
+  - Games that stutter or misbehave on modern systems.
+  
+⚠️ Most games do not need this option, use it only when required.
 
 ### `integrity?: []{sri: string, path?: string, size?: number, signed?: bool}` (none)
 

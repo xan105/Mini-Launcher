@@ -17,6 +17,7 @@ import(
   "launcher/internal/fs"
   "launcher/internal/expand"
   "launcher/internal/priority"
+  "launcher/internal/affinity"
   "launcher/internal/thread"
 )
 
@@ -140,6 +141,14 @@ func main(){
   
   if err := cmd.Start(); err != nil { 
     panic("Launcher", err.Error()) 
+  }
+  
+  if config.Suspended != nil && *config.Suspended {
+    if config.Affinity != nil && len(config.Affinity) > 0 {
+      if err := affinity.SetProcessAffinity(cmd.Process.Pid, config.Affinity); err != nil {
+        alert("Launcher", "Failed to set process affinity: " + err.Error())
+      }
+    }
   }
   
   loadAddons(binary, cmd.Process, config.Addons)
