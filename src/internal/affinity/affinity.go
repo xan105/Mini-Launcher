@@ -36,8 +36,8 @@ func SetProcessAffinity(pid int, logicalCores []uint) error {
     uintptr(hProcess), 
     mask,
   )
-	if ret == 0 {
-		return err
-	}
-	return nil
+  if ret == 0 {
+    return err
+  }
+  return nil
 }
