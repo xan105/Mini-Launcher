@@ -60,6 +60,11 @@ _Example:_
   ],
   "patch": {
     "laa": true
+  },
+  "prefix": {
+    "overrides": {
+      "xinput1_3": "native,builtin"
+    }
   }
 }
 ```
