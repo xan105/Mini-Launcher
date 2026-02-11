@@ -63,25 +63,25 @@ jobs:
           $archivePath = ".\build\$name.7z"
 
           $tmp = ".\build\release"
-          Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Path $tmp | Out-Null
+          Remove-Item "$tmp" -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path "$tmp" | Out-Null
         
-          New-Item -ItemType Directory -Path $tmp\x86 | Out-Null
-          Copy-Item ".\build\x86\Release\Launcher.exe" $tmp\x86 -Force
-          Copy-Item ".\dist\launcher.json" $tmp\x86 -Force
-          New-Item -ItemType Directory -Path $tmp\x64 | Out-Null
-          Copy-Item ".\build\x64\Release\Launcher.exe" $tmp\x64 -Force
-          Copy-Item ".\dist\launcher.json" $tmp\x64 -Force
-          New-Item -ItemType Directory -Path $tmp\lua | Out-Null
-          Copy-Item ".\dist\lua\Examples on GitHub.url" $tmp\lua -Force
-          Copy-Item ".\example\lua script\" $tmp\lua -Force
-          Copy-Item ".\dist\URL.url" $tmp -Force
-          Copy-Item ".\README.md" $tmp -Force
-          Copy-Item ".\LICENSE" $tmp -Force
+          New-Item -ItemType Directory -Path "$tmp\x86" | Out-Null
+          Copy-Item ".\build\x86\Release\Launcher.exe" "$tmp\x86" -Force
+          Copy-Item ".\dist\launcher.json" "$tmp\x86" -Force
+          New-Item -ItemType Directory -Path "$tmp\x64" | Out-Null
+          Copy-Item ".\build\x64\Release\Launcher.exe" "$tmp\x64" -Force
+          Copy-Item ".\dist\launcher.json" "$tmp\x64" -Force
+          New-Item -ItemType Directory -Path "$tmp\lua" | Out-Null
+          Copy-Item ".\dist\lua\Examples on GitHub.url" "$tmp\lua" -Force
+          Copy-Item ".\example\lua script\" "$tmp\lua" -Recurse -Force
+          Copy-Item ".\dist\URL.url" "$tmp" -Force
+          Copy-Item ".\README.md" "$tmp" -Force
+          Copy-Item ".\LICENSE" "$tmp" -Force
 
           & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"
 
-          Remove-Item $tmp -Recurse -Force
+          Remove-Item "$tmp" -Recurse -Force
 
           Write-Output "filepath=$archivePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
