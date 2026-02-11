@@ -16,6 +16,7 @@ Here is a highlight of its features:
   - Large Address Aware patching
   - Setting environment variables and arguments with expanding variables
   - Setting compatibility flags or Wine/Proton prefix options
+  - Set process priority and affinity (pin to specific cores)
 
 🐧 This software has an emphasis on being compatible with Linux/Proton.
   
