@@ -20,6 +20,8 @@
   "addons": [
     { "path": "path/to/dll/or/asi", "required": false }
   ],
+  "suspended": false,
+  "affinity": [],
   "splash": {
     "show": false,
     "image": ["path/to/bmp"],

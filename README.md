@@ -280,13 +280,11 @@ The main thread will be automatically resumed after the process affinity and add
 
 ### `affinity?: []number` (none)
 
-Set the CPU affinity (pin to specific cores).<br />
-CPU indices are **logical** cores, exactly as shown in Windows' Task Manager.
-
 > [!IMPORTANT] 
 > This option requires the `suspended` option to be enabled (see above) otherwise it is skipped!.
 
-Process affinity is set before any addons injection occurs to ensure that all threads are pinned to the specified logical cores.
+Set the CPU affinity (pin to specific cores).<br />
+CPU indices are **logical** cores, exactly as shown in Windows' Task Manager.
 
 Examples:
 
@@ -305,6 +303,8 @@ Pinning to the 3rd and 4th cores
   "affinity": [2, 3]
 }
 ```
+
+Process affinity is set before any addons injection occurs to ensure that all threads are pinned to the specified logical cores.
 
 **When should I use this?**
 

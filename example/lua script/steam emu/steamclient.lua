@@ -2,6 +2,10 @@
 -- This source code is licensed under the MIT License
 -- found in the LICENSE file in the root directory of this source tree.
 
+-- This is now integrated into the Launcher:
+-- local steamclient = require("steamclient")
+-- cf: https://github.com/xan105/Mini-Launcher#-steam-client
+
 local file = require("file")
 local regedit = require("regedit")
 local process = require("process")
@@ -12,7 +16,7 @@ function steamclient.HasGenuineDLL()
   local dlls = {"steam_api64.dll", "steam_api.dll"}
   for _, dll in ipairs(dlls) do
     local path = file.Glob(process.Cwd(), dll, { recursive = true })
-    if path[1] ~= "" then
+    if path[1] and path[1] ~= "" then
       local info = file.Info(path[1])
       return info.signed
     end
