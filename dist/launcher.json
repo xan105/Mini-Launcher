@@ -1,7 +1,7 @@
 {
-  "bin": "path/to/string",
-  "cwd": "",
-  "args": "",
+  "bin": "path/to/executable.exe",
+  "cwd": "path/",
+  "args": "--foo --bar --dir=\"%SAVEGAME%\" --xres=%SCREENWIDTH% --yres=%SCREENHEIGHT%",
   "env": {
     "foo": "bar"
   },
@@ -21,14 +21,19 @@
     { "path": "path/to/dll/or/asi", "required": false }
   ],
   "suspended": false,
-  "affinity": [],
+  "affinity": [0, 1, 2, 3],
   "splash": {
     "show": false,
     "image": ["path/to/bmp"],
     "timeout": 10,
     "wait": "FOREGROUND"
   },
-  "symlink": [],
+  "symlink": [
+    {
+      "path": "%DOCUMENTS%/My Games",
+      "dest": "%SAVEGAME%"
+    }
+  ],
   "shortcut": {
     "name": "foo",
     "desktop": false,
@@ -44,11 +49,26 @@
     "laa": false
   },
   "prefix": {
-    "winver": "win11",
-    "dpi": 192,
-    "overrides": {}
+    "winver": "win10",
+    "dpi": 96,
+    "overrides": {
+      "dinput8": "native,builtin"
+    }
   },
-  "attrib": [],
-  "menu": {},
-  "integrity": []
+  "attrib": [
+    { "path": "config.ini", "readonly": true }
+  ],
+  "menu": {
+    "Mass Effect": "me.json",
+    "Mass Effect 2": "me2.json",
+    "Mass Effect 3": "me3.json"
+  },
+  "integrity": [
+    {
+      "path": "some/file",
+      "sri": "sha384-ABC...DEF",
+      "size": 42,
+      "signed": false
+    }
+  ]
 }
