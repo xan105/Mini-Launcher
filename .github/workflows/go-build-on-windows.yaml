@@ -74,7 +74,7 @@ jobs:
           Copy-Item ".\dist\launcher.json" "$tmp\x64" -Force
           New-Item -ItemType Directory -Path "$tmp\lua" | Out-Null
           Copy-Item ".\dist\lua\Examples on GitHub.url" "$tmp\lua" -Force
-          Copy-Item ".\example\lua script\" "$tmp\lua" -Recurse -Force
+          Copy-Item ".\example\lua script\*" "$tmp\lua\" -Recurse -Force
           Copy-Item ".\dist\URL.url" "$tmp" -Force
           Copy-Item ".\README.md" "$tmp" -Force
           Copy-Item ".\LICENSE" "$tmp" -Force

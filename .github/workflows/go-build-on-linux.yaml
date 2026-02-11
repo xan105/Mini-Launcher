@@ -71,7 +71,7 @@ jobs:
           cp "./build/x64/Release/Launcher.exe" "$tmp/x64/"
           cp "./dist/launcher.json" "$tmp/x64/"
           cp "./dist/lua/Examples on GitHub.url" "$tmp/lua/"
-          cp -r "./example/lua script/" "$tmp/lua/"
+          cp -r "./example/lua script"/* "$tmp/lua/"
           cp "./dist/URL.url" "$tmp/"
           cp "./README.md" "$tmp/"
           cp "./LICENSE" "$tmp/"
