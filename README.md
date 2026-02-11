@@ -280,7 +280,7 @@ The main thread will be automatically resumed after the process affinity and add
 
 ### `affinity?: []number` (none)
 
-Set the CPU affinity (pinning to specific cores).<br />
+Set the CPU affinity (pin to specific cores).<br />
 CPU indices are **logical** cores, exactly as shown in Windows' Task Manager.
 
 > [!IMPORTANT] 
@@ -1205,7 +1205,7 @@ print(types.is("string[]", {"hello", "foo", "bar"})) -- true
 Build
 =====
 
-- Golang v1.25.x
+- Golang v1.26.x
 - [go-winres](https://github.com/tc-hib/go-winres) installed in `%PATH%` env var for win32 manifest & cie
 
 Run `build.cmd` on Windows<br/>
