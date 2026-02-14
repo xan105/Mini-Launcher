@@ -77,7 +77,6 @@ function steamclient.Load(client)
         end
       end
     end
-  end
 
   if not client.dll64 ~= "" then
     local paths = file.Glob(process.Cwd(), "steamclient64.dll", {
