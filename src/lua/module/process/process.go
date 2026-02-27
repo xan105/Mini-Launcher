@@ -12,7 +12,7 @@ import (
   "github.com/yuin/gopher-lua"
 )
 
-var EventRegistry = make(map[string]*lua.LFunction)
+var EventRegistry = map[string][]*lua.LFunction{}
 
 func Loader(L *lua.LState) int {
 
@@ -33,7 +33,7 @@ func On(L *lua.LState) int {
   name     := L.CheckString(1)
   callback := L.CheckFunction(2)
 
-  EventRegistry[name] = callback
+  EventRegistry[name] = append(EventRegistry[name], callback)
   return 0
 }
 
