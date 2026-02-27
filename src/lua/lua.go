@@ -8,6 +8,7 @@ package lua
 
 import (
   "github.com/yuin/gopher-lua"
+  "launcher/lua/util"
   "launcher/lua/type/failure"
   "launcher/lua/global"
   "launcher/lua/global/array"
@@ -40,7 +41,7 @@ type Permissions struct {
 
 var L *lua.LState
 
-var EventRegistry = map[string]map[string]*lua.LFunction{ 
+var EventRegistry = map[string]map[string][]*lua.LFunction{
   "process": process.EventRegistry,
 }
 
@@ -149,17 +150,32 @@ func CloseLua() {
   }
 }
 
-func TriggerEvent(module string, event string) error {
+func TriggerEvent(module string, event string, args ...any) error {
   if L == nil { return nil }
   
   events, exists := EventRegistry[module]
   if !exists { return nil }
   
-  callback, exists := events[event]
+  callbacks, exists := events[event]
   if !exists { return nil }
   
-  L.Push(callback)
-  return L.PCall(0, 0, nil)
+  values := make([]lua.LValue, 0, len(args))
+  for _, arg := range args {
+    values = append(values, util.ToLuaValue(L, arg))
+  }
+  
+  for _, cb := range callbacks {
+    L.Push(cb)
+    for _, value := range values {
+      L.Push(value)
+    }
+
+    if err := L.PCall(len(values), 0, nil); err != nil {
+      return err
+    }
+  }
+  
+  return nil
 }
 
 func permissionStub(L *lua.LState) int {

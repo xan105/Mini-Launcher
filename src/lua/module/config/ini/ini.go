@@ -9,7 +9,7 @@ package ini
 import (
   "github.com/yuin/gopher-lua"
   "launcher/internal/ini"
-  "launcher/lua/module/config"
+  "launcher/lua/util"
 )
 
 func Loader(L *lua.LState) int {
@@ -68,7 +68,7 @@ func Parse(L *lua.LState) int {
   }
 
   data := ini.Parse(iniStr, &options)
-  luaTable := config.ToLuaTable(L, data)
+  luaTable := util.ToLuaTable(L, data)
   L.Push(luaTable)
   return 1
 }
@@ -103,7 +103,7 @@ func Stringify(L *lua.LState) int {
     })
   }
 
-  data := config.ToGoMap(luaTable)
+  data := util.ToGoMap(luaTable)
   iniStr := ini.Stringify(data, &options)
   L.Push(lua.LString(iniStr))
   return 1

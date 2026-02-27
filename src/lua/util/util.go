@@ -4,23 +4,47 @@ This source code is licensed under the MIT License
 found in the LICENSE file in the root directory of this source tree.
 */
 
-package config
+package util
 
 import (
   "github.com/yuin/gopher-lua"
 )
 
-func ToLuaValue(L *lua.LState, value interface{}) lua.LValue {
+func ToLuaValue(L *lua.LState, value any) lua.LValue {
+// All Go numeric types are converted to lua.LNumber (float64)
+// Large integers may lose precision
   switch v := value.(type) {
     case string:
       return lua.LString(v)
     case bool:
       return lua.LBool(v)
+    case int:
+      return lua.LNumber(v)
+    case int8:
+      return lua.LNumber(v)
+    case int16:
+      return lua.LNumber(v)
+    case int32:
+      return lua.LNumber(v)
+    case int64:
+      return lua.LNumber(v)
+    case uint:
+      return lua.LNumber(v)
+    case uint8:
+      return lua.LNumber(v)
+    case uint16:
+      return lua.LNumber(v)
+    case uint32:
+      return lua.LNumber(v)
+    case uint64:
+      return lua.LNumber(v)
+    case float32:
+      return lua.LNumber(v)
     case float64:
       return lua.LNumber(v)
-    case map[string]interface{}:
+    case map[string]any:
       return ToLuaTable(L, v)
-    case []interface{}:
+    case []any:
       arrayTable := L.NewTable()
       for i, item := range v {
         arrayTable.RawSetInt(i+1, ToLuaValue(L, item))
@@ -31,13 +55,13 @@ func ToLuaValue(L *lua.LState, value interface{}) lua.LValue {
   }
 }
 
-func ToLuaTable(L *lua.LState, data map[string]interface{}) *lua.LTable {
+func ToLuaTable(L *lua.LState, data map[string]any) *lua.LTable {
   table := L.NewTable()
   for key, value := range data {
     switch v := value.(type) {
-      case map[string]interface{}:
+      case map[string]any:
         table.RawSetString(key, ToLuaTable(L, v))
-      case []interface{}:
+      case []any:
         arrayTable := L.NewTable()
         for i, item := range v {
           arrayTable.RawSetInt(i+1, ToLuaValue(L, item))
@@ -50,8 +74,8 @@ func ToLuaTable(L *lua.LState, data map[string]interface{}) *lua.LTable {
   return table
 }
 
-func ToGoMap(luaTable *lua.LTable) map[string]interface{} {
-  data := make(map[string]interface{})
+func ToGoMap(luaTable *lua.LTable) map[string]any {
+  data := make(map[string]any)
   luaTable.ForEach(func(key lua.LValue, value lua.LValue) {
     switch v := value.(type) {
     case *lua.LTable:

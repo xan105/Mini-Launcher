@@ -9,7 +9,7 @@ package xml
 import (
   "github.com/clbanning/mxj/v2"
   "github.com/yuin/gopher-lua"
-  "launcher/lua/module/config"
+  "launcher/lua/util"
   "launcher/lua/type/failure"
 )
 
@@ -34,7 +34,7 @@ func Parse(L *lua.LState) int {
     return 2
   }
 
-  luaTable := config.ToLuaTable(L, data)
+  luaTable := util.ToLuaTable(L, data)
   L.Push(luaTable)
   return 1
 }
@@ -51,7 +51,7 @@ func Stringify(L *lua.LState) int {
     indent = "  "
   }
   
-  data := config.ToGoMap(luaTable)
+  data := util.ToGoMap(luaTable)
   m := mxj.Map(data)
   
   xmlBytes, err := m.XmlIndent("", indent)

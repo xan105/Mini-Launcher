@@ -9,7 +9,7 @@ package yaml
 import (
   "gopkg.in/yaml.v3"
   "github.com/yuin/gopher-lua"
-  "launcher/lua/module/config"
+  "launcher/lua/util"
   "launcher/lua/type/failure"
 )
 
@@ -27,14 +27,14 @@ func Loader(L *lua.LState) int {
 func Parse(L *lua.LState) int {
   yamlStr := L.CheckString(1)
 
-  var data map[string]interface{}
+  var data map[string]any
   if err := yaml.Unmarshal([]byte(yamlStr), &data); err != nil {
     L.Push(lua.LNil)
     L.Push(failure.LValue(L, "ERR_YAML_PARSE", err.Error()))
     return 2
   }
 
-  luaTable := config.ToLuaTable(L, data)
+  luaTable := util.ToLuaTable(L, data)
   L.Push(luaTable)
   return 1
 }
@@ -42,7 +42,7 @@ func Parse(L *lua.LState) int {
 func Stringify(L *lua.LState) int {
   luaTable := L.CheckTable(1)
 
-  data := config.ToGoMap(luaTable)
+  data := util.ToGoMap(luaTable)
   yamlBytes, err := yaml.Marshal(data)
   if err != nil {
     L.Push(lua.LNil)
