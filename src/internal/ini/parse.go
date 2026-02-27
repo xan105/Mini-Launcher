@@ -24,7 +24,7 @@ type ParserOptions struct {
   Number    bool
 }
 
-func translate(value string, options *ParserOptions) interface{} {
+func translate(value string, options *ParserOptions) any {
   
   if options.Unquote && len(value) > 2 {
     first := value[0]
@@ -56,7 +56,7 @@ func translate(value string, options *ParserOptions) interface{} {
   return value
 }
 
-func Parse(data string, options *ParserOptions) map[string]interface{} {
+func Parse(data string, options *ParserOptions) map[string]any {
 
   if options == nil {
     options = &ParserOptions{
@@ -89,9 +89,9 @@ func Parse(data string, options *ParserOptions) map[string]interface{} {
         ignore = slices.Contains(options.Filter, name)
         if !ignore {
           if _, exists := result[name]; !exists {
-            result[name] = make(map[string]interface{})
+            result[name] = make(map[string]any)
           }
-          section = result[name].(map[string]interface{})
+          section = result[name].(map[string]any)
         }
       } else { 
         ignore = true 

@@ -21,7 +21,7 @@ type StringifyOptions struct {
   Eol          string
 }
 
-func Stringify(data map[string]interface{}, options *StringifyOptions) string {
+func Stringify(data map[string]any, options *StringifyOptions) string {
     if options == nil {
       options = &StringifyOptions{
         Whitespace: true,
@@ -57,7 +57,7 @@ func Stringify(data map[string]interface{}, options *StringifyOptions) string {
             result = append(result, key + delimiter + strconv.FormatBool(value))
         case float64:
             result = append(result, key + delimiter + strconv.FormatFloat(value, 'f', -1, 64))
-        case map[string]interface{}:
+        case map[string]any:
             name := "[" + key + "]"
             section = append(section, name)
             section = append(section, Stringify(value, options))
