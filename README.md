@@ -18,6 +18,8 @@ Here is a highlight of its features:
   - Setting compatibility flags or Wine/Proton prefix options
   - Set process priority and affinity (pin to specific cores)
 
+🗑 No bloat: a single binary and a config file.
+
 🐧 This software has an emphasis on being compatible with Linux/Proton.
   
 💻 This software is for my own personal use but feel free to use it.
@@ -35,6 +37,10 @@ Path can be absolute or relative (to the current working dir)
 Program will exit before starting the executable.
 
 💡 This flag can come in handy when testing Lua Script.
+
+### `--wait`
+
+Program will wait for the executable to terminate before exiting.
 
 ### `--help`
 
@@ -208,6 +214,8 @@ When enabled runs inside of a shell (%COMSPEC% ie `cmd.exe`).<br />
 ### `wait?: bool` (false)
 
 When enabled, will wait for the executable to terminate before exiting.
+
+⚠️ The command line flag `--wait` always enables this behavior.
 
 > [!TIP]
 > This option can be used in conjunction with the Lua API (see below) to run some code on executable exit! 
@@ -962,13 +970,23 @@ local process = require("process")
 - `platform: string` : operating system target (GOOS)
 - `arch: string` : architecture target (GOARCH)
 - `pid: number` : process id
+- `args: string[]` : process arguments
+- `env: { key: string, ... }` : process env. var. as key:value pairs
 - `Cwd() string` : process current working dir
 - `ExecPath() string` : process absolute pathname
 - `On(event: string, callback: function)` : register callback function to be run for specified event
 
 **Events**
 
-- `will-quit` : Fired when process is about to terminate.
+- `will-quit()` : Fired when process is about to terminate.
+- `did-start(event: table)` : Fired when the executable start sequence is over (spawning, addons, splash screen).
+  This event exposes the spawned executable information: 
+  ```event: { 
+    pid: number,
+    bin: string, 
+    dir: string,
+    argv: string[] 
+  }``` 
 
 ### `📦 Shell`
 
