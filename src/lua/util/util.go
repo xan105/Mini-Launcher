@@ -42,6 +42,12 @@ func ToLuaValue(L *lua.LState, value any) lua.LValue {
       return lua.LNumber(v)
     case float64:
       return lua.LNumber(v)
+    case []string:
+      arrayTable := L.NewTable()
+      for i, str := range v {
+        arrayTable.RawSetInt(i+1, lua.LString(str))
+      }
+    return arrayTable
     case map[string]any:
       return ToLuaTable(L, v)
     case []any:

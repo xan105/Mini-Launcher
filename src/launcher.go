@@ -161,8 +161,17 @@ func main(){
   }
 
   displaySplash(cmd.Process.Pid, config.Splash)
+
+  if err := lua.TriggerEvent("process", "did-start", map[string]any{
+    "pid": cmd.Process.Pid,
+    "bin": filepath.Base(cmd.Path),
+    "dir": filepath.Dir(cmd.Path),
+    "argv": cmd.Args,
+  }); err != nil {
+    panic("Lua", err.Error())
+  }
   
-  if config.Wait != nil && *config.Wait {
+  if cmdLine.Wait || (config.Wait != nil && *config.Wait) {
     cmd.Wait()
   }
   

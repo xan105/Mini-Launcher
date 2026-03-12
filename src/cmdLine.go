@@ -14,6 +14,7 @@ import(
 type Args struct {
   Help        bool
   DryRun      bool
+  Wait        bool
   ConfigPath  string
 }
 
@@ -22,6 +23,7 @@ func parseArgs() (Args) {
   
   flag.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
   flag.BoolVar(&args.DryRun, "dry-run", false, "Program will exit before starting the executable.")
+  flag.BoolVar(&args.Wait, "wait", false, "Program will wait for the executable to terminate before exiting.")
   flag.StringVar(&args.ConfigPath, "config", "launcher.json", "File path to the config file to use.")
   flag.Parse()
   
@@ -32,6 +34,9 @@ func parseArgs() (Args) {
       "File path to the config file to use.\n" +
       "--dry-run\n" +
       "Program will exit before starting the executable.\n" +
+      "\n" +
+      "--wait\n" +
+      "Program will wait for the executable to terminate before exiting.\n" +
       "\n" +
       "--help\n" +
       "Show list of all arguments\n",
