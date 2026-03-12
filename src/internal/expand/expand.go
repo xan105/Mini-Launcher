@@ -222,14 +222,13 @@ func ExpandVariables(input string) string {
       }
       case "LANGCODE": {
         localeName, err := locale.GetUserLocale()
-        if err != nil || !strings.Contains(localeName, "-") {
+        if err != nil {
           return match
         }
-        loc := strings.SplitN(localeName, "-", 2)
-        if len(loc) != 2 { 
+        code, _, ok := strings.Cut(localeName, "-")
+        if !ok {
           return match 
         }
-        code := loc[0]
         return code
       }
       case "LANGUAGE": {

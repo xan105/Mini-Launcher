@@ -40,13 +40,12 @@ func verifyIntegrity(binary string, files []File) {
       if !re.MatchString(file.SRI) {
         panic("Integrity failure", "Unexpected SRI format: \"" + file.SRI + "\"")
       }
-      
-      SRI := strings.SplitN(file.SRI, "-", 2)
-      if len(SRI) != 2 {
+
+      algo, expected, ok := strings.Cut(file.SRI, "-")
+      if !ok {
         panic("Integrity failure", "Failed to parse SRI: \"" + file.SRI + "\"")
       }
-
-      algo, expected := SRI[0], SRI[1]
+      
       sum, err := fs.CheckSum(target, algo)
       if err != nil { panic("Integrity failure", err.Error()) }
       if sum != expected { 
