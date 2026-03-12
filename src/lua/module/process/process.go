@@ -8,6 +8,7 @@ package process
 
 import (
   "os"
+  "strings"
   "runtime"
   "github.com/yuin/gopher-lua"
 )
@@ -25,6 +26,21 @@ func Loader(L *lua.LState) int {
   L.SetField(mod, "platform", lua.LString(runtime.GOOS))
   L.SetField(mod, "arch", lua.LString(runtime.GOARCH))
   L.SetField(mod, "pid", lua.LNumber(os.Getpid()))
+  
+  args := L.NewTable()
+  for i, value := range os.Args[1:] {
+    L.RawSetInt(args, i+1, lua.LString(value))
+  }
+  L.SetField(mod, "args", args)
+  
+  env := L.NewTable()
+  for _, entry := range os.Environ() {
+    if key, value, ok := strings.Cut(entry, "="); ok && len(key) > 0 {
+      L.SetField(env, key, lua.LString(value))
+    }
+  }
+  L.SetField(mod, "env", env)
+
   L.Push(mod)
   return 1
 }
