@@ -551,8 +551,9 @@ List of variables that will get expanded:
 - `%PUBLIC%` 
 - `%SYSTEMDIR%`
 - `%TEMP%`, `%TMP%`
-- `%CURRENTDIR%`: Current working dir of the mini-launcher
-- `%BINDIR%`: Dir where the mini-launcher is located at
+- `%CURRENTDIR%`: Current working dir of the mini-launcher process
+- `%BINDIR%`: Parent dir of the mini-launcher process
+- `%PROCESS%`: Absolute path of the the mini-launcher process
 - `%USERNAME%`
 - `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
 - `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)

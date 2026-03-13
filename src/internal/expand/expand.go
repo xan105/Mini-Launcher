@@ -211,6 +211,13 @@ func ExpandVariables(input string) string {
         }
         return filepath.Dir(process)
       }
+      case "PROCESS": {
+        process, err := os.Executable()
+        if err != nil {
+          return match
+        }
+        return process
+      }
       case "USERNAME": {
         user, err := user.Current()
         if err != nil {
