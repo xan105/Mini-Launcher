@@ -27,6 +27,8 @@ func Loader(L *lua.LState) int {
     "Info": Info,
     "Glob": Glob,
     "Basename": Basename,
+    "Dirname": Dirname,
+    "Extname": Extname,
     "SetAttributes": SetAttributes,
   }
     
@@ -183,6 +185,20 @@ func Basename(L *lua.LState) int {
   }
   
   L.Push(lua.LString(filename))
+  return 1
+}
+
+func Dirname(L *lua.LState) int {
+  path := L.CheckString(1)
+  dirname := filepath.Dir(path)
+  L.Push(lua.LString(dirname))
+  return 1
+}
+
+func Extname(L *lua.LState) int {
+  path := L.CheckString(1)
+  ext := filepath.Ext(path)
+  L.Push(lua.LString(ext))
   return 1
 }
 
