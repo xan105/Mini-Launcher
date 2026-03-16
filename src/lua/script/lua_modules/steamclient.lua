@@ -9,7 +9,7 @@ local process = require("process")
 local steamclient = {}
 
 function steamclient.HasGenuineDLL(root)
-  root = root or process.Cwd()
+  root = root or process.cwd
   assert(type(root) == "string" and root ~= "", "Expected a non-empty string!")
   
   local dlls = {"steam_api64.dll", "steam_api.dll"}
@@ -48,48 +48,55 @@ function steamclient.Restore(backup)
   regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamPath", backup["SteamPath"])
 end
 
-function steamclient.Load(client)
-  client = client or {}
-  assert(type(client) == "table", "Expected table!")
-
-  if not client.appid ~= "" then
-    local paths = file.Glob(process.Cwd(), "steam_appid.txt", {
-      recursive = true
-    })
+function findAppID(locations)
+  for _, location in ipairs(locations) do
+    local paths = file.Glob(location, "steam_appid.txt", { recursive = true })
     for _, path in ipairs(paths) do
-      client.appid = file.Read(path)
-      if client.appid ~= "" then
-        break
-      end
-    end  
-  end
-
-  if not client.dll ~= "" then
-    local paths, err = file.Glob(process.Cwd(), "steamclient.dll", {
-      recursive = true,
-      absolute = true
-    })
-    for _, path in ipairs(paths) do
-        local info = file.Info(path)
-        if not info.signed then
-          client.dll = path
-          break
-        end
+      local appid = file.Read(path)
+      if appid ~= "" then
+        return appid
       end
     end
+  end
+end
 
-  if not client.dll64 ~= "" then
-    local paths = file.Glob(process.Cwd(), "steamclient64.dll", {
-      recursive = true,
-      absolute = true
-    })
+function findDLL(locations, is64)
+  local name = is64 and "steamclient64.dll" or "steamclient.dll"
+  for _, location in ipairs(locations) do
+    local paths = file.Glob(location, name, { recursive = true, absolute = true })
     for _, path in ipairs(paths) do
       local info = file.Info(path)
       if not info.signed then
-        client.dll64 = path
-        break
+        return path
       end
     end
+  end
+end
+
+function steamclient.Load(client)
+  client = client or {}
+  assert(type(client) == "table", "Expected table!")
+  
+  client.appid = client.appid or 
+                 process.target.env["SteamAppId"] or 
+                 process.target.env["SteamGameId"] or
+                 process.target.env["SteamOverlayGameId"]
+    
+  local locations = { process.cwd }
+  if process.dir ~= process.cwd then
+    locations[#locations + 1] = process.dir
+  end
+
+  if not client.appid or client.appid == "" then
+    client.appid = findAppID(locations)
+  end
+
+  if not client.dll or client.dll == "" then
+    client.dll = findDLL(locations, false)
+  end
+
+  if not client.dll64 or client.dll64 == "" then
+    client.dll64 = findDLL(locations, true)
   end
   
   if type(client.user) ~= "number" or client.user % 1 ~= 0 or client.user == 0 then
@@ -102,8 +109,8 @@ function steamclient.Load(client)
   regedit.WriteStringValue("HKCU", "Software/Valve/Steam/ActiveProcess", "SteamClientDll64", client.dll64)
   regedit.WriteStringValue("HKCU", "Software/Valve/Steam/ActiveProcess", "Universe", "Public")
   regedit.WriteDwordValue("HKCU", "Software/Valve/Steam", "RunningAppID", client.appid)
-  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamExe", process.ExecPath())
-  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamPath", process.Cwd())  
+  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamExe", process.path)
+  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamPath", process.dir)  
 end
 
 return steamclient
