@@ -732,6 +732,9 @@ local file = require("file")
 - `Info(filename: string) table, Failure`
 - `Glob(root: string, pattern: string, options?: { recursive?: bool = false, absolute?: bool = false }) []string, Failure`
 - `Basename(path: string, suffix?: bool = true) string`
+- `Dirname(path: string) string`
+- `Extname(path: string) string`
+- `Expand(path: string) string`
 - `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
 
 Encoding format:
@@ -799,6 +802,14 @@ file.Basename("/foo/bar/quux.html");
 file.Basename("/foo/bar/quux.html", false);
 -- Returns: "quux" 
 ```
+
+#### `Dirname(path: string) string`
+
+Returns the directory name of a path.
+
+#### `Extname(path: string) string`
+
+Returns the extension of a path.
 
 #### `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
 
@@ -962,7 +973,7 @@ local video = require("video")
 
 ### `📦 Process`
 
-This is a module to get info about the current Mini-Launcher process.
+This is a module to get info about the current process (Mini-Launcher) and the target process to start.
 
 ```lua
 local process = require("process")
@@ -971,23 +982,24 @@ local process = require("process")
 - `platform: string` : operating system target (GOOS)
 - `arch: string` : architecture target (GOARCH)
 - `pid: number` : process id
-- `args: string[]` : process arguments
+- `path: string`: process absolute pathname
+- `bin: string`: process file name
+- `dir: string`: process parent dir
+- `cwd: string`: process current working dir
+- `args: string[]`: process arguments
 - `env: { key: string, ... }` : process env. var. as key:value pairs
-- `Cwd() string` : process current working dir
-- `ExecPath() string` : process absolute pathname
+- `target.path: string`: target process absolute pathname
+- `target.bin: string`: target process file name
+- `target.dir: string`: target process parent dir
+- `target.cwd: string`: target process current working dir
+- `target.argv: string[]`: target process verbatim arguments
+- `target.env: { key: string, ... }` : target process env. var. as key:value pairs
 - `On(event: string, callback: function)` : register callback function to be run for specified event
 
 **Events**
 
 - `will-quit()` : Fired when process is about to terminate.
-- `did-start(event: table)` : Fired when the executable start sequence is over (spawning, addons, splash screen).
-  This event exposes the spawned executable information: 
-  ```event: { 
-    pid: number,
-    bin: string, 
-    dir: string,
-    argv: string[] 
-  }``` 
+- `did-start(event: { pid: number })` : Fired when the target executable start sequence is over (spawning, addons, splash screen).
 
 ### `📦 Shell`
 
@@ -1101,9 +1113,10 @@ These utilities can be used to create what is often referred to as a _"Steam loa
   "env": {
     "SteamAppId": "480",
     "SteamGameId": "480",
+    "SteamOverlayGameId": "480",
     "SteamClientLaunch": "1",
     "SteamEnv": "1",
-    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+    "SteamPath": "%PROCESS%"
   }
 }
 ```
@@ -1135,8 +1148,8 @@ local steamclient = require("steamclient")
 - `Load(client?: { appid?: string, dll:? string, dll64?: string, user?: number })`
 
   Write the Steam-related values to the registry.<br/>
-  You can specify the game's appid, steamclient dlls path and user account id.<br/>
-  If omitted they are set automatically by looking for `steam_appid.txt`, `steamclient(64).dll` within the launcher's current working directory.
+  You can specify the game's appid (defaults to the `SteamAppId` env var), steamclient dlls path and user account id.<br/>
+  If omitted they are set automatically by looking for `steam_appid.txt`, `steamclient(64).dll` within the launcher's current working directory and parent directory.
   
 > [!TIP]
 > To force inject steamclient/GameOverlayRenderer dll(s) use the `addons` option.
@@ -1164,9 +1177,10 @@ Config file
   "env": {
     "SteamAppId": "480",
     "SteamGameId": "480",
+    "SteamOverlayGameId": "480",
     "SteamClientLaunch": "1",
     "SteamEnv": "1",
-    "SteamPath": "%CURRENTDIR%\\Launcher.exe"
+    "SteamPath": "%PROCESS%"
   },
   "wait": true,
   "addons": [
