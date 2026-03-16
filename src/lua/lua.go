@@ -7,6 +7,7 @@ found in the LICENSE file in the root directory of this source tree.
 package lua
 
 import (
+  "os/exec"
   "github.com/yuin/gopher-lua"
   "launcher/lua/util"
   "launcher/lua/type/failure"
@@ -39,13 +40,18 @@ type Permissions struct {
   Import  bool  //Load external Lua code
 }
 
+type ExtraInfo struct {
+  TargetProcess   *exec.Cmd  
+  Argv            []string
+}
+
 var L *lua.LState
 
 var EventRegistry = map[string]map[string][]*lua.LFunction{
   "process": process.EventRegistry,
 }
 
-func LoadLua(filePath string, perm Permissions) error {
+func LoadLua(filePath string, perm Permissions, info ExtraInfo) error {
 
   if L != nil { return nil }
   
@@ -102,6 +108,9 @@ func LoadLua(filePath string, perm Permissions) error {
   }))
 
   //Module
+  L.PreloadModule("process", func(L *lua.LState) int {
+      return process.Loader(L, info.TargetProcess, info.Argv)
+  })
   if perm.Reg {
     L.PreloadModule("regedit", regedit.Loader)
   } else {
@@ -132,7 +141,6 @@ func LoadLua(filePath string, perm Permissions) error {
   L.PreloadModule("config/toml", toml.Loader)
   L.PreloadModule("config/yaml", yaml.Loader)
   L.PreloadModule("config/xml", xml.Loader)
-  L.PreloadModule("process", process.Loader)
   L.PreloadModule("time", time.Loader)
   L.PreloadModule("SteamID", steamid.Loader)
 
@@ -169,7 +177,6 @@ func TriggerEvent(module string, event string, args ...any) error {
     for _, value := range values {
       L.Push(value)
     }
-
     if err := L.PCall(len(values), 0, nil); err != nil {
       return err
     }

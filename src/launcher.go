@@ -21,9 +21,10 @@ import(
   "launcher/internal/thread"
 )
 
-func buildCommand(binary string, config Config) *exec.Cmd {
+func buildCommand(binary string, config Config) (*exec.Cmd, []string) {
   
   var cmd *exec.Cmd
+  var argv []string
   
   if config.Shell != nil && *config.Shell {
     shell := os.Getenv("COMSPEC")
@@ -31,8 +32,8 @@ func buildCommand(binary string, config Config) *exec.Cmd {
       shell = filepath.Join(os.Getenv("WINDIR") + "System32/cmd.exe")
     }
     cmd = exec.Command(shell)
-    argv := []string{ "\"" + shell + "\"" } //argv0
-    argv = append(argv, "/D", "/C", "\"\"" + binary + "\"")
+    argv0 := "\"" + shell + "\""
+    argv = append(argv, argv0, "/D", "/C", "\"\"" + binary + "\"")
     if len(config.Args) > 0 {
       argv = append(argv, expand.ExpandVariables(config.Args))
     }
@@ -43,7 +44,8 @@ func buildCommand(binary string, config Config) *exec.Cmd {
     }
   } else {
     cmd = exec.Command(binary)
-    argv := []string{ "\"" + binary + "\"" } //argv0
+    argv0 := "\"" + binary + "\""
+    argv = append(argv, argv0)
     if len(config.Args) > 0 {
       argv = append(argv, expand.ExpandVariables(config.Args))
     }
@@ -78,7 +80,7 @@ func buildCommand(binary string, config Config) *exec.Cmd {
   cmd.Stdout = nil
   cmd.Stderr = nil
   
-  return cmd
+  return cmd, argv
 }
 
 func main(){
@@ -98,7 +100,7 @@ func main(){
   }
 
   binary := fs.Resolve(expand.ExpandVariables(config.Bin))
-  cmd := buildCommand(binary, config)
+  cmd, argv := buildCommand(binary, config)
   
   applyPatches(binary, config.Patch)
   verifyIntegrity(binary, config.Integrity)
@@ -113,12 +115,16 @@ func main(){
     ext := filepath.Ext(script)
     switch ext {
       case ".lua": {
-        if err := lua.LoadLua(script, lua.Permissions{
+        if err := lua.LoadLua(script, 
+        lua.Permissions{
           Fs: config.Script.Fs != nil && *config.Script.Fs,
           Net: config.Script.Net != nil && *config.Script.Net,
           Reg: config.Script.Reg != nil && *config.Script.Reg,
           Exec: config.Script.Exec != nil && *config.Script.Exec,
           Import: config.Script.Import != nil && *config.Script.Import,
+        }, lua.ExtraInfo{
+          TargetProcess: cmd,
+          Argv: argv,
         }); err != nil {
           panic("Lua", err.Error())
         }
@@ -164,9 +170,6 @@ func main(){
 
   if err := lua.TriggerEvent("process", "did-start", map[string]any{
     "pid": cmd.Process.Pid,
-    "bin": filepath.Base(cmd.Path),
-    "dir": filepath.Dir(cmd.Path),
-    "argv": cmd.Args,
   }); err != nil {
     panic("Lua", err.Error())
   }
