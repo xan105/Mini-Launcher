@@ -555,6 +555,7 @@ List of variables that will get expanded:
 - `%BINDIR%`: Parent dir of the mini-launcher process
 - `%PROCESS%`: Absolute path of the the mini-launcher process
 - `%USERNAME%`
+- `%HOSTNAME%`
 - `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
 - `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
 - `%SCREENWIDTH%`, `%XRES%`: Current primary display horizontal resolution (DPI Aware)
@@ -982,6 +983,7 @@ local process = require("process")
 - `platform: string` : operating system target (GOOS)
 - `arch: string` : architecture target (GOARCH)
 - `pid: number` : process id
+- `wine: bool`: whether process is running under wine/proton or not
 - `path: string`: process absolute pathname
 - `bin: string`: process file name
 - `dir: string`: process parent dir
@@ -1113,7 +1115,6 @@ These utilities can be used to create what is often referred to as a _"Steam loa
   "env": {
     "SteamAppId": "480",
     "SteamGameId": "480",
-    "SteamOverlayGameId": "480",
     "SteamClientLaunch": "1",
     "SteamEnv": "1",
     "SteamPath": "%PROCESS%"
@@ -1177,7 +1178,6 @@ Config file
   "env": {
     "SteamAppId": "480",
     "SteamGameId": "480",
-    "SteamOverlayGameId": "480",
     "SteamClientLaunch": "1",
     "SteamEnv": "1",
     "SteamPath": "%PROCESS%"

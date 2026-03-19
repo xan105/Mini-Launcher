@@ -227,6 +227,13 @@ func ExpandVariables(input string) string {
         last := len(parts)-1
         return parts[last]
       }
+      case "HOSTNAME": {
+        host, err := os.Hostname()
+        if err != nil {
+          return match
+        }
+        return host
+      }
       case "LANGCODE": {
         localeName, err := locale.GetUserLocale()
         if err != nil {

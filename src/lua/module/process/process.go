@@ -13,6 +13,7 @@ import (
   "runtime"
   "path/filepath"
   "launcher/lua/util"
+  "launcher/internal/wine"
   "github.com/yuin/gopher-lua"
 )
 
@@ -37,6 +38,7 @@ func Loader(L *lua.LState, targetProcess *exec.Cmd, argv []string) int {
   L.SetField(mod, "platform", lua.LString(runtime.GOOS))
   L.SetField(mod, "arch", lua.LString(runtime.GOARCH))
   L.SetField(mod, "pid", lua.LNumber(os.Getpid()))
+  L.SetField(mod, "wine", lua.LBool(wine.IsWineOrProton()))
   
   execPath, _ := os.Executable()
   cwd, _ := os.Getwd()
