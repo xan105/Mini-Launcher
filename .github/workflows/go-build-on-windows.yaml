@@ -77,6 +77,8 @@ jobs:
           Copy-Item ".\example\lua script\*" "$tmp\lua\" -Recurse -Force
           Copy-Item ".\dist\URL.url" "$tmp" -Force
           Copy-Item ".\README.md" "$tmp" -Force
+          Copy-Item ".\CONFIG_FILE.md" "$tmp" -Force
+          Copy-Item ".\LUA_API.md" "$tmp" -Force
           Copy-Item ".\LICENSE" "$tmp" -Force
 
           & "C:\Program Files\7-Zip\7z.exe" a $archivePath "$tmp\*"

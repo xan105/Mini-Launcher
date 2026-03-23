@@ -74,6 +74,9 @@ jobs:
           cp -r "./example/lua script"/* "$tmp/lua/"
           cp "./dist/URL.url" "$tmp/"
           cp "./README.md" "$tmp/"
+          cp "./CONFIG_FILE.md" "$tmp/"
+          cp "./LUA_API.md" "$tmp/"
+
           cp "./LICENSE" "$tmp/"
 
           7z a "$archivePath" "$tmp/*"
