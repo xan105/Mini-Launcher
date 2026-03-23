@@ -186,8 +186,49 @@ List of variables that will get expanded:
 Lua Scripting
 =============
 
-Very simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua) (Lua 5.1).<br />
+Simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua) (Lua 5.1).
+
+Originally this feature was for handling CD Key generation in old games. The Lua API has since become quite extensive 😅.
+
 See the `./example` directory for some examples.
+
+## Entry point and permissions
+
+As explained in [CONFIG_FILE.md](/CONFIG_FILE.md), the main script is specified via the `script` option in the config file:
+
+```json
+{
+  "script": {
+    "path": "launcher.lua",
+    "fs": false,
+    "net": false,
+    "reg": false,
+    "exec": false,
+    "import": false
+  }
+}
+```
+
+There are permissions for different ressources: filesystem operation, network request, etc. You must explicitly grant access to these resources.
+
+The script runs just before the executable. In some cases, you may want to run some code on exit or when the target process runs.
+This can be achieved by leveraging the `wait` option or `--wait` cmdline with callback(s) on event(s) from the `process` module:
+
+```lua
+local process = require("process")
+
+process.On("will-quit", function()
+  print("Bye bye!")
+  -- Do something
+end)
+
+process.On("did-start", function()
+  print("Running!")
+  -- Do something
+end)
+```
+
+## API
 
 Standard libs available are:
 
@@ -201,13 +242,10 @@ Standard libs available are:
 Some standard libraries are not enabled by design.<br />
 `goto` and `::label::` statements from Lua 5.2 are supported.<br />
 
-> [!NOTE]
 By default the VM is mostly sandboxed: you can only _require_ from the available modules.
 If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
 
-⚠️ I may introduce breaking changes between minor version despite my best efforts not to. As the tool mature so will the API.
-
-**API Summary**
+**API summary**
 
 - `regedit` : read and write from/to the registry.
 - `random` : generate random things.
@@ -223,10 +261,11 @@ If you want to _require_ an external lua file you must set the permission `impor
 - `steamid` : Steam-related user identification.
 - `steamclient` : utilities to help launching games that require the Steam client (Steamloader).
 - `types` : type checking at runtime.
-
-and some `Globals` for convenience stuff.
+- and some globals for convenience stuff.
 
 ℹ️ For more details on the API please see [LUA_API.md](/LUA_API.md).
+
+⚠️ I may introduce breaking changes between minor version despite my best efforts not to. As the tool mature so will the API.
 
 Build
 =====
