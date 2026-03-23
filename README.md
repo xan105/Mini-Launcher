@@ -580,11 +580,30 @@ Standard libs available are:
 Some standard libraries are not enabled by design.<br />
 `goto` and `::label::` statements from Lua 5.2 are supported.<br />
 
-The followings modules are exposed to the Lua VM, I might add more later on.
-
 > [!NOTE]
 By default the VM is mostly sandboxed: you can only _require_ from the available modules.
 If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
+
+⚠️ I may introduce breaking changes between minor version despite my best efforts not to. As the tool mature so will the API.
+
+**API Summary**
+
+`regedit` : read and write from/to the registry.
+`random` : generate random things.
+`file` : file and path manipulation.
+`config` : parse/stringify config files.
+`http` : http request.
+`archive` : decompress archive file.
+`user` : get info about the current user.
+`video` : get info about the current display mode.
+`process` : get info about the current process and the target process to start.
+`shell` : execute shell command. 
+`time` : time conversion.
+`steamid` : Steam-related user identification.
+`steamclient` : utilities to help launching games that require the Steam client (Steamloader).
+`types` : type checking at runtime.
+
+and some `Globals` for convenience stuff.
 
 ## 🌐 Globals
 
@@ -719,7 +738,7 @@ Generate a random SteamID64.
 
 ### `📦 File`
 
-This is a module to read and write text data from/to file.
+This is a module to help with file and path manipulation.
 
 > Requires the `fs` permission.
 
@@ -735,7 +754,6 @@ local file = require("file")
 - `Basename(path: string, suffix?: bool = true) string`
 - `Dirname(path: string) string`
 - `Extname(path: string) string`
-- `Expand(path: string) string`
 - `SetAttributes(filename: string, flags?: { readonly?: bool = false, hidden?: bool = false }) Failure`
 
 Encoding format:
