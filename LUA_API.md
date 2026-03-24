@@ -16,30 +16,31 @@ Some standard libraries are not enabled by design!<br />
 
 # API Summary
 
-- 🌐 Globals:
+- [🌐 Globals](#-globals):
   + sleep: suspends execution until interval elapses
   + console: prettier print
   + Array: Lua table search
   + Failure: Structured error
   
-- 📦 Modules:
-  + regedit : read and write from/to the registry.
-  + random : generate random things.
-  + file : file and path manipulation.
-  + config : parse/stringify config files.
-  + http : http request.
-  + archive : decompress archive file.
-  + user : get info about the current user.
-  + video : get info about the current display mode.
-  + process : get info about the current process and the target process to start.
-  + shell : execute shell command. 
-  + time : time conversion.
-  + steamid : Steam-related user identification.
-  + steamclient : utilities to help launching games that require the Steam client (Steamloader).
-  + types : type checking at runtime.
+- [📦 Modules](#-modules):
+  + [regedit](#-regedit) : read and write from/to the registry.
+  + [random](#-random) : generate random things.
+  + [file](#-file) : file and path manipulation.
+  + [config](#-config) : parse/stringify config files.
+  + [http](#-http) : http request.
+  + [archive](#-archive) : decompress archive file.
+  + [user](#-user) : get info about the current user.
+  + [video](#-video) : get info about the current display mode.
+  + [process](#-process) : get info about the current process and the target process to start.
+  + [shell](#-shell) : execute shell command. 
+  + [time](#-time) : time conversion.
+  + [steamid](#-steamid) : Steam-related user identification.
+  + [steamclient](#-steamclient) : utilities to help launching games that require the Steam client (Steamloader).
+  + [types](#-types) : type checking at runtime.
 
-By default the VM is mostly sandboxed: you can only _require_ from the available modules.
-If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
+> [!NOTE]  
+> By default the VM is mostly sandboxed: you can only _require_ from the available modules.
+> If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
 
 ## 🌐 Globals
 
