@@ -1,5 +1,5 @@
 <details>
-<summary>JSON schema:</summary>
+<summary>📖 JSON schema:</summary>
 <br />
   
 ```ts
