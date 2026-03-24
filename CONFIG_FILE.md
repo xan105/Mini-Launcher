@@ -1,3 +1,77 @@
+<details>
+<summary>JSON schema:</summary>
+<br />
+  
+```ts
+{
+  bin: string,
+  cwd?: string,
+  args?: string,
+  env?: object,
+  priority?: string,
+  hide?: bool,
+  shell?: bool,
+  wait?: bool,
+  script?: {
+    path: string,
+    fs?: bool,
+    net?: bool,
+    reg?: bool,
+    exec?: bool,
+    import?: bool
+  },
+  addons?: []{
+    path: string, 
+    required?: bool
+  },
+  suspended?: bool,
+  affinity?: []number,
+  integrity?: []{
+    sri: string, 
+    path?: string, 
+    size?: number,
+    signed?: bool
+  },
+  splash?: {
+    show: bool,
+    image: []string,
+    timeout?: number,
+    wait?: string
+  },
+  symlink?: []{
+    path: string,
+    dest: string
+  },
+  shortcut?: {
+    name: string,
+    desktop?: bool,
+    startmenu?: bool
+  },
+  compatibility?: {
+    version?: string,
+    fullscreen?: bool,
+    admin?: bool,
+    invoker?: bool,
+    aware?: bool
+  },
+  patch?: {
+    laa?: bool
+  },
+  prefix?: {
+    winver?: string,
+    dpi?: number,
+    overrides?: object
+  },
+  attrib?: []{
+    path: string,
+    hidden?: boolean,
+    readonly?: boolean
+  },
+  menu?: object
+}
+```
+</details>
+
 ### `bin: string`
 
 File path to the executable to launch.<br />

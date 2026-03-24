@@ -1,3 +1,46 @@
+> ⚠️ I may introduce breaking changes between minor version despite my best efforts not to. As the tool mature so will the API.
+
+The scripting engine is powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua) (Lua 5.1).
+
+Standard Lua libraries available are:
+
+  - Package
+  - Basic
+  - Table
+  - String
+  - Math
+  - Coroutine
+
+Some standard libraries are not enabled by design!<br />
+`goto` and `::label::` statements from Lua 5.2 are supported.<br />
+
+# API Summary
+
+- 🌐 Globals:
+  + sleep: suspends execution until interval elapses
+  + console: prettier print
+  + Array: Lua table search
+  + Failure: Structured error
+  
+- 📦 Modules:
+  + regedit : read and write from/to the registry.
+  + random : generate random things.
+  + file : file and path manipulation.
+  + config : parse/stringify config files.
+  + http : http request.
+  + archive : decompress archive file.
+  + user : get info about the current user.
+  + video : get info about the current display mode.
+  + process : get info about the current process and the target process to start.
+  + shell : execute shell command. 
+  + time : time conversion.
+  + steamid : Steam-related user identification.
+  + steamclient : utilities to help launching games that require the Steam client (Steamloader).
+  + types : type checking at runtime.
+
+By default the VM is mostly sandboxed: you can only _require_ from the available modules.
+If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
+
 ## 🌐 Globals
 
 ### `sleep(ms: int)`

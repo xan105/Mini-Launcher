@@ -49,85 +49,11 @@ Display a message box with all the command line arguments and a short descriptio
 Config file
 ===========
 
-By default `launcher.json` (use `--config` to change it).
+By default, the launcher uses `launcher.json` (you can override it with `--config`).
 
-<details>
-<summary>JSON configuration file:</summary>
-<br />
-  
-```ts
-{
-  bin: string,
-  cwd?: string,
-  args?: string,
-  env?: object,
-  priority?: string,
-  hide?: bool,
-  shell?: bool,
-  wait?: bool,
-  script?: {
-    path: string,
-    fs?: bool,
-    net?: bool,
-    reg?: bool,
-    exec?: bool,
-    import?: bool
-  },
-  addons?: []{
-    path: string, 
-    required?: bool
-  },
-  suspended?: bool,
-  affinity?: []number,
-  integrity?: []{
-    sri: string, 
-    path?: string, 
-    size?: number,
-    signed?: bool
-  },
-  splash?: {
-    show: bool,
-    image: []string,
-    timeout?: number,
-    wait?: string
-  },
-  symlink?: []{
-    path: string,
-    dest: string
-  },
-  shortcut?: {
-    name: string,
-    desktop?: bool,
-    startmenu?: bool
-  },
-  compatibility?: {
-    version?: string,
-    fullscreen?: bool,
-    admin?: bool,
-    invoker?: bool,
-    aware?: bool
-  },
-  patch?: {
-    laa?: bool
-  },
-  prefix?: {
-    winver?: string,
-    dpi?: number,
-    overrides?: object
-  },
-  attrib?: []{
-    path: string,
-    hidden?: boolean,
-    readonly?: boolean
-  },
-  menu?: object
-}
-```
-</details>
+Most configuration options are straightforward and self-explanatory, so you should be up and running quickly.
 
-ℹ️ The configuration options are quite extensive, for more details on each option please see [CONFIG_FILE.md](/CONFIG_FILE.md).
-
-_Example:_
+_Example with Red Alert 3:_
 
 ```json
 {
@@ -151,7 +77,13 @@ _Example:_
 }
 ```
 
-See the `./example` directory for more examples.
+The configuration is quite flexible, covering everything from process launch parameters to DLL injection and compatibility settings.
+
+There are a lot of configuration options available but depending on your use case you may only need a small subset of them.
+
+ℹ️ For a detailed explanation of each option, see [CONFIG_FILE.md](/CONFIG_FILE.md).
+
+You can also check the `./example` directory for some examples.
 
 Expanding Variable
 ==================
@@ -186,13 +118,11 @@ List of variables that will get expanded:
 Lua Scripting
 =============
 
-Simple scripting engine powered by [yuin/gopher-lua](https://github.com/yuin/gopher-lua) (Lua 5.1).
+Originally this feature was for handling CD Key generation in old games. It has since become quite extensive 😅.
 
-Originally this feature was for handling CD Key generation in old games. The Lua API has since become quite extensive 😅.
+ℹ️ The Lua API provided to the script is documented in [LUA_API.md](/LUA_API.md)
 
-See the `./example` directory for some examples.
-
-## Entry point and permissions
+There are also a few examples in `./example` directory.
 
 As explained in [CONFIG_FILE.md](/CONFIG_FILE.md), the main script is specified via the `script` option in the config file:
 
@@ -227,45 +157,6 @@ process.On("did-start", function()
   -- Do something
 end)
 ```
-
-## API
-
-Standard libs available are:
-
-  - Package
-  - Basic
-  - Table
-  - String
-  - Math
-  - Coroutine
-
-Some standard libraries are not enabled by design.<br />
-`goto` and `::label::` statements from Lua 5.2 are supported.<br />
-
-By default the VM is mostly sandboxed: you can only _require_ from the available modules.
-If you want to _require_ an external lua file you must set the permission `import: true` in the config file.
-
-**API summary**
-
-- `regedit` : read and write from/to the registry.
-- `random` : generate random things.
-- `file` : file and path manipulation.
-- `config` : parse/stringify config files.
-- `http` : http request.
-- `archive` : decompress archive file.
-- `user` : get info about the current user.
-- `video` : get info about the current display mode.
-- `process` : get info about the current process and the target process to start.
-- `shell` : execute shell command. 
-- `time` : time conversion.
-- `steamid` : Steam-related user identification.
-- `steamclient` : utilities to help launching games that require the Steam client (Steamloader).
-- `types` : type checking at runtime.
-- and some globals for convenience stuff.
-
-ℹ️ For more details on the API please see [LUA_API.md](/LUA_API.md).
-
-⚠️ I may introduce breaking changes between minor version despite my best efforts not to. As the tool mature so will the API.
 
 Build
 =====
