@@ -5,7 +5,9 @@ local INI = require("config/ini")
 local path = "%APPDATA%/GSE Saves/settings"
 
 local content = file.Read(path .. "/configs.user.ini")
-local steam = INI.Parse(content)
+local steam = INI.Parse(content, {
+  number = false
+})
 local update = false
 
 if not steam["user::general"] then
@@ -71,11 +73,18 @@ end
 
 local process = require("process")
 local steamclient = require("steamclient")
+local SteamID = require("SteamID")
 
-if steamclient.hasGenuineDLL() then
-  local backup = steamclient.backup()
-  steamclient.load({})
+if steamclient.HasGenuineDLL() then
+  local client = {}
+  local sid64 = steam["user::general"]["account_steamid"]
+  if sid64 ~= "" then
+    client.user = SteamID(sid64).accountid
+  end
+
+  local backup = steamclient.Backup()
+  steamclient.Load(client)
   process.On("will-quit", function() 
-    steamclient.restore(backup)
+    steamclient.Restore(backup)
   end)
  end

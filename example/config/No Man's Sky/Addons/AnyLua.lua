@@ -1,3 +1,6 @@
+-- Memory patcher
+-- cf: https://github.com/xan105/AnyLua
+
 local memory = require("memory")
 
 local patch = { -- Remove the "Mod Enabled" Warning screen on startup

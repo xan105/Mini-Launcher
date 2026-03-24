@@ -1,0 +1,55 @@
+{
+  "bin": "Sandfall/Binaries/Win64/SandFall-Win64-Shipping.exe",
+  "env": {
+    "SteamAppId": "1903340",
+    "SteamGameId": "1903340",
+    "SteamClientLaunch": "1",
+    "SteamEnv": "1",
+    "SteamPath": "%PROCESS%"
+  },
+  "script": {
+    "path": "launcher.lua",
+    "fs": true,
+    "reg": true,
+    "import": true
+  },
+  "wait": true,
+  "attrib": [
+    { "path": "%LOCALAPPDATA%/Sandfall/Saved/Config/Windows/game.ini", "readonly": true }
+  ],
+  "addons": [
+    { "path": "Patch/ClairObscurFix.asi", "required": true }
+  ],
+  "symlink": [
+    {
+      "path": "%LOCALAPPDATA%/Sandfall/Saved/SaveGames",
+      "dest": "%SAVEGAME%/Expedition 33"
+    }
+  ],
+  "shortcut": {
+    "name": "Expedition 33",
+    "startmenu": true
+  },
+  "integrity": [
+    {
+      "sri": "sha384-FAyjyS7kjm3hKBzB6/3fRZY3mPUHtcQZFyL6qUqt6eNQ3qYdjZOikCeTk51wqcjE",
+      "size": 162389504
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Steamworks/Steamv157/Win64/steam_api64.dll",
+      "sri": "sha384-fIxsR/GlIMJ/sFn+0sIBi25546E5/w2SmD7UbWOf15tS3ZMh2fByULLRhI8AYNG+",
+      "size": 295336,
+      "signed": true
+    },
+    {
+      "path": "Steamclient/steamclient64.dll",
+      "sri": "sha384-Mjl1El0wCc4Vp2nF53Ps32zjtXX424OsSjVlY0qpcVbiG1Ofi28zHlQHlJs9xcf9",
+      "size": 17885096
+    },
+    {
+      "path": "Patch/ClairObscurFix.asi",
+      "sri": "sha384-aFwub3NLwdazqJGkYMk2zP3ccxrOT4gpdaFfwROiFvMeftpVSjUxwv6YF8pExCAS",
+      "size": 1168384
+    }
+  ]
+}

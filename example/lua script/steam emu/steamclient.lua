@@ -4,7 +4,7 @@
 
 -- This is now integrated into the Launcher:
 -- local steamclient = require("steamclient")
--- cf: https://github.com/xan105/Mini-Launcher#-steam-client
+-- cf: https://github.com/xan105/Mini-Launcher/blob/main/LUA_API.md#-steam-client
 
 local file = require("file")
 local regedit = require("regedit")
@@ -15,7 +15,7 @@ local steamclient = {}
 function steamclient.HasGenuineDLL()
   local dlls = {"steam_api64.dll", "steam_api.dll"}
   for _, dll in ipairs(dlls) do
-    local path = file.Glob(process.Cwd(), dll, { recursive = true })
+    local path = file.Glob(process.cwd, dll, { recursive = true })
     if path[1] and path[1] ~= "" then
       local info = file.Info(path[1])
       return info.signed
@@ -53,8 +53,8 @@ function steamclient.Load(client)
   client = client or {}
   assert(type(client) == "table", "Expected table!")
 
-  if not client.appid ~= "" then
-    local paths = file.Glob(process.Cwd(), "steam_appid.txt", {
+  if not client.appid or client.appid == "" then
+    local paths = file.Glob(process.cwd, "steam_appid.txt", {
       recursive = true
     })
     for _, path in ipairs(paths) do
@@ -65,8 +65,8 @@ function steamclient.Load(client)
     end  
   end
 
-  if not client.dll ~= "" then
-    local paths, err = file.Glob(process.Cwd(), "steamclient.dll", {
+  if not client.dll or client.dll == "" then
+    local paths, err = file.Glob(process.cwd, "steamclient.dll", {
       recursive = true,
       absolute = true
     })
@@ -79,8 +79,8 @@ function steamclient.Load(client)
     end
   end
 
-  if not client.dll64 ~= "" then
-    local paths = file.Glob(process.Cwd(), "steamclient64.dll", {
+  if not client.dll64 or client.dll64 == "" then
+    local paths = file.Glob(process.cwd, "steamclient64.dll", {
       recursive = true,
       absolute = true
     })
@@ -103,8 +103,8 @@ function steamclient.Load(client)
   regedit.WriteStringValue("HKCU", "Software/Valve/Steam/ActiveProcess", "SteamClientDll64", client.dll64)
   regedit.WriteStringValue("HKCU", "Software/Valve/Steam/ActiveProcess", "Universe", "Public")
   regedit.WriteDwordValue("HKCU", "Software/Valve/Steam", "RunningAppID", client.appid)
-  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamExe", process.ExecPath())
-  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamPath", process.Cwd())  
+  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamExe", process.path)
+  regedit.WriteStringValue("HKCU", "Software/Valve/Steam", "SteamPath", process.cwd)  
 end
 
 return steamclient

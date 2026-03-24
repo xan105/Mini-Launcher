@@ -5,20 +5,28 @@
     "SteamGameId": "275850",
     "SteamClientLaunch": "1",
     "SteamEnv": "1",
-    "SteamPath": "%CURRENTDIR%\\Launcher.exe",
+    "SteamPath": "%PROCESS%",
     "GAMEPAD_API_XINPUT": "HOOK",
-    "ANYLUA_FILEPATH": "%CURRENTDIR%\\patch.lua"
+    "ANYLUA_FILEPATH": "%CURRENTDIR%\\Addons\\AnyLua.lua"
   },
   "script": {
-    "path": "launcher.lua",
+    "path": "Steamclient/steamclient.lua",
     "fs": true,
     "reg": true
   },
   "wait": true,
+  "suspended": true,
   "addons": [
-    { "path": "Binaries/InputFusion.asi", "required": true },
-    { "path": "Binaries/AnyLua.asi", "required": true }
+    { "path": "Steamclient/steamstub_x64.dll", "required": true },
+    { "path": "Addons/InputFusion.asi", "required": true },
+    { "path": "Addons/AnyLua.asi", "required": true }
   ],
+  "splash": {
+    "show": true,
+    "image": ["splash.bmp"],
+    "timeout": 10,
+    "wait": "FOREGROUND"
+  },
   "symlink": [
     {
       "path": "%APPDATA%/HelloGames/NMS",
@@ -37,8 +45,8 @@
   ],
   "integrity": [
     {
-      "sri": "sha384-7iKzzfcRG+OlGzlIIbvY4nYY18G5306DNNzhpuQaytFYgiUrF9moI4E1YX3dZNNQ",
-      "size": 83350016
+      "sri": "sha384-hSuzvtHaLYdszC8rd/W6bkqvR6Pe2M1YOF5++QMscLL+LI+tlJZVrUlsYNQin9h0",
+      "size": 83469384
     },
     {
       "path": "Binaries/steam_api64.dll",
@@ -47,24 +55,24 @@
       "signed": true
     },
     {
-      "path": "Binaries/steamclient64.dll",
-      "sri": "sha384-BnU9KVh2DVsq0eMcNVCt+nDlHiBWoyyo9rO2UYRUoIx3ySVh5c609EVMaiNaBQde",
-      "size": 17849256
+      "path": "Steamclient/steamclient64.dll",
+      "sri": "sha384-Mjl1El0wCc4Vp2nF53Ps32zjtXX424OsSjVlY0qpcVbiG1Ofi28zHlQHlJs9xcf9",
+      "size": 17885096
     },
     {
-      "path": "Binaries/GameOverlayRenderer64.dll",
-      "sri": "sha384-ZRnSMHuVT3aXYH8ix+K69PuH0Wr8n6gbmSsaRJLpfdXYxRB0EZkw588dQRyW7M7x",
+      "path": "Steamclient/GameOverlayRenderer64.dll",
+      "sri": "sha384-HMiegQM1y6HlzZjHXlFp+hrUOYUMFXNazyeDPPvPeC8HTtdCBYNT8abZBOn+pC7a",
       "size": 1946536
     },
     {
-      "path": "Binaries/InputFusion.asi",
-      "sri": "sha384-IWkVWnCPbL9D/qKiV+uxMR7NZ778nR9eg3W935Om0GVpC46JjKKwKRm/wjBoSzf4",
-      "size": 2209280
+      "path": "Addons/AnyLua.asi",
+      "sri": "sha384-mBzd4ebhmnCQdOr04Sl1Rz3gYmcLGqaVHy8KGG4mMGOfgxNUbVh/QvrD9MvK2bei",
+      "size": 583680
     },
     {
-      "path": "Binaries/AnyLua.asi",
-      "sri": "sha384-ui9eZWcvT68zK2n4M4m7GggJSZ/smUypKVtU2MdTP7XovMpbC+GXWA3UWGgPasdf",
-      "size": 582656
+      "path": "Addons/InputFusion.asi",
+      "sri": "sha384-vHMGQPh9x3t3JH0Gr/1wTrchbl9aXZIuHi8YV6ZCWAQGMGwncgXcCIGD/liHCnV5",
+      "size": 2351616
     }
   ]
 }
