@@ -16,13 +16,13 @@ Some standard libraries are not enabled by design!<br />
 
 # API Summary
 
-- [🌐 Globals](#-globals):
+- 🌐 [Globals](#-globals):
   + sleep: suspends execution until interval elapses
   + console: prettier print
   + Array: Lua table search
   + Failure: Structured error
   
-- [📦 Modules](#-modules):
+- 📦 [Modules](#-modules):
   + [regedit](#-regedit) : read and write from/to the registry.
   + [random](#-random) : generate random things.
   + [file](#-file) : file and path manipulation.
@@ -35,7 +35,7 @@ Some standard libraries are not enabled by design!<br />
   + [shell](#-shell) : execute shell command. 
   + [time](#-time) : time conversion.
   + [steamid](#-steamid) : Steam-related user identification.
-  + [steamclient](#-steamclient) : utilities to help launching games that require the Steam client (Steamloader).
+  + [steamclient](#-steam-client) : utilities to help launching games that require the Steam client (Steamloader).
   + [types](#-types) : type checking at runtime.
 
 > [!NOTE]  
