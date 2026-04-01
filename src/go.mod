@@ -3,13 +3,13 @@ module launcher
 go 1.26.1
 
 require (
-	github.com/yuin/gopher-lua v1.1.1
+	github.com/yuin/gopher-lua v1.1.2
 	golang.org/x/sys v0.42.0
 )
 
 require golang.org/x/text v0.35.0
 
-require github.com/pelletier/go-toml/v2 v2.2.4
+require github.com/pelletier/go-toml/v2 v2.3.0
 
 require (
 	github.com/bodgit/sevenzip v1.6.1
@@ -18,11 +18,11 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.0 // indirect
+	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/bodgit/plumbing v1.3.0 // indirect
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
-	github.com/klauspost/compress v1.18.4 // indirect
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.26 // indirect
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/ulikunitz/xz v0.5.15 // indirect
