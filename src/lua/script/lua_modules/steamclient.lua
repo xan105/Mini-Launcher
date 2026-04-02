@@ -76,6 +76,9 @@ end
 function steamclient.Load(client)
   client = client or {}
   assert(type(client) == "table", "Expected table!")
+  assert(type(client.appid) == "nil" or (type(client.appid) == "string" and client.appid ~= ""), "Appid: expected a non-empty string or omitted!")
+  assert(type(client.dll) == "nil" or (type(client.dll) == "string" and client.dll ~= ""), "Dll: expected a non-empty string or omitted!")
+  assert(type(client.dll64) == "nil" or (type(client.dll64) == "string" and client.dll64 ~= ""), "Dll64: expected a non-empty string or omitted!")
   
   client.appid = client.appid or 
                  process.target.env["SteamAppId"] or 
@@ -90,15 +93,18 @@ function steamclient.Load(client)
   if not client.appid or client.appid == "" then
     client.appid = findAppID(locations)
   end
+  assert(client.appid and client.appid ~= "", "Failed to determine AppId!")
 
   if not client.dll or client.dll == "" then
     client.dll = findDLL(locations, false)
   end
+  assert(client.dll and client.dll ~= "", "Failed to determine steamclient.dll location!")
 
   if not client.dll64 or client.dll64 == "" then
     client.dll64 = findDLL(locations, true)
   end
-  
+  assert(client.dll64 and client.dll64 ~= "", "Failed to determine steamclient64.dll location!")
+   
   if type(client.user) ~= "number" or client.user % 1 ~= 0 or client.user == 0 then
     client.user = 1999874061
   end
