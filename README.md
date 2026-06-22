@@ -51,9 +51,11 @@ Config file
 
 By default, the launcher uses `launcher.json` (you can override it with `--config`).
 
-Most configuration options are straightforward and self-explanatory, so you should be up and running quickly.
+The configuration is quite flexible, covering everything from process launch parameters to DLL injection and compatibility settings.
 
-_Example with Red Alert 3:_
+There are a lot of options available but depending on your use case you may only need a small subset of them.
+
+_let's first see an example with Red Alert 3:_
 
 ```json
 {
@@ -77,43 +79,11 @@ _Example with Red Alert 3:_
 }
 ```
 
-The configuration is quite flexible, covering everything from process launch parameters to DLL injection and compatibility settings.
-
-There are a lot of configuration options available but depending on your use case you may only need a small subset of them.
-
 ℹ️ For a detailed explanation of each option, see [CONFIG_FILE.md](/CONFIG_FILE.md).
 
+Most options are pretty straightforward and self-explanatory, so you should be up and running quickly.
+
 You can also check the `./example` directory for some examples.
-
-Expanding Variable
-==================
-
-List of variables that will get expanded:
-
-- `%APPDATA%`
-- `%LOCALAPPDATA%`
-- `%PROGRAMDATA%`
-- `%DESKTOP%`
-- `%DOCUMENTS%`
-- `%MUSIC%`
-- `%PICTURES%`
-- `%VIDEOS%`
-- `%DOWNLOAD%`
-- `%SAVEGAME%`
-- `%HOMEDIR%`, `%USERPROFILE%`
-- `%PUBLIC%` 
-- `%SYSTEMDIR%`
-- `%TEMP%`, `%TMP%`
-- `%CURRENTDIR%`: Current working dir of the mini-launcher process
-- `%BINDIR%`: Parent dir of the mini-launcher process
-- `%PROCESS%`: Absolute path of the the mini-launcher process
-- `%USERNAME%`
-- `%HOSTNAME%`
-- `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
-- `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
-- `%SCREENWIDTH%`, `%XRES%`: Current primary display horizontal resolution (DPI Aware)
-- `%SCREENHEIGHT%`, `%YRES%`: Current primary display vertical resolution (DPI Aware)
-- `%SCREENREFRESH%`: Current primary display refresh rate
 
 Lua Scripting
 =============
@@ -157,6 +127,36 @@ process.On("did-start", function()
   -- Do something
 end)
 ```
+
+Expanding Variable
+==================
+
+List of variables that will get expanded:
+
+- `%APPDATA%`
+- `%LOCALAPPDATA%`
+- `%PROGRAMDATA%`
+- `%DESKTOP%`
+- `%DOCUMENTS%`
+- `%MUSIC%`
+- `%PICTURES%`
+- `%VIDEOS%`
+- `%DOWNLOAD%`
+- `%SAVEGAME%`
+- `%HOMEDIR%`, `%USERPROFILE%`
+- `%PUBLIC%` 
+- `%SYSTEMDIR%`
+- `%TEMP%`, `%TMP%`
+- `%CURRENTDIR%`: Current working dir of the mini-launcher process
+- `%BINDIR%`: Parent dir of the mini-launcher process
+- `%PROCESS%`: Absolute path of the the mini-launcher process
+- `%USERNAME%`
+- `%HOSTNAME%`
+- `%LANGCODE%`: User's language as ISO 639 language code (ex: `en`, `fr`, `de`)
+- `%LANGUAGE%`: User's language in English (ex: `english`, `french`, `german`)
+- `%SCREENWIDTH%`, `%XRES%`: Current primary display horizontal resolution (DPI Aware)
+- `%SCREENHEIGHT%`, `%YRES%`: Current primary display vertical resolution (DPI Aware)
+- `%SCREENREFRESH%`: Current primary display refresh rate
 
 Build
 =====
