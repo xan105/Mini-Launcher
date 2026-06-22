@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Get Go version from go.mod
         id: go_version
@@ -18,7 +18,7 @@ jobs:
           $version = ($line -split '\s+')[1]
           Write-Output "go_version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
           
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ steps.go_version.outputs.go_version }}
           
@@ -33,7 +33,7 @@ jobs:
         run: .\build.cmd
         
       - name: Upload build outputs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build
           path: build/**/*.exe
@@ -43,10 +43,10 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: build
           merge-multiple: true
@@ -88,7 +88,7 @@ jobs:
           Write-Output "filepath=$archivePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
       - name: Upload release 
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: release
           path: ${{ steps.create-archive.outputs.filepath }}
