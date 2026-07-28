@@ -8,7 +8,9 @@ package main
 
 import(
   "os"
+  "io"
   "flag"
+  "strings"
 )
 
 type Args struct {
@@ -21,28 +23,30 @@ type Args struct {
 func parseArgs() (Args) {
   var args Args
   
-  flag.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
-  flag.BoolVar(&args.DryRun, "dry-run", false, "Program will exit before starting the executable.")
-  flag.BoolVar(&args.Wait, "wait", false, "Program will wait for the executable to terminate before exiting.")
-  flag.StringVar(&args.ConfigPath, "config", "launcher.json", "File path to the config file to use.")
-  flag.Parse()
+  options := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+  options.SetOutput(io.Discard)
+  
+  options.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
+  options.BoolVar(&args.DryRun, "dry-run", false, "Program will exit before starting the executable.")
+  options.BoolVar(&args.Wait, "wait", false, "Program will wait for the executable to terminate before exiting.")
+  options.StringVar(&args.ConfigPath, "config", "launcher.json", "File path to the config file to use.")
+
+  if err := options.Parse(os.Args[1:]); err != nil {
+    var output strings.Builder
+    output.WriteString("Failed to parse command-line arguments: " + err.Error())
+    output.WriteString("\n\nUsage:\n\n")
+    options.SetOutput(&output)
+    options.PrintDefaults()
+    panic("Launcher", output.String())
+  }
   
   if args.Help {
-    alert(
-      "Launcher",
-      "--config filePath\n" +
-      "File path to the config file to use.\n" +
-      "--dry-run\n" +
-      "Program will exit before starting the executable.\n" +
-      "\n" +
-      "--wait\n" +
-      "Program will wait for the executable to terminate before exiting.\n" +
-      "\n" +
-      "--help\n" +
-      "Show list of all arguments\n",
-    )
-    os.Exit(0)
+    var output strings.Builder
+    output.WriteString("Usage:\n\n")
+    options.SetOutput(&output)
+    options.PrintDefaults()
+    informAndExit("Launcher", output.String())
   }
+  
   return args
 }
-

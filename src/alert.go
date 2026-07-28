@@ -19,8 +19,19 @@ func alert(title string, message string){
     windows.HWND(uintptr(0)),
     windows.StringToUTF16Ptr(message),
     windows.StringToUTF16Ptr(title),
-    windows.MB_OK,
+    windows.MB_OK | windows.MB_ICONWARNING,
   )
+}
+
+func informAndExit(title string, message string){
+  slog.Info(message)
+  windows.MessageBox(
+    windows.HWND(uintptr(0)),
+    windows.StringToUTF16Ptr(message),
+    windows.StringToUTF16Ptr(title),
+    windows.MB_OK | windows.MB_ICONINFORMATION,
+  )
+  os.Exit(0)
 }
 
 func panic(title string, message string){
