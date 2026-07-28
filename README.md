@@ -55,7 +55,7 @@ The configuration is quite flexible, covering everything from process launch par
 
 There are a lot of options available but depending on your use case you may only need a small subset of them.
 
-_let's first see an example with Red Alert 3:_
+_Let's first see an example with Red Alert 3:_
 
 ```json
 {
