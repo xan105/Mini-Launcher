@@ -32,15 +32,18 @@ Command Line
 File path to the json configuration file to use. Defaults to `launcher.json`.<br />
 Path can be absolute or relative (to the current working dir)
 
-### `--dry-run`
-
-Program will exit before starting the executable.
-
-💡 This flag can come in handy when testing Lua Script.
-
 ### `--wait`
 
 Program will wait for the executable to terminate before exiting.
+
+### `--dry-run`
+
+A flag to help test Lua script.
+
+Program will exit before starting the executable.<br />
+Options that could make changes to the file system or registry are skipped.
+
+The integrity check is also skipped, since it must be performed after any configured patches modify the executable on disk.
 
 ### `--help`
 

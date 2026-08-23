@@ -14,10 +14,10 @@ import(
 )
 
 type Args struct {
-  Help        bool
-  DryRun      bool
-  Wait        bool
   ConfigPath  string
+  Wait        bool
+  DryRun      bool
+  Help        bool
 }
 
 func parseArgs() (Args) {
@@ -26,10 +26,10 @@ func parseArgs() (Args) {
   options := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
   options.SetOutput(io.Discard)
   
-  options.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
-  options.BoolVar(&args.DryRun, "dry-run", false, "Program will exit before starting the executable.")
-  options.BoolVar(&args.Wait, "wait", false, "Program will wait for the executable to terminate before exiting.")
   options.StringVar(&args.ConfigPath, "config", "launcher.json", "File path to the config file to use.")
+  options.BoolVar(&args.Wait, "wait", false, "Program will wait for the executable to terminate before exiting.")
+  options.BoolVar(&args.DryRun, "dry-run", false, "A flag to help test Lua script. Program will exit before starting the executable. Options that could make changes to the file system or registry are skipped. The integrity check is also skipped, since it must be performed after any configured patches modify the executable on disk.")
+  options.BoolVar(&args.Help, "help", false, "Show list of all arguments.")
 
   if err := options.Parse(os.Args[1:]); err != nil {
     var output strings.Builder

@@ -102,13 +102,15 @@ func main(){
   binary := fs.Resolve(expand.ExpandVariables(config.Bin))
   cmd, argv := buildCommand(binary, config)
   
-  applyPatches(binary, config.Patch)
-  verifyIntegrity(binary, config.Integrity)
-  makeLink(config.Symlink)
-  applyFileAttributes(config.Attrib)
-  setCompatFlags(binary, config.Compatibility)
-  updatePrefixSettings(config.Prefix)
-  makeShortcut(binary, config.Shortcut)
+  if !cmdLine.DryRun {
+    applyPatches(binary, config.Patch)
+    verifyIntegrity(binary, config.Integrity)
+    makeLink(config.Symlink)
+    applyFileAttributes(config.Attrib)
+    setCompatFlags(binary, config.Compatibility)
+    updatePrefixSettings(config.Prefix)
+    makeShortcut(binary, config.Shortcut)
+  }
 
   if len(config.Script.Path) > 0 {
     script := fs.Resolve(expand.ExpandVariables(config.Script.Path))
