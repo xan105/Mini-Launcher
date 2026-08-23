@@ -161,7 +161,7 @@ List of variables that will get expanded:
 Build
 =====
 
-- Golang v1.26.x
+- Golang v1.27.x
 - [go-winres](https://github.com/tc-hib/go-winres) installed in `%PATH%` env var for win32 manifest & cie
 
 Run `build.cmd` on Windows<br/>
