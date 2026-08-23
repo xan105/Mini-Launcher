@@ -257,7 +257,9 @@ Some games behave better when restricted to specific CPU cores:
 Check file(s) integrity before starting the executable.
 
 - `sri: string` 
-  is a [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity), algo supported are `sha256, sha384, sha512`.
+  In addition to the standard [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) SHA-256, SHA-384, and SHA-512 algorithms, the launcher supports BLAKE2b-256, BLAKE2b-384, and BLAKE2b-512 using the same _algorithm-base64digest_ syntax. BLAKE2b is a non-standard SRI extension and is not supported by browsers as an SRI algorithm.
+  
+  Algorithms supported are `sha256, sha384, sha512, blake2b256, blake2b384, blake2b512`.
 
 - `path?: string` (executable path) 
   File path, can be absolute or relative (to the current working dir). If no path is specified then the sri targets the executable path.<br />
@@ -360,7 +362,7 @@ NB: `admin` and `invoker` are mutually exclusive. If both are set `admin` supers
 
 ### `patch?: object` (none)
 
-Patch(es) to apply to the executable.
+Patch(es) to apply to the executable on disk.
 
 Does nothing by default; You must explicitly set a patch to `true` or `false`.
 
@@ -369,7 +371,7 @@ Does nothing by default; You must explicitly set a patch to `true` or `false`.
   Allow x86 binary to access up to 4GB of virtual memory (instead of only 2) on x64 Windows.<br/>
   This option set (`true`) or unset (`false`) the LAA flag bit in the PE Header.<br/>
   
-NB: Patching is done prior to any integrity check because it directly modifies the executable.
+NB: Patching is done prior to any integrity check because it directly modifies the executable on disk.
 
 ### `prefix?: {winver?: string, dpi?: number, overrides?: object}` (none)
 

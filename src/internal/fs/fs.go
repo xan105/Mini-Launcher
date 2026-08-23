@@ -19,6 +19,7 @@ import(
   "crypto/sha512"
   "encoding/base64"
   "encoding/json/v2"
+  "golang.org/x/crypto/blake2b"
   "golang.org/x/text/encoding"
   "golang.org/x/text/transform"
   "golang.org/x/text/encoding/charmap"
@@ -79,6 +80,21 @@ func CheckSum(filePath string, algo string) (string, error) {
         h = sha512.New384()
       case "sha512":
         h = sha512.New()
+      case "blake2b256":
+        h, err = blake2b.New256(nil)
+        if err != nil {
+          return "", err
+        }
+      case "blake2b384":
+        h, err = blake2b.New384(nil)
+        if err != nil {
+          return "", err
+        }
+      case "blake2b512":
+        h, err = blake2b.New512(nil)
+        if err != nil {
+          return "", err
+        }
       default:
         return "", errors.New("Unsupported hash algorithm: \"" + algo + "\"")
     }
