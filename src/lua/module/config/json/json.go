@@ -7,7 +7,8 @@ found in the LICENSE file in the root directory of this source tree.
 package json
 
 import (
-  "encoding/json"
+  "encoding/json/v2"
+  "encoding/json/jsontext"
   "github.com/yuin/gopher-lua"
   "launcher/lua/util"
   "launcher/lua/type/failure"
@@ -28,7 +29,11 @@ func Parse(L *lua.LState) int {
   jsonStr := L.CheckString(1)
 
   var data map[string]any
-  if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {
+  if err := json.Unmarshal(
+    []byte(jsonStr),
+    &data,
+    jsontext.AllowDuplicateNames(true),
+  ); err != nil {
     L.Push(lua.LNil)
     L.Push(failure.LValue(L, "ERR_JSON_PARSE", err.Error()))
     return 2
@@ -45,14 +50,19 @@ func Stringify(L *lua.LState) int {
   if L.GetTop() > 1 {
     pretty = L.CheckBool(2)
   }
-  
-  indent := ""
+
+  opts := []json.Options{
+    jsontext.AllowDuplicateNames(true),
+  }
   if pretty {
-    indent = "  "
+      opts = append(opts,
+          jsontext.Multiline(true),
+          jsontext.WithIndent("  "),
+      )
   }
   
   data := util.ToGoMap(luaTable)
-  jsonBytes, err := json.MarshalIndent(data, "", indent)
+  jsonBytes, err := json.Marshal(data, opts...)
   if err != nil {
     L.Push(lua.LNil)
     L.Push(failure.LValue(L, "ERR_JSON_PARSE", err.Error()))
