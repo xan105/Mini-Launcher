@@ -36,22 +36,31 @@ func verifyIntegrity(binary string, files []File) {
         panic("Integrity failure", "Size mismatch: \"" + target + "\"") 
       }
       
-      re := regexp.MustCompile(`(?i)^(sha(?:256|384|512)-[A-Za-z0-9+/=]{43,}={0,2})$`)
+      re := regexp.MustCompile(`^(?i:sha|blake2b)(?:256|384|512)-[A-Za-z0-9+/]{43,}={0,2}$`)
+      // NB: blake2b is an extension to standard SRI syntax.
       if !re.MatchString(file.SRI) {
-        panic("Integrity failure", "Unexpected SRI format: \"" + file.SRI + "\"")
+        panic("Integrity failure", 
+              "Invalid Subresource Integrity (SRI) for \n" +
+              "\"" + target + "\"\n\n" + 
+              "Can not determine the algorithm and its corresponding base64 digest.")
       }
 
       algo, expected, ok := strings.Cut(file.SRI, "-")
       if !ok {
-        panic("Integrity failure", "Failed to parse SRI: \"" + file.SRI + "\"")
+        panic("Integrity failure", 
+              "Failed to parse Subresource Integrity (SRI) for \n" +
+              "\"" + target + "\"\n\n" +
+              "Can not determine the algorithm and its corresponding base64 digest.")
       }
+      algo = strings.ToLower(algo)
       
       sum, err := fs.CheckSum(target, algo)
       if err != nil { panic("Integrity failure", err.Error()) }
       if sum != expected { 
         panic("Integrity failure", 
-              "Hash mismatch: \"" + target + "\"\n" +
-              "SRI: " + algo + "-" + sum)
+              "Hash mismatch for \n" +
+              "\"" + target + "\"\n\n" +
+              "The computed hash is:\n\n" + algo + "-" + sum)
       }
       
       if file.Signed {
