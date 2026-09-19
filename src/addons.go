@@ -19,50 +19,53 @@ import(
 
 func loadAddons(binary string, process *os.Process, addons []Addon) {
   if addons != nil && len(addons) > 0 {
-    targetArch, err := pe.GetArchFromMachineType(binary)
+    targetArch, errArch := pe.GetArchFromMachineType(binary)
     for _, addon := range addons {
       if len(addon.Path) > 0 {
         dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
         ext := strings.ToLower(filepath.Ext(dylib))
         if ext == ".dll" || ext == ".asi" {
-          if ok, _ := fs.FileExist(dylib); ok {
-
-            if targetArch != runtime.GOARCH {
-              if addon.Required {
-                process.Kill()
-                if err != nil {
-                  panic("Remote Thread", "\"" + filepath.Base(binary) + "\": " + err.Error())
-                } else {
-                  panic("Remote Thread", "\"" + filepath.Base(binary)  + "\" and the Launcher are of different architecture!")
-                }
+          _, err := fs.FileExist(dylib)
+          if err != nil && addon.Required {
+            process.Kill()
+            panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
+          }
+          
+          if targetArch != runtime.GOARCH {
+            if addon.Required {
+              process.Kill()
+              if errArch != nil {
+                panic("Remote Thread", "\"" + filepath.Base(binary) + "\": " + errArch.Error())
               } else {
-                continue
-              } 
-            }
-            
-            if arch, err := pe.GetArchFromMachineType(dylib); arch != runtime.GOARCH {
-              if addon.Required {
-                process.Kill()
-                if err != nil {
-                  panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
-                } else {
-                  panic("Remote Thread", "\"" + filepath.Base(dylib)  + "\" and the target process are of different architecture!")
-                }
-              } else {
-                continue
+                panic("Remote Thread", "\"" + filepath.Base(binary)  + "\" and the Launcher are of different architecture!")
               }
-            }
-   
-            if err := thread.CreateRemoteThread(process.Pid, dylib); err != nil {
-              if addon.Required {
-                process.Kill()
+            } else {
+              continue
+            } 
+          }
+            
+          if arch, err := pe.GetArchFromMachineType(dylib); arch != runtime.GOARCH {
+            if addon.Required {
+              process.Kill()
+              if err != nil {
                 panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
               } else {
-                continue
+                panic("Remote Thread", "\"" + filepath.Base(dylib)  + "\" and the target process are of different architecture!")
               }
+            } else {
+              continue
             }
-            
           }
+   
+          if err := thread.CreateRemoteThread(process.Pid, dylib); err != nil {
+            if addon.Required {
+              process.Kill()
+              panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
+            } else {
+              continue
+            }
+          }
+            
         }
       }
     }
