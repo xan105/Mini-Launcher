@@ -22,7 +22,9 @@
   },
   addons?: []{
     path: string, 
-    required?: bool
+    required?: bool,
+    delay?: int (ms),
+    wait?: int (ms)
   },
   suspended?: bool,
   affinity?: []number,
@@ -205,6 +207,21 @@ Example:
 
 > [!IMPORTANT]
 > This launcher does not support Wow64 injection so make sure the launcher, the executable and the addon are all the same arch (x86 or x64).
+
+When dealing with 3rd party code, you may face a situation where it would be nice if you could delay the injection or wait before the next.
+This is a _stopgap_ solution for synchronisation of code you don't necessarily have control over. While it's better than nothing, you should try to avoid using it if possible.
+
+- `delay`: How long to wait before injecting in ms.
+- `wait`: How long to wait after injected in ms. Note that when this is the latest element this doesn't do much unless you use the `suspended` option in which case it will wait before resuming the main thread of the target process.
+
+```json
+{
+  "addons": [
+    { "path": "foo.asi", "delay": 500 },
+    { "path": "bar.asi", "wait": 500 }
+  ]
+}
+```
 
 ### `suspended?: bool` (false)
 

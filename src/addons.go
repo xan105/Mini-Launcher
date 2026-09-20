@@ -8,6 +8,7 @@ package main
 
 import(
   "os"
+  "time"
   "strings"
   "runtime"
   "path/filepath"
@@ -56,7 +57,11 @@ func loadAddons(binary string, process *os.Process, addons []Addon) {
               continue
             }
           }
-   
+          
+          if addon.Delay > 0 {
+            time.Sleep(time.Duration(addon.Delay) * time.Millisecond)
+          }
+
           if err := thread.CreateRemoteThread(process.Pid, dylib); err != nil {
             if addon.Required {
               process.Kill()
@@ -64,6 +69,10 @@ func loadAddons(binary string, process *os.Process, addons []Addon) {
             } else {
               continue
             }
+          }
+          
+          if addon.Wait > 0 {
+            time.Sleep(time.Duration(addon.Wait) * time.Millisecond)
           }
             
         }

@@ -9,6 +9,8 @@ package main
 type Addon struct {
   Path            string               `json:"path"`
   Required        bool                 `json:"required"`
+  Delay           int                  `json:"delay"`
+  Wait            int                  `json:"wait"`
 }
 
 type File struct {
