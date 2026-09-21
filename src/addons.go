@@ -9,6 +9,7 @@ package main
 import(
   "os"
   "time"
+  "slices"
   "strings"
   "runtime"
   "path/filepath"
@@ -19,64 +20,66 @@ import(
 )
 
 func loadAddons(binary string, process *os.Process, addons []Addon) {
-  if addons != nil && len(addons) > 0 {
-    targetArch, errArch := pe.GetArchFromMachineType(binary)
-    for _, addon := range addons {
-      if len(addon.Path) > 0 {
-        dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
-        ext := strings.ToLower(filepath.Ext(dylib))
-        if ext == ".dll" || ext == ".asi" {
-          _, err := fs.FileExist(dylib)
-          if err != nil && addon.Required {
-            process.Kill()
-            panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
-          }
-          
-          if targetArch != runtime.GOARCH {
-            if addon.Required {
-              process.Kill()
-              if errArch != nil {
-                panic("Remote Thread", "\"" + filepath.Base(binary) + "\": " + errArch.Error())
-              } else {
-                panic("Remote Thread", "\"" + filepath.Base(binary)  + "\" and the Launcher are of different architecture!")
-              }
-            } else {
-              continue
-            } 
-          }
-            
-          if arch, err := pe.GetArchFromMachineType(dylib); arch != runtime.GOARCH {
-            if addon.Required {
-              process.Kill()
-              if err != nil {
-                panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
-              } else {
-                panic("Remote Thread", "\"" + filepath.Base(dylib)  + "\" and the target process are of different architecture!")
-              }
-            } else {
-              continue
-            }
-          }
-          
-          if addon.Delay > 0 {
-            time.Sleep(time.Duration(addon.Delay) * time.Millisecond)
-          }
+  if addons == nil || len(addons) == 0 { return }
+  
+  targetArch, err := pe.GetArchFromMachineType(binary)
+  for _, addon := range addons {
+    if len(addon.Path) == 0 { continue }
+    
+    dylib := fs.Resolve(expand.ExpandVariables(addon.Path))
+    ext := strings.ToLower(filepath.Ext(dylib))
+    if !slices.Contains([]string{".dll", ".asi"}, ext) { continue }
 
-          if err := thread.CreateRemoteThread(process.Pid, dylib); err != nil {
-            if addon.Required {
-              process.Kill()
-              panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
-            } else {
-              continue
-            }
-          }
-          
-          if addon.Wait > 0 {
-            time.Sleep(time.Duration(addon.Wait) * time.Millisecond)
-          }
-            
-        }
+    if _, err := fs.FileExist(dylib); err != nil {
+      if addon.Required {
+        process.Kill()
+        panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
+      } else {
+        continue
       }
+    }
+          
+    if targetArch != runtime.GOARCH {
+      if addon.Required {
+        process.Kill()
+        if err != nil {
+          panic("Remote Thread", "\"" + filepath.Base(binary) + "\": " + err.Error())
+        } else {
+          panic("Remote Thread", "\"" + filepath.Base(binary)  + "\" and the Launcher are of different architecture!")
+        }
+      } else {
+        continue
+      } 
+    }
+            
+    if arch, err := pe.GetArchFromMachineType(dylib); arch != runtime.GOARCH {
+      if addon.Required {
+        process.Kill()
+        if err != nil {
+          panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
+        } else {
+          panic("Remote Thread", "\"" + filepath.Base(dylib)  + "\" and the target process are of different architecture!")
+        }
+      } else {
+        continue
+      }
+    }
+          
+    if addon.Delay > 0 {
+      time.Sleep(time.Duration(addon.Delay) * time.Millisecond)
+    }
+
+    if err := thread.CreateRemoteThread(process.Pid, dylib); err != nil {
+      if addon.Required {
+        process.Kill()
+        panic("Remote Thread", "\"" + filepath.Base(dylib) + "\": " + err.Error())
+      } else {
+        continue
+      }
+    }
+          
+    if addon.Wait > 0 {
+      time.Sleep(time.Duration(addon.Wait) * time.Millisecond)
     }
   }
 }
